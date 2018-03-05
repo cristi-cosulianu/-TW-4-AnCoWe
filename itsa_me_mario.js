@@ -75,7 +75,6 @@ window.onload = function () {
     background_sound.src = "sound/04-Sanctuary.mp3";
     background_sound.loop = true;
     background_sound.volume = 0.05;
-    background_sound.play();
     ground = new Image();
     ground.src = "textures/ground.png";
     walk_1.src = "textures/Hat_man/Walk/Hat_man1.png";
@@ -242,6 +241,7 @@ function keyPressed(event) {
     }
     if (event.keyCode === 39) {
         right = true;
+        background_sound.play();
     }
     if (event.keyCode === 32) {
         jump_sound.load();
