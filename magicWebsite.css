@@ -1,0 +1,96 @@
+body {
+    background-color: rgb(173, 169, 169);
+    margin: 0%;
+    height: 100%;
+}
+
+.menu{
+    width: 100%;
+    height: 100vh;
+}
+
+.bigTitle {
+    height: 15%;
+    padding-top: 20vh;
+    text-align: center;
+    color: rgb(240, 106, 28);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 800%;
+    font-weight: bold;  
+}
+
+.listOfButtons {
+    padding-left: 40%;
+    padding-right: 40%;
+    font-weight: bold;
+    text-align: center;
+    font-family: Courier New, Courier, monospace;
+    color: red;
+    font-size: 160%;
+}
+
+.button {
+    border-bottom: 3px blueviolet solid;
+    padding: 5%;
+    margin-left: 5%;
+    width: 80%;
+}
+
+.firstButton{
+    border-top: 3px blueviolet solid;
+    border-bottom: 3px blueviolet solid;
+    padding: 5%;
+    margin-top: 10%;
+    margin-left: 5%;
+    width: 80%;
+}
+
+.buttonLink{
+    text-decoration: none;
+    color: royalblue;
+}
+
+.buttonLink:hover{
+    color:green;
+}
+
+.buttonLink:active{
+    color:darkolivegreen;
+}
+
+#chooseCaracterCanvas {
+    height: 90vh;
+    width: 90%;
+    background-color: bisque;
+    padding: 5%;
+}
+
+.caractersTable{
+    position: relative  ;
+    width: 100%;
+    height: 100%;
+}
+
+
+.icon{
+    position: relative;
+    height: 15vh;
+    width: 15vh;
+    padding: 2vh;
+}
+
+#gameCanvas{
+    background-color: coral;
+    height: 100vh;
+    width: 100%;
+    padding-top: 10%;
+}
+
+canvas {
+    background-color: burlywood;
+    width: 1280px;
+    height: 720px;
+    display: block;
+    margin: 0 auto;
+    padding: 10px;
+}
