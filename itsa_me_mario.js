@@ -60,7 +60,7 @@ class Vector2 {
 
 window.onload = function () {
 
-    canvas = document.getElementById("game");
+    canvas = document.querySelector("#gameCanvas canvas");
     context = canvas.getContext("2d");
     document.addEventListener("keydown", keyPressed, false);
     document.addEventListener("keyup", keyReleased, false);
