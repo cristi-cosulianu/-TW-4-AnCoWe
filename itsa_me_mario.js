@@ -154,7 +154,7 @@ function reset() {
 
 function game_loop() {
     updatePosition();
-    if(rendered < 3){
+    if(rendered < 10){
         render();
         ++rendered;
     }
@@ -174,7 +174,7 @@ function game_loop() {
     }
     else{
         animation_stage = 0;
-        if(rendered < 5){
+        if(rendered < 20){
             console.log(pos.x, pos.y);        
             render();
             ++rendered;
