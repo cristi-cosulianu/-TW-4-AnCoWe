@@ -8,7 +8,8 @@ var last_pos = {x : -100  , y : -100};
 var jump_sound  , background_sound;
 var animation_stage = 0;
 var jump_land ;
-var ground;
+var ground0
+var first_press;
 var rendered = 0;
 var walk_1 , walk_2 , walk_3 , walk_4 ;
 var background;
@@ -241,6 +242,10 @@ function keyPressed(event) {
     }
     if (event.keyCode === 39) {
         right = true;
+        if(first_press === false){
+          animation_stage = 5;
+          first_press = true;             
+        }
         background_sound.play();
     }
     if (event.keyCode === 32) {
@@ -258,6 +263,7 @@ function keyReleased(event) {
     if (event.keyCode === 39) {
 		animation_stage = 0;
         right = false;
+        first_press = false;
     }
     if (event.keyCode === 32) {
         space = false;
