@@ -8,71 +8,61 @@
 
 	    <script src = "itsa_me_mario.js"></script>
 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        
-        <div class="menu">
+        <!-- - - - - - - - - - - - - - - - - MENU CANVAS - - - - - - - - - - - - - - - - -->
 
-            <div class="bigTitle">MARIO</div>
+        <header class="menuTitle"> MARIO </header>
 
-            <div class="listOfButtons">
+        <nav class="menu"> 
+            <ul>
+                <ul><li><a class="menuButtonLink" href="#chooseCaracterCanvas">Start game</a></li></ul>
+                <li><a class="menuButtonLink" href="">Options</a></li>
+                <li><a class="menuButtonLink" href="">Hall Of Fame</a></li>
+                <li><a class="menuButtonLink" href="">Credits</a></li>
+            </ul>
+        </nav>
 
-                <div class="firstButton">
-                    <a class="buttonLink" href="magicWebsite.html#chooseCaracterCanvas">Start game</a>
-                </div>
-                
-                <div class="button">
-                    <a class="buttonLink" href="">Options</a>
-                </div>
-
-                <div class="button">
-                    <a class="buttonLink" href="">Hall Of Fame</a>
-                </div>
-
-                <div class="button">
-                    <a class="buttonLink" href="">Credits</a>
-                </div>
-
-            </div>
-        </div>
+        <!-- - - - - - - - - - - - -  CHOSE CARACTER CANVAS - - - - - - - - - - - - -->
 
         <div id="chooseCaracterCanvas">
 
             <div class="caractersTable">
 
-                <a class="buttonGame" href="magicWebsite.html#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas">
                     <img class="icon" src="icons/iconHulk.png" alt="IconHulk>">
                 </a>
 
-                <a class="buttonGame" href="magicWebsite.html#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas">
                     <img class="icon" src="icons/iconIronMan.png" alt="IconIronMan">
                 </a>
 
-                <a class="buttonGame" href="magicWebsite.html#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas">
                     <img class="icon" src="icons/iconSpiderman.png" alt="IconSpiderMan">
                 </a>
 
-                <a class="buttonGame" href="magicWebsite.html#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas">
                     <img class="icon" src="icons/iconCaptainAmerica.png" alt="IconHulk">
                 </a>
 
-                <a class="buttonGame" href="magicWebsite.html#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas">
                     <img class="icon" src="icons/iconSuperman.png" alt="IconIronMan">
                 </a>
 
-                <a class="buttonGame" href="magicWebsite.html#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas">
                     <img class="icon" src="icons/iconBatman.png" alt="IconSpiderMan">
                 </a>
 
-                <a class="buttonGame" href="magicWebsite.html#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas">
                     <img class="icon" src="icons/iconCatWoman.png" alt="IconSpiderMan">
                 </a>
 
-                <a class="buttonGame" href="magicWebsite.html#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas">
                     <img class="icon" src="icons/iconGreenLantern.png" alt="IconSpiderMan">
                 </a>
 
-                <a class="buttonGame" href="magicWebsite.html#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas">
                     <img class="icon" src="icons/iconWolverin.png" alt="IconSpiderMan">
                 </a>
 
@@ -80,8 +70,10 @@
         
         </div>
 
+         <!-- - - - - - - - - - - - - - - - GAME CANVAS - - - - - - - - - - - - - - - - -->
+
         <div id="gameCanvas">
             <canvas width="1280px" height="720px"></canvas>
-        </div>
+        </div>     
     </body>
 </html>
