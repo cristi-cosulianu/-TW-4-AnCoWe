@@ -4,18 +4,23 @@ var velocity;
 var gravity;
 var context;
 var canvas;
-var last_pos = {x : -100  , y : -100};
-var jump_sound  , background_sound;
-var animation_stage = 0;
-var jump_land ;
 var ground;
+var last_pos = {x : -100  , y : -100};
+var jump_sound  , background_sound , jump_land;
+var animation_stage = 0;
+var first_press;
+var oldPos;
 var rendered = 0;
 var walk_1 , walk_2 , walk_3 , walk_4 ;
 var background;
+var objects = [];
 var backgroundX = 0;
-var up = false, down = false, right = false, left = false, space = false;
+var right = false, left = false, space = false;
 var double_jump = 0;
 var inAir = false;
+var groundBase = 595;
+var spriteSize;
+const defaultGroundX = 595;
 
 
 class Vector2 {
@@ -57,10 +62,14 @@ class Vector2 {
 
 }
 
+function getBottom(position) {return position.y + spriteSize;}
+function getTop(position) {return position.y}
+function getRight(position) {return position.x + spriteSize}
+function getLeft(position) {return position.x;}
 
 window.onload = function () {
 
-    canvas = document.getElementById("game");
+    canvas = document.querySelector("#gameCanvas canvas");
     context = canvas.getContext("2d");
     document.addEventListener("keydown", keyPressed, false);
     document.addEventListener("keyup", keyReleased, false);
@@ -88,16 +97,20 @@ window.onload = function () {
     background.src  = "textures/background.png";
     dir = new Vector2(1, 0);
     dir.mul(2);
+    spriteSize = 64 ; // get by GET REQUEST;
     velocity = new Vector2(0, -0.2);
     gravity = new Vector2(0, 0.35);
-    pos = new Vector2(canvas.width / 2 - 64, 595);
+    pos = new Vector2(canvas.width / 2 , canvas.height / 2);
+    objects.push({x : canvas.width / 2 + 400 , y : canvas.height / 2 + 100});
+    objects.push({x : canvas.width / 2 + 600 , y : canvas.height / 2 + 100});
+    objects.push({x : canvas.width / 2 + 800 , y : canvas.height / 2 + 200});
+
     this.requestAnimationFrame(game_loop);
 }
 
 
 
 function player_animation(p) {
-    //context.fillRect(pos.x, pos.y, 64, 64);
     context.save();
     context.shadowOffsetX = -3;
     context.shadowOffsetY = 3;
@@ -107,38 +120,59 @@ function player_animation(p) {
         p %= 25;
     }
     if(p % 25 < 6){
-		context.drawImage(walk_1, pos.x, pos.y, 64, 64);
-		return;
-	}
-	if(p % 25 < 12){
-		context.drawImage(walk_2, pos.x, pos.y, 64, 64);
-		return;
-	}
-	   if(p % 25 < 18 ){
-		context.drawImage(walk_3, pos.x, pos.y, 64, 64);
-		return;
-	}
-	if(p % 25 < 25){
-		context.drawImage(walk_4, pos.x, pos.y, 64, 64);
+        context.drawImage(walk_1, pos.x, pos.y, 64, 64);
         return;
-	}
+    }
+    if(p % 25 < 12){
+        context.drawImage(walk_2, pos.x, pos.y, 64, 64);
+        return;
+    }
+       if(p % 25 < 18 ){
+        context.drawImage(walk_3, pos.x, pos.y, 64, 64);
+        return;
+    }
+    if(p % 25 < 25){
+        context.drawImage(walk_4, pos.x, pos.y, 64, 64);
+        return;
+    }
 
 }
 
 
 function render() {
-	if(backgroundX > 1280){
-		backgroundX %= 1280;
-	}
-    context.drawImage(background , backgroundX % 1280 , 0, canvas.width , canvas.height);
-    context.drawImage(background , canvas.width + backgroundX  % 1280, 0 , canvas.width, canvas.height);
+    if(window.innerWidth > 1280){
+        context.canvas.width  = 1280;
+        if(window.innerHeight > 720){
+            context.canvas.height = 720;
+        }
+    }
+    else{       
+        context.canvas.height = window.innerHeight;        
+        context.canvas.width = window.innerWidth;        
+    }
+    if(backgroundX > canvas.width){
+        backgroundX %= canvas.width;
+    }
     context.restore();
-    for (let i = 0; i < 1280  - backgroundX; i += 64) {
+    context.drawImage(background , backgroundX % canvas.width , 0, canvas.width , canvas.height);
+    context.drawImage(background , canvas.width + backgroundX  % canvas.width, 0 , canvas.width, canvas.height);
+    for (let i = 0; i < canvas.width  - backgroundX; i += 64) {
         context.drawImage(ground ,  i + backgroundX , 656, 64 , 64);
     }
+    drawObjects();
     player_animation(animation_stage);
 }
 
+function drawObjects(){
+    for(let i = 0; i < objects.length; ++i){
+        context.drawImage(ground , objects[i].x + backgroundX , objects[i].y , 64, 64);
+    }
+}
+
+
+function random(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
 
 function reset() {
     dir.x = 1;
@@ -148,20 +182,26 @@ function reset() {
     velocity.y = -0.2;
     gravity.x = 0;
     gravity.y = 0.09;
-    pos.y = 595;
+    pos.y = groundBase;
 }
 
 
 function game_loop() {
+    oldPos = pos;
     updatePosition();
-    if(rendered < 3){
+    if(checkCollision()){
+        //console.log(dir);
+    }
+    else{
+        groundBase = defaultGroundX;
+    }
+    if(rendered < 10){
         render();
         ++rendered;
     }
     if(pos.x != last_pos.x || pos.y != last_pos.y){
-        console.log(pos.x, pos.y);        
         if(pos.x + 64 > canvas.width / 2 ){
-            backgroundX -= 2;
+            backgroundX -= 4;
             pos.x = canvas.width / 2 - 64; 
         }
         else if(pos.x + 64 < 64){
@@ -174,8 +214,7 @@ function game_loop() {
     }
     else{
         animation_stage = 0;
-        if(rendered < 5){
-            console.log(pos.x, pos.y);        
+        if(rendered < 20){
             render();
             ++rendered;
         }
@@ -185,55 +224,87 @@ function game_loop() {
 
 
 function updatePosition() {
-    if (pos.y < 595) {
-		animation_stage = 0;
+    if (pos.y < groundBase) {
+        animation_stage = 0;
         inAir = true;
         gravity.add(new Vector2(0, 0.01));
         dir.add(gravity);
         pos.add(dir);
     }
-    if (pos.y > 595) {
+    if (pos.y > groundBase) {
         reset();
         jump_land.play();
         double_jump = 0;
         inAir = false;
     }
-    if (right == true && left == false) {
-        if (dir.x == 0) {
+    if (right === true && left === false) {
+        if (dir.x === 0) {
             dir.x = 1;
         }
-		++animation_stage;
+        ++animation_stage;
         dir.x = Math.abs(dir.x);
         pos.add(dir);
     }
-    if (left == true && right == false) {
-        if (dir.x == 0) {
+    if (left === true && right === false) {
+        if (dir.x === 0) {
             dir.x = -1;
         }
         dir.x = - Math.abs(dir.x);
         pos.add(dir);
-
     }
     if (double_jump < 9) {
-        if (space && left == false && right == false) {
+        if (space && left === false && right === false) {
             ++double_jump;
             dir.y = - 1;
             dir.x = 0;
             velocity.add(new Vector2(0, -0.1));
+            oldPos = pos;
             dir.add(velocity);
             dir.mul(4.3);
             pos.add(dir);
         }
-        if (space && (left == true || right == true)) {
+        if (space && (left === true || right === true)) {
             ++double_jump;
             dir.y = - 1;
             dir.x = 0;
+            oldPos = pos;
             dir.mul(5);
             pos.add(dir);
+           
         }
     }
 }
 
+
+function checkCollision(){
+    let response = false;
+    for(let i = 0; i < objects.length; ++i){
+        if (getRight(pos) > getLeft(objects[i]) + backgroundX && getLeft(pos) < getRight(objects[i]) + backgroundX && getTop(pos) < getBottom(objects[i]) && getBottom(pos) > getTop(objects[i]) && groundBase === defaultGroundX) {
+            console.log(backgroundX / 2);
+            //inAir = false;
+            right = false;
+            response = true;
+        }
+        if (getTop(pos) < getTop(objects[i]) && getBottom(pos) > getTop(objects[i]) && getLeft(pos) >= getLeft(objects[i]) + backgroundX  - spriteSize && getRight(pos) <= getRight(objects[i]) + (backgroundX  + spriteSize)) {
+            //console.log(backgroundX / 2);
+            //inAir = false;
+            groundBase = getTop(objects[i]) - 63;
+            inAir = false;
+            response = true;
+
+        }
+        if (getBottom(pos) > getBottom(objects[i]) && getTop(pos) < getBottom(objects[i]) && getLeft(pos) >= getLeft(objects[i]) + backgroundX  - spriteSize && getRight(pos) <= getRight(objects[i]) + (backgroundX  + spriteSize)) {
+           // console.log(backgroundX / 2);
+            //groundBase = 595;
+            dir.x = 0;
+            dir.y = 1;
+            response = true;
+
+        }
+
+    }
+    return response;
+}
 
 function keyPressed(event) {
     if (event.keyCode === 37) {
@@ -241,7 +312,11 @@ function keyPressed(event) {
     }
     if (event.keyCode === 39) {
         right = true;
-        background_sound.play();
+        if(first_press === false){
+          animation_stage = 5;
+          first_press = true;             
+        }
+        //background_sound.play();
     }
     if (event.keyCode === 32) {
         jump_sound.load();
@@ -251,13 +326,14 @@ function keyPressed(event) {
 }
 
 function keyReleased(event) {
-    keyPressed = false;
+
     if (event.keyCode === 37) {
         left = false;
     }
     if (event.keyCode === 39) {
-		animation_stage = 0;
+        animation_stage = 0;
         right = false;
+        first_press = false;
     }
     if (event.keyCode === 32) {
         space = false;
