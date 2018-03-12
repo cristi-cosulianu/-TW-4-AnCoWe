@@ -4,16 +4,16 @@ var velocity;
 var gravity;
 var context;
 var canvas;
-var ground;
 var last_pos = {x : -100  , y : -100};
-var jump_sound  , background_sound , jump_land;
+var jump_sound  , background_sound;
 var animation_stage = 0;
-var first_press;
+var jump_land ;
+var ground;
 var rendered = 0;
 var walk_1 , walk_2 , walk_3 , walk_4 ;
 var background;
 var backgroundX = 0;
-var right = false, left = false, space = false;
+var up = false, down = false, right = false, left = false, space = false;
 var double_jump = 0;
 var inAir = false;
 
@@ -60,7 +60,7 @@ class Vector2 {
 
 window.onload = function () {
 
-    canvas = document.querySelector("#gameCanvas canvas");
+    canvas = document.getElementById("game");
     context = canvas.getContext("2d");
     document.addEventListener("keydown", keyPressed, false);
     document.addEventListener("keyup", keyReleased, false);
@@ -107,32 +107,32 @@ function player_animation(p) {
         p %= 25;
     }
     if(p % 25 < 6){
-        context.drawImage(walk_1, pos.x, pos.y, 64, 64);
+		context.drawImage(walk_1, pos.x, pos.y, 64, 64);
+		return;
+	}
+	if(p % 25 < 12){
+		context.drawImage(walk_2, pos.x, pos.y, 64, 64);
+		return;
+	}
+	   if(p % 25 < 18 ){
+		context.drawImage(walk_3, pos.x, pos.y, 64, 64);
+		return;
+	}
+	if(p % 25 < 25){
+		context.drawImage(walk_4, pos.x, pos.y, 64, 64);
         return;
-    }
-    if(p % 25 < 12){
-        context.drawImage(walk_2, pos.x, pos.y, 64, 64);
-        return;
-    }
-       if(p % 25 < 18 ){
-        context.drawImage(walk_3, pos.x, pos.y, 64, 64);
-        return;
-    }
-    if(p % 25 < 25){
-        context.drawImage(walk_4, pos.x, pos.y, 64, 64);
-        return;
-    }
+	}
 
 }
 
 
 function render() {
-    if(backgroundX > 1280){
-        backgroundX %= 1280;
-    }
-    context.restore();
+	if(backgroundX > 1280){
+		backgroundX %= 1280;
+	}
     context.drawImage(background , backgroundX % 1280 , 0, canvas.width , canvas.height);
     context.drawImage(background , canvas.width + backgroundX  % 1280, 0 , canvas.width, canvas.height);
+    context.restore();
     for (let i = 0; i < 1280  - backgroundX; i += 64) {
         context.drawImage(ground ,  i + backgroundX , 656, 64 , 64);
     }
@@ -154,7 +154,7 @@ function reset() {
 
 function game_loop() {
     updatePosition();
-    if(rendered < 10){
+    if(rendered < 3){
         render();
         ++rendered;
     }
@@ -174,7 +174,7 @@ function game_loop() {
     }
     else{
         animation_stage = 0;
-        if(rendered < 20){
+        if(rendered < 5){
             console.log(pos.x, pos.y);        
             render();
             ++rendered;
@@ -186,7 +186,7 @@ function game_loop() {
 
 function updatePosition() {
     if (pos.y < 595) {
-        animation_stage = 0;
+		animation_stage = 0;
         inAir = true;
         gravity.add(new Vector2(0, 0.01));
         dir.add(gravity);
@@ -198,16 +198,16 @@ function updatePosition() {
         double_jump = 0;
         inAir = false;
     }
-    if (right === true && left === false) {
-        if (dir.x === 0) {
+    if (right == true && left == false) {
+        if (dir.x == 0) {
             dir.x = 1;
         }
-        ++animation_stage;
+		++animation_stage;
         dir.x = Math.abs(dir.x);
         pos.add(dir);
     }
-    if (left === true && right === false) {
-        if (dir.x === 0) {
+    if (left == true && right == false) {
+        if (dir.x == 0) {
             dir.x = -1;
         }
         dir.x = - Math.abs(dir.x);
@@ -215,7 +215,7 @@ function updatePosition() {
 
     }
     if (double_jump < 9) {
-        if (space && left === false && right === false) {
+        if (space && left == false && right == false) {
             ++double_jump;
             dir.y = - 1;
             dir.x = 0;
@@ -224,7 +224,7 @@ function updatePosition() {
             dir.mul(4.3);
             pos.add(dir);
         }
-        if (space && (left === true || right === true)) {
+        if (space && (left == true || right == true)) {
             ++double_jump;
             dir.y = - 1;
             dir.x = 0;
@@ -241,10 +241,6 @@ function keyPressed(event) {
     }
     if (event.keyCode === 39) {
         right = true;
-        if(first_press === false){
-          animation_stage = 5;
-          first_press = true;             
-        }
         background_sound.play();
     }
     if (event.keyCode === 32) {
@@ -255,14 +251,13 @@ function keyPressed(event) {
 }
 
 function keyReleased(event) {
-
+    keyPressed = false;
     if (event.keyCode === 37) {
         left = false;
     }
     if (event.keyCode === 39) {
-                animation_stage = 0;
+		animation_stage = 0;
         right = false;
-        first_press = false;
     }
     if (event.keyCode === 32) {
         space = false;
