@@ -67,6 +67,8 @@ function getTop(position) {return position.y}
 function getRight(position) {return position.x + spriteSize}
 function getLeft(position) {return position.x;}
 
+
+
 window.onload = function () {
 
     canvas = document.querySelector("#gameCanvas canvas");
@@ -103,12 +105,15 @@ window.onload = function () {
     pos = new Vector2(canvas.width / 2 , canvas.height / 2);
     objects.push({x : canvas.width / 2 + 400 , y : canvas.height / 2 + 100});
     objects.push({x : canvas.width / 2 + 600 , y : canvas.height / 2 + 100});
-    objects.push({x : canvas.width / 2 + 800 , y : canvas.height / 2 + 200});
-
+    objects.push({x : canvas.width / 2 + 800 + 50 , y : canvas.height / 2 + 200});
+    objects.push({x : canvas.width / 2 + 800  + 150, y : canvas.height / 2 + 150});
+    objects.push({x : canvas.width / 2 + 800  + 250, y : canvas.height / 2 + 100});
+    objects.push({x : canvas.width / 2 + 800  + 350, y : canvas.height / 2 + 50});
+    objects.push({x : canvas.width / 2 + 800  + 550, y : canvas.height / 2 + 0});
     this.requestAnimationFrame(game_loop);
 }
 
-
+window.onresize = () => {render();}
 
 function player_animation(p) {
     context.save();
@@ -201,7 +206,7 @@ function game_loop() {
     }
     if(pos.x != last_pos.x || pos.y != last_pos.y){
         if(pos.x + 64 > canvas.width / 2 ){
-            backgroundX -= 4;
+            backgroundX -= 3;
             pos.x = canvas.width / 2 - 64; 
         }
         else if(pos.x + 64 < 64){
@@ -279,25 +284,27 @@ function updatePosition() {
 function checkCollision(){
     let response = false;
     for(let i = 0; i < objects.length; ++i){
-        if (getRight(pos) > getLeft(objects[i]) + backgroundX && getLeft(pos) < getRight(objects[i]) + backgroundX && getTop(pos) < getBottom(objects[i]) && getBottom(pos) > getTop(objects[i]) && groundBase === defaultGroundX) {
-            console.log(backgroundX / 2);
+        if (getRight(pos) > getLeft(objects[i]) + backgroundX && getRight(pos) < getRight(objects[i]) + backgroundX && getTop(pos) < getBottom(objects[i]) && getBottom(pos) > getTop(objects[i]) && groundBase === defaultGroundX) {
+            console.log("LEFT");
             //inAir = false;
+            dir.x = 0;
             right = false;
             response = true;
         }
-        if (getTop(pos) < getTop(objects[i]) && getBottom(pos) > getTop(objects[i]) && getLeft(pos) >= getLeft(objects[i]) + backgroundX  - spriteSize && getRight(pos) <= getRight(objects[i]) + (backgroundX  + spriteSize)) {
-            //console.log(backgroundX / 2);
+        if (getTop(pos) < getTop(objects[i]) && getBottom(pos) > getTop(objects[i]) && getLeft(pos) > getLeft(objects[i]) + backgroundX - 42 && getRight(pos) < getRight(objects[i]) + (backgroundX  + 42)) {
+            console.log("TOP");
             //inAir = false;
             groundBase = getTop(objects[i]) - 63;
             inAir = false;
             response = true;
+            return true;
 
         }
-        if (getBottom(pos) > getBottom(objects[i]) && getTop(pos) < getBottom(objects[i]) && getLeft(pos) >= getLeft(objects[i]) + backgroundX  - spriteSize && getRight(pos) <= getRight(objects[i]) + (backgroundX  + spriteSize)) {
-           // console.log(backgroundX / 2);
+        if (getBottom(pos) > getBottom(objects[i]) && getTop(pos) < getBottom(objects[i]) && getLeft(pos) > getLeft(objects[i]) + backgroundX  - spriteSize && getRight(pos) < getRight(objects[i]) + (backgroundX  + spriteSize)) {
+            console.log("BOTTOM");
             //groundBase = 595;
-            dir.x = 0;
-            dir.y = 1;
+             dir.x = 0;
+             dir.y = 3;
             response = true;
 
         }
@@ -308,7 +315,7 @@ function checkCollision(){
 
 function keyPressed(event) {
     if (event.keyCode === 37) {
-        left = true;
+       left = true;
     }
     if (event.keyCode === 39) {
         right = true;
