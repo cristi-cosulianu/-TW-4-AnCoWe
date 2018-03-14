@@ -19,6 +19,7 @@ var right = false, left = false, space = false;
 var double_jump = 0;
 var inAir = false;
 var groundBase = 595;
+var rightCollision = false;
 var spriteSize;
 const defaultGroundX = 595;
 
@@ -63,8 +64,8 @@ class Vector2 {
 }
 
 function getBottom(position) {return position.y + spriteSize;}
-function getTop(position) {return position.y}
-function getRight(position) {return position.x + spriteSize}
+function getTop(position) {return position.y;}
+function getRight(position) {return position.x + spriteSize;}
 function getLeft(position) {return position.x;}
 
 
@@ -104,16 +105,16 @@ window.onload = function () {
     gravity = new Vector2(0, 0.35);
     pos = new Vector2(canvas.width / 2 , canvas.height / 2);
     objects.push({x : canvas.width / 2 + 400 , y : canvas.height / 2 + 100});
-    objects.push({x : canvas.width / 2 + 600 , y : canvas.height / 2 + 100});
+    objects.push({x : canvas.width / 2 + 600 , y : canvas.height / 2 + 250});
     objects.push({x : canvas.width / 2 + 800 + 50 , y : canvas.height / 2 + 200});
     objects.push({x : canvas.width / 2 + 800  + 150, y : canvas.height / 2 + 150});
     objects.push({x : canvas.width / 2 + 800  + 250, y : canvas.height / 2 + 100});
     objects.push({x : canvas.width / 2 + 800  + 350, y : canvas.height / 2 + 50});
     objects.push({x : canvas.width / 2 + 800  + 550, y : canvas.height / 2 + 0});
     this.requestAnimationFrame(game_loop);
-}
+};
 
-window.onresize = () => {render();}
+window.onresize = () => {render();};
 
 function player_animation(p) {
     context.save();
@@ -195,7 +196,10 @@ function game_loop() {
     oldPos = pos;
     updatePosition();
     if(checkCollision()){
-        //console.log(dir);
+        console.log(dir);
+
+        //this.requestAnimationFrame(game_loop);
+
     }
     else{
         groundBase = defaultGroundX;
@@ -289,35 +293,38 @@ function checkCollision(){
             //inAir = false;
             dir.x = 0;
             right = false;
+            rightCollision = true;
             response = true;
         }
         if (getTop(pos) < getTop(objects[i]) && getBottom(pos) > getTop(objects[i]) && getLeft(pos) > getLeft(objects[i]) + backgroundX - 42 && getRight(pos) < getRight(objects[i]) + (backgroundX  + 42)) {
-            console.log("TOP");
+           // console.log("TOP");
             //inAir = false;
             groundBase = getTop(objects[i]) - 63;
             inAir = false;
+            rightCollision = false;
             response = true;
-            return true;
 
         }
         if (getBottom(pos) > getBottom(objects[i]) && getTop(pos) < getBottom(objects[i]) && getLeft(pos) > getLeft(objects[i]) + backgroundX  - spriteSize && getRight(pos) < getRight(objects[i]) + (backgroundX  + spriteSize)) {
-            console.log("BOTTOM");
+            //console.log("BOTTOM");
             //groundBase = 595;
-             dir.x = 0;
+             //dir.x = 0;
              dir.y = 3;
-            response = true;
+             response = true;
 
         }
 
     }
+    if(!response)
+        rightCollision = false;
     return response;
 }
 
 function keyPressed(event) {
     if (event.keyCode === 37) {
-       left = true;
+          left = true;            
     }
-    if (event.keyCode === 39) {
+    if (event.keyCode === 39 && rightCollision === false) {
         right = true;
         if(first_press === false){
           animation_stage = 5;
