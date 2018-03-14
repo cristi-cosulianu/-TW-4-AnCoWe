@@ -104,10 +104,10 @@ canvas {
     background-color: burlywood;
     display: block;
     margin: 0 auto;
-    padding: 10px;
+    padding: 1%;
     margin-top: 7.5%;
-    width: 90%;
-    height: auto;
+    width: 90vw;
+    height: 45vw;
 }
 
 /* -------------------------------------------------------------------- SCREEN MEDIA -- */
