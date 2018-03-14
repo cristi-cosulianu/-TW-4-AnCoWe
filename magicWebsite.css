@@ -47,7 +47,7 @@ nav ul li {
     width: 90%;
 }
 
-nav ul ul li{
+nav ul li:first-child{
     border-top: 0.25vh blueviolet solid;
 }
 
@@ -106,4 +106,12 @@ canvas {
     margin: 0 auto;
     padding: 10px;
     margin-top: 7.5%;
+    width: 90%;
+    height: auto;
+}
+
+/* -------------------------------------------------------------------- SCREEN MEDIA -- */
+
+@media screen and (min-with:768px)and (max-with:959px){
+
 }
