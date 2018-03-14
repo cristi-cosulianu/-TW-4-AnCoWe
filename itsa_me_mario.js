@@ -21,7 +21,7 @@ var inAir = false;
 var groundBase = 595;
 var rightCollision = false;
 var spriteSize;
-const defaultGroundX = 595;
+var defaultGroundX = 595;
 
 
 class Vector2 {
@@ -101,10 +101,17 @@ window.onload = function () {
     dir = new Vector2(1, 0);
     dir.mul(2);
     spriteSize = 64 ; // get by GET REQUEST;
+    canvas.height = window.innerHeight;
+    defaultGroundX = window.innerHeight - 128;         
+    canvas.width = window.innerWidth;
     velocity = new Vector2(0, -0.2);
     gravity = new Vector2(0, 0.35);
     pos = new Vector2(canvas.width / 2 , canvas.height / 2);
-    objects.push({x : canvas.width / 2 + 400 , y : canvas.height / 2 + 100});
+
+     objects.push({x : canvas.width / 2  , y : canvas.height / 2});
+     console.log(window.innerWidth);
+     console.log(canvas.width);
+     console.log(objects[0]);
     objects.push({x : canvas.width / 2 + 600 , y : canvas.height / 2 + 250});
     objects.push({x : canvas.width / 2 + 800 + 50 , y : canvas.height / 2 + 200});
     objects.push({x : canvas.width / 2 + 800  + 150, y : canvas.height / 2 + 150});
@@ -114,7 +121,11 @@ window.onload = function () {
     this.requestAnimationFrame(game_loop);
 };
 
-window.onresize = () => {render();};
+window.onresize = () => {
+    console.log(window.innerHeight);
+    defaultGroundX = window.innerHeight - 128; 
+    render();
+};
 
 function player_animation(p) {
     context.save();
@@ -146,16 +157,18 @@ function player_animation(p) {
 
 
 function render() {
-    if(window.innerWidth > 1280){
-        context.canvas.width  = 1280;
-        if(window.innerHeight > 720){
-            context.canvas.height = 720;
-        }
-    }
-    else{       
-        context.canvas.height = window.innerHeight;        
-        context.canvas.width = window.innerWidth;        
-    }
+    // if(window.innerWidth > 1280){
+    //     context.canvas.width  = 1280;
+    //     if(window.innerHeight > 720){
+    //         context.canvas.height = 720;
+    //     }
+    // }
+    // else{       
+        canvas.height = window.innerHeight;        
+        //canvas.width = window.innerWidth;
+        canvas.width =window.innerWidth;
+        console.log(window.getComputedStyle(document.getElementsByTagName("body")[0],null).getPropertyValue("width")); // Scoate px din capat;
+    // }
     if(backgroundX > canvas.width){
         backgroundX %= canvas.width;
     }
@@ -163,7 +176,7 @@ function render() {
     context.drawImage(background , backgroundX % canvas.width , 0, canvas.width , canvas.height);
     context.drawImage(background , canvas.width + backgroundX  % canvas.width, 0 , canvas.width, canvas.height);
     for (let i = 0; i < canvas.width  - backgroundX; i += 64) {
-        context.drawImage(ground ,  i + backgroundX , 656, 64 , 64);
+        context.drawImage(ground ,  i + backgroundX , defaultGroundX + 64, 64 , 64);
     }
     drawObjects();
     player_animation(animation_stage);
@@ -194,9 +207,11 @@ function reset() {
 
 function game_loop() {
     oldPos = pos;
+    //console.log(pos);
+    //console.log(objects[0]);
     updatePosition();
     if(checkCollision()){
-        console.log(dir);
+        //console.log(dir);
 
         //this.requestAnimationFrame(game_loop);
 
@@ -289,7 +304,7 @@ function checkCollision(){
     let response = false;
     for(let i = 0; i < objects.length; ++i){
         if (getRight(pos) > getLeft(objects[i]) + backgroundX && getRight(pos) < getRight(objects[i]) + backgroundX && getTop(pos) < getBottom(objects[i]) && getBottom(pos) > getTop(objects[i]) && groundBase === defaultGroundX) {
-            console.log("LEFT");
+            //console.log("LEFT");
             //inAir = false;
             dir.x = 0;
             right = false;
