@@ -20,8 +20,10 @@ var double_jump = 0;
 var inAir = false;
 var groundBase = 595;
 var rightCollision = false;
+var leftCollision = false;
 var spriteSize;
 var defaultGroundX = 595;
+
 
 
 class Vector2 {
@@ -167,7 +169,7 @@ function render() {
         canvas.height = window.innerHeight;        
         //canvas.width = window.innerWidth;
         canvas.width =window.innerWidth;
-        console.log(window.getComputedStyle(document.getElementsByTagName("body")[0],null).getPropertyValue("width")); // Scoate px din capat;
+        //console.log(window.getComputedStyle(document.getElementsByTagName("body")[0],null).getPropertyValue("width")); // Scoate px din capat;
     // }
     if(backgroundX > canvas.width){
         backgroundX %= canvas.width;
@@ -212,7 +214,7 @@ function game_loop() {
     updatePosition();
     if(checkCollision()){
         //console.log(dir);
-
+        pos = oldPos;
         //this.requestAnimationFrame(game_loop);
 
     }
@@ -303,7 +305,7 @@ function updatePosition() {
 function checkCollision(){
     let response = false;
     for(let i = 0; i < objects.length; ++i){
-        if (getRight(pos) > getLeft(objects[i]) + backgroundX && getRight(pos) < getRight(objects[i]) + backgroundX && getTop(pos) < getBottom(objects[i]) && getBottom(pos) > getTop(objects[i]) && groundBase === defaultGroundX) {
+        if (getRight(pos) > getLeft(objects[i]) + backgroundX + 15  && getRight(pos) < getRight(objects[i]) + backgroundX + 15 && getTop(pos) < getBottom(objects[i]) && getBottom(pos) > getTop(objects[i]) && groundBase === defaultGroundX) {
             //console.log("LEFT");
             //inAir = false;
             dir.x = 0;
@@ -317,26 +319,36 @@ function checkCollision(){
             groundBase = getTop(objects[i]) - 63;
             inAir = false;
             rightCollision = false;
+            leftCollision = false;
             response = true;
 
         }
-        if (getBottom(pos) > getBottom(objects[i]) && getTop(pos) < getBottom(objects[i]) && getLeft(pos) > getLeft(objects[i]) + backgroundX  - spriteSize && getRight(pos) < getRight(objects[i]) + (backgroundX  + spriteSize)) {
+        if (getBottom(pos) > getBottom(objects[i]) && getTop(pos) < getBottom(objects[i]) && getLeft(pos) > getLeft(objects[i]) + backgroundX  - spriteSize  && getRight(pos) < getRight(objects[i]) + (backgroundX  + spriteSize)) {
             //console.log("BOTTOM");
             //groundBase = 595;
              //dir.x = 0;
-             dir.y = 3;
+             dir.y = 1.5;
              response = true;
-
+        }
+        if (getLeft(pos) < getRight(objects[i]) + backgroundX   && getLeft(pos) > getLeft(objects[i]) + backgroundX  && getTop(pos) < getBottom(objects[i]) && getBottom(pos) > getTop(objects[i]) && groundBase === defaultGroundX) {
+            console.log("LEFT");
+            //inAir = false;
+            dir.x = 0;
+            left = false;
+            leftCollision = true;
+            response = true;
         }
 
     }
-    if(!response)
+    if(!response){
         rightCollision = false;
+        leftCollision = false;
+    }
     return response;
 }
 
 function keyPressed(event) {
-    if (event.keyCode === 37) {
+    if (event.keyCode === 37 && leftCollision === false) {
           left = true;            
     }
     if (event.keyCode === 39 && rightCollision === false) {
