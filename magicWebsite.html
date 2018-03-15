@@ -6,23 +6,29 @@
 
         <link rel="stylesheet" href="magicWebsite.css">
 
-	    <script src = "itsa_me_mario.js"></script>
+        <script src = "itsa_me_mario.js"></script>
+        <script src = "magicWebsite.js"></script>
+        <script src = "util.js"></script>
+
+
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
         <!-- - - - - - - - - - - - - - - - - MENU CANVAS - - - - - - - - - - - - - - - - -->
+        
+        <div id="menuCanvas" aria-hidden="false">
+            <header class="menuTitle"> MARIO </header>
 
-        <header class="menuTitle"> MARIO </header>
-
-        <nav class="menu"> 
-            <ul>
-                <li><a class="menuButtonLink" href="#chooseCaracterCanvas">Start game</a></li>
-                <li><a class="menuButtonLink" href="">Options</a></li>
-                <li><a class="menuButtonLink" href="">Hall Of Fame</a></li>
-                <li><a class="menuButtonLink" href="">Credits</a></li>
-            </ul>
-        </nav>
+            <nav class="menu"> 
+                <ul>
+                    <li><a class="menuButtonLink" onclick="setDisplayNone('menuCanvas','chooseCaracterCanvas')" href="#chooseCaracterCanvas">Start game</a></li>
+                    <li><a class="menuButtonLink" href="">Options</a></li>
+                    <li><a class="menuButtonLink" href="">Hall Of Fame</a></li>
+                    <li><a class="menuButtonLink" href="">Credits</a></li>
+                </ul>
+            </nav>
+        </div>
 
         <!-- - - - - - - - - - - - -  CHOSE CARACTER CANVAS - - - - - - - - - - - - -->
 
@@ -30,39 +36,48 @@
 
             <div class="caractersTable">
 
-                <a class="buttonGame" href="#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas" 
+                   onclick="setDisplayNone('chooseCaracterCanvas','gameCanvas')" >
                     <img class="icon" src="icons/iconHulk.png" alt="IconHulk>">
                 </a>
 
-                <a class="buttonGame" href="#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas"
+                   onclick="setDisplayNone('chooseCaracterCanvas','gameCanvas')" >
                     <img class="icon" src="icons/iconIronMan.png" alt="IconIronMan">
                 </a>
 
-                <a class="buttonGame" href="#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas"
+                   onclick="setDisplayNone('chooseCaracterCanvas','gameCanvas')" >
                     <img class="icon" src="icons/iconSpiderman.png" alt="IconSpiderMan">
                 </a>
 
-                <a class="buttonGame" href="#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas"
+                   onclick="setDisplayNone('chooseCaracterCanvas','gameCanvas')" >
                     <img class="icon" src="icons/iconCaptainAmerica.png" alt="IconHulk">
                 </a>
 
-                <a class="buttonGame" href="#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas"
+                   onclick="setDisplayNone('chooseCaracterCanvas','gameCanvas')" >
                     <img class="icon" src="icons/iconSuperman.png" alt="IconIronMan">
                 </a>
 
-                <a class="buttonGame" href="#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas"
+                   onclick="setDisplayNone('chooseCaracterCanvas','gameCanvas')" >
                     <img class="icon" src="icons/iconBatman.png" alt="IconSpiderMan">
                 </a>
 
-                <a class="buttonGame" href="#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas"
+                   onclick="setDisplayNone('chooseCaracterCanvas','gameCanvas')" >
                     <img class="icon" src="icons/iconCatWoman.png" alt="IconSpiderMan">
                 </a>
 
-                <a class="buttonGame" href="#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas"
+                   onclick="setDisplayNone('chooseCaracterCanvas','gameCanvas')" >
                     <img class="icon" src="icons/iconGreenLantern.png" alt="IconSpiderMan">
                 </a>
 
-                <a class="buttonGame" href="#gameCanvas">
+                <a class="buttonGame" href="#gameCanvas"
+                   onclick="setDisplayNone('chooseCaracterCanvas','gameCanvas')" >
                     <img class="icon" src="icons/iconWolverin.png" alt="IconSpiderMan">
                 </a>
 
