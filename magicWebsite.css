@@ -10,6 +10,12 @@ body {
     height: 100vh;
     width: 100%;
     display: block;
+    opacity: 1;
+    transition: opacity 1s;
+}
+
+#menuCanvas.fade{
+    opacity: 0;
 }
 
 header{
@@ -79,6 +85,12 @@ nav ul li:first-child{
     background-color: bisque;
     padding: 5%;
     display: none;
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+#chooseCaracterCanvas.fade{
+    opacity: 1;
 }
 
 .caractersTable{
@@ -111,6 +123,12 @@ nav ul li:first-child{
     display: block;
     position: absolute;
     display: none;
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+#gameCanvas.fade{
+    opacity: 1;
 }
 
 canvas {
