@@ -1,15 +1,16 @@
 var dir;
-var pos;
+var player;
 var velocity;
 var gravity;
 var context;
 var canvas;
 var ground;
-var last_pos = {x : -100  , y : -100};
+var something;
+var last_player = {x : -100  , y : -100};
 var jump_sound  , background_sound , jump_land;
 var animation_stage = 0;
 var first_press;
-var oldPos;
+var oldplayer;
 var rendered = 0;
 var walk_1 , walk_2 , walk_3 , walk_4 ;
 var background;
@@ -23,53 +24,6 @@ var rightCollision = false;
 var leftCollision = false;
 var spriteSize;
 var defaultGroundX = 595;
-
-
-
-class Vector2 {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-    add(p) {
-        this.x += p.x;
-        this.y += p.y;
-    }
-    magnitude() {
-        return Math.sqrt(this.x * this.x + this.y * this.y);
-    }
-    normalize() {
-        this.x /= this.magnitude();
-        this.y /= this.magnitude();
-    }
-
-    mul(p) {
-        this.x *= p;
-        this.y *= p;
-    }
-
-    substract(p) {
-        this.x -= p.x;
-        this.y -= p.y;
-    }
-
-    set(p) {
-        this.x = p.x;
-        this.y = p.y;
-    }
-
-    div(p) {
-        this.x /= p;
-        this.y /= p;
-    }
-
-}
-
-function getBottom(position) {return position.y + spriteSize;}
-function getTop(position) {return position.y;}
-function getRight(position) {return position.x + spriteSize;}
-function getLeft(position) {return position.x;}
-
 
 
 window.onload = function () {
@@ -108,18 +62,15 @@ window.onload = function () {
     canvas.width = window.innerWidth;
     velocity = new Vector2(0, -0.2);
     gravity = new Vector2(0, 0.35);
-    pos = new Vector2(canvas.width / 2 , canvas.height / 2);
-
-     objects.push({x : canvas.width / 2  , y : canvas.height / 2});
-     console.log(window.innerWidth);
-     console.log(canvas.width);
-     console.log(objects[0]);
-    objects.push({x : canvas.width / 2 + 600 , y : canvas.height / 2 + 250});
-    objects.push({x : canvas.width / 2 + 800 + 50 , y : canvas.height / 2 + 200});
-    objects.push({x : canvas.width / 2 + 800  + 150, y : canvas.height / 2 + 150});
-    objects.push({x : canvas.width / 2 + 800  + 250, y : canvas.height / 2 + 100});
-    objects.push({x : canvas.width / 2 + 800  + 350, y : canvas.height / 2 + 50});
-    objects.push({x : canvas.width / 2 + 800  + 550, y : canvas.height / 2 + 0});
+    player = new GameObject(null , canvas.width / 2 , canvas.height / 2  + 200, 64 , 64);
+    objects.push(new GameObject(ground , canvas.width / 2 , canvas.height / 2 , 64 , 64));
+    objects.push(new GameObject(ground , canvas.width / 2 + 600 , canvas.height / 2  + 100 , 400 , 128));
+    // objects.push({x : canvas.width / 2 + 600 , y : canvas.height / 2 + 250});
+    // objects.push({x : canvas.width / 2 + 800 + 50 , y : canvas.height / 2 + 200});
+    // objects.push({x : canvas.width / 2 + 800  + 150, y : canvas.height / 2 + 150});
+    // objects.push({x : canvas.width / 2 + 800  + 250, y : canvas.height / 2 + 100});
+    // objects.push({x : canvas.width / 2 + 800  + 350, y : canvas.height / 2 + 50});
+    // objects.push({x : canvas.width / 2 + 800  + 550, y : canvas.height / 2 + 0});
     this.requestAnimationFrame(game_loop);
 };
 
@@ -139,19 +90,19 @@ function player_animation(p) {
         p %= 25;
     }
     if(p % 25 < 6){
-        context.drawImage(walk_1, pos.x, pos.y, 64, 64);
+        context.drawImage(walk_1, player.position.x, player.position.y, player.height, player.width);
         return;
     }
     if(p % 25 < 12){
-        context.drawImage(walk_2, pos.x, pos.y, 64, 64);
+        context.drawImage(walk_2, player.position.x, player.position.y, player.height, player.width);
         return;
     }
        if(p % 25 < 18 ){
-        context.drawImage(walk_3, pos.x, pos.y, 64, 64);
+        context.drawImage(walk_3, player.position.x, player.position.y, player.height, player.width);
         return;
     }
     if(p % 25 < 25){
-        context.drawImage(walk_4, pos.x, pos.y, 64, 64);
+        context.drawImage(walk_4, player.position.x, player.position.y, player.height, player.width);
         return;
     }
 
@@ -186,7 +137,7 @@ function render() {
 
 function drawObjects(){
     for(let i = 0; i < objects.length; ++i){
-        context.drawImage(ground , objects[i].x + backgroundX , objects[i].y , 64, 64);
+        context.drawImage(objects[i].type , objects[i].position.x + backgroundX , objects[i].position.y , objects[i].width, objects[i].height);
     }
 }
 
@@ -203,18 +154,18 @@ function reset() {
     velocity.y = -0.2;
     gravity.x = 0;
     gravity.y = 0.09;
-    pos.y = groundBase;
+    player.position.y = groundBase;
 }
 
 
 function game_loop() {
-    oldPos = pos;
-    //console.log(pos);
+    oldplayer = player;
+    //console.log(player);
     //console.log(objects[0]);
-    updatePosition();
+    updateplayerition();
     if(checkCollision()){
         //console.log(dir);
-        pos = oldPos;
+       // player = oldplayer;
         //this.requestAnimationFrame(game_loop);
 
     }
@@ -225,17 +176,17 @@ function game_loop() {
         render();
         ++rendered;
     }
-    if(pos.x != last_pos.x || pos.y != last_pos.y){
-        if(pos.x + 64 > canvas.width / 2 ){
+    if(player.position.x != last_player.x || player.position.y != last_player.y){
+        if(player.position.x + player.width > canvas.width / 2 ){
             backgroundX -= 3;
-            pos.x = canvas.width / 2 - 64; 
+            player.position.x = canvas.width / 2 - player.width; 
         }
-        else if(pos.x + 64 < 64){
-            pos.x = 0;
+        else if(player.position.x + player.width < player.width){
+            player.position.x = 0;
         }
         render();
-        last_pos.x = pos.x;
-        last_pos.y = pos.y;
+        last_player.x = player.position.x;
+        last_player.y = player.position.y;
         rendered = 3;
     }
     else{
@@ -249,15 +200,15 @@ function game_loop() {
 }
 
 
-function updatePosition() {
-    if (pos.y < groundBase) {
+function updateplayerition() {
+    if (player.position.y < groundBase) {
         animation_stage = 0;
         inAir = true;
         gravity.add(new Vector2(0, 0.01));
         dir.add(gravity);
-        pos.add(dir);
+        player.position.add(dir);
     }
-    if (pos.y > groundBase) {
+    if (player.position.y > groundBase) {
         reset();
         jump_land.play();
         double_jump = 0;
@@ -269,14 +220,14 @@ function updatePosition() {
         }
         ++animation_stage;
         dir.x = Math.abs(dir.x);
-        pos.add(dir);
+        player.position.add(dir);
     }
     if (left === true && right === false) {
         if (dir.x === 0) {
             dir.x = -1;
         }
         dir.x = - Math.abs(dir.x);
-        pos.add(dir);
+        player.position.add(dir);
     }
     if (double_jump < 9) {
         if (space && left === false && right === false) {
@@ -284,18 +235,18 @@ function updatePosition() {
             dir.y = - 1;
             dir.x = 0;
             velocity.add(new Vector2(0, -0.1));
-            oldPos = pos;
+            oldplayer = player;
             dir.add(velocity);
             dir.mul(4.3);
-            pos.add(dir);
+            player.position.add(dir);
         }
         if (space && (left === true || right === true)) {
             ++double_jump;
             dir.y = - 1;
             dir.x = 0;
-            oldPos = pos;
+            oldplayer = player;
             dir.mul(5);
-            pos.add(dir);
+            player.position.add(dir);
            
         }
     }
@@ -305,7 +256,7 @@ function updatePosition() {
 function checkCollision(){
     let response = false;
     for(let i = 0; i < objects.length; ++i){
-        if (getRight(pos) > getLeft(objects[i]) + backgroundX + 15  && getRight(pos) < getRight(objects[i]) + backgroundX + 15 && getTop(pos) < getBottom(objects[i]) && getBottom(pos) > getTop(objects[i]) && groundBase === defaultGroundX) {
+        if (getRight(player) > getLeft(objects[i]) + backgroundX + 15  && getRight(player) < getRight(objects[i]) + backgroundX + 15 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i]) && groundBase === defaultGroundX) {
             //console.log("LEFT");
             //inAir = false;
             dir.x = 0;
@@ -313,7 +264,7 @@ function checkCollision(){
             rightCollision = true;
             response = true;
         }
-        if (getTop(pos) < getTop(objects[i]) && getBottom(pos) > getTop(objects[i]) && getLeft(pos) > getLeft(objects[i]) + backgroundX - 42 && getRight(pos) < getRight(objects[i]) + (backgroundX  + 42)) {
+        if (getTop(player) < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && getLeft(player) > getLeft(objects[i]) + backgroundX - 42 && getRight(player) < getRight(objects[i]) + (backgroundX  + 42)) {
            // console.log("TOP");
             //inAir = false;
             groundBase = getTop(objects[i]) - 63;
@@ -323,15 +274,15 @@ function checkCollision(){
             response = true;
 
         }
-        if (getBottom(pos) > getBottom(objects[i]) && getTop(pos) < getBottom(objects[i]) && getLeft(pos) > getLeft(objects[i]) + backgroundX  - spriteSize  && getRight(pos) < getRight(objects[i]) + (backgroundX  + spriteSize)) {
+        if (getBottom(player) > getBottom(objects[i]) && getTop(player) < getBottom(objects[i]) && getLeft(player) > getLeft(objects[i]) + backgroundX  - spriteSize  && getRight(player) < getRight(objects[i]) + (backgroundX  + spriteSize)) {
             //console.log("BOTTOM");
             //groundBase = 595;
              //dir.x = 0;
              dir.y = 1.5;
              response = true;
         }
-        if (getLeft(pos) < getRight(objects[i]) + backgroundX   && getLeft(pos) > getLeft(objects[i]) + backgroundX  && getTop(pos) < getBottom(objects[i]) && getBottom(pos) > getTop(objects[i]) && groundBase === defaultGroundX) {
-            console.log("LEFT");
+        if (getLeft(player) < getRight(objects[i]) + backgroundX   && getLeft(player) > getLeft(objects[i]) + backgroundX  && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i]) && groundBase === defaultGroundX) {
+            //console.log("LEFT");
             //inAir = false;
             dir.x = 0;
             left = false;
