@@ -1,5 +1,5 @@
 body {
-    background-color: rgb(173, 169, 169);
+    background-color: tan;
     margin: 0%;
     height: 100%;
 }
@@ -12,6 +12,9 @@ body {
     display: block;
     opacity: 1;
     transition: opacity 1s;
+    background-image: url('textures/mario.gif');
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 #menuCanvas.fade{
@@ -29,10 +32,13 @@ header{
     margin: 0%;
     padding-left: 40%;
     padding-right: 40%;
+    padding-top: 4%;
+    font-weight: 500;
+    font-size: 5vh;
 }
 
 .menuTitle {
-    padding-top: 20vh;
+    padding-top: 10vh;
     text-align: center;
     color: rgb(240, 106, 28);
     font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -54,26 +60,26 @@ nav ul{
 }
 
 nav ul li {
-    border-bottom: 0.25vh blueviolet solid;
+    border-bottom: 0.25vh black solid;
     padding: 5%;
     width: 90%;
 }
 
 nav ul li:first-child{
-    border-top: 0.25vh blueviolet solid;
+    border-top: 0.25vh black solid;
 }
 
 .menuButtonLink{
     text-decoration: none;
-    color: royalblue;
+    color: white;
 }
 
 .menuButtonLink:hover{
-    color:green;
+    color:darkgray;
 }
 
 .menuButtonLink:active{
-    color:darkolivegreen;
+    color:darkslategray;
 }
 
 
@@ -82,7 +88,7 @@ nav ul li:first-child{
 #chooseCaracterCanvas {
     height: 90vh;
     width: 90%;
-    background-color: bisque;
+    background-color: tan;
     padding: 5%;
     display: none;
     opacity: 0;
@@ -129,16 +135,6 @@ nav ul li:first-child{
 
 #gameCanvas.fade{
     opacity: 1;
-}
-
-canvas {
-    background-color: burlywood;
-    display: block;
-    margin: 0 auto;
-    padding: 1%;
-    margin-top: 7.5%;
-    width: 90vw;
-    height: 45vw;
 }
 
 /* -------------------------------------------------------------------- SCREEN MEDIA -- */
