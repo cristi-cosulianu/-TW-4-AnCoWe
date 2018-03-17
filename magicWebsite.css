@@ -15,10 +15,7 @@ body {
     background-image: url('textures/mario.gif');
     background-size: cover;
     background-repeat: no-repeat;
-}
-
-#menuCanvas.fade{
-    opacity: 0;
+    background-position: center; 
 }
 
 header{
@@ -26,24 +23,28 @@ header{
     height: 20vh;
 }
 
-.menu{
-    max-width: 20%;
-    height: 60vh;
-    margin: 0%;
-    padding-left: 40%;
-    padding-right: 40%;
-    padding-top: 4%;
-    font-weight: 500;
-    font-size: 5vh;
+#menuCanvas.fade{
+    opacity: 0;
 }
 
 .menuTitle {
-    padding-top: 10vh;
+    padding-top: 5vh;
     text-align: center;
     color: rgb(240, 106, 28);
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 15vh;
+    font-size: 18vh;
     font-weight: bold;  
+}
+
+.menu{
+    max-width: 25%;
+    height: 60vh;
+    margin: 0%;
+    padding-left: 37.5%;
+    padding-right: 37.5%;
+    padding-top: 4%;
+    font-weight: 500;
+    font-size: 3vh;
 }
 
 nav {
@@ -51,7 +52,6 @@ nav {
     text-align: center;
     font-family: Courier New, Courier, monospace;
     color: red;
-    font-size: 3vh;
 }
 
 nav ul{
@@ -60,13 +60,14 @@ nav ul{
 }
 
 nav ul li {
+    background-color: rgba(122,122,122,0.5);    /* 70% opaque red */  
     border-bottom: 0.25vh black solid;
+    border-top: 0.25vh black solid;
+
+    margin-top: 5%;
+    margin-bottom: 5%;
     padding: 5%;
     width: 90%;
-}
-
-nav ul li:first-child{
-    border-top: 0.25vh black solid;
 }
 
 .menuButtonLink{
@@ -124,10 +125,10 @@ nav ul li:first-child{
 
 #gameCanvas{
     background-color: coral;
-    height: 100vh;
+    height: 100%;
     width: 100%;
     display: block;
-    position: absolute;
+    position: relative;
     display: none;
     opacity: 0;
     transition: opacity 1s;
@@ -137,4 +138,58 @@ nav ul li:first-child{
     opacity: 1;
 }
 
+canvas{
+    position: absolute;
+}
+
 /* -------------------------------------------------------------------- SCREEN MEDIA -- */
+
+@media only screen and (min-width: 768px) and (max-width: 979px) {
+    
+    .menuTitle{
+        font-size: 15vh;
+    }
+
+    .menu{
+        font-size: 2.75vh;
+        max-width: 30%;
+        padding-right: 35%;
+        padding-left: 35%;
+        
+    }
+
+
+
+}
+
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+
+    .menuTitle{
+        font-size: 12vh;
+    }
+
+    .menu{
+        font-size: 2.25vh;
+        max-width: 35%;
+        padding-right: 32.5%;
+        padding-left: 32.5%;
+    }
+
+ 
+}
+
+@media only screen and (max-width: 479px) {
+
+    .menuTitle{
+        font-size: 9vh;
+    }
+
+    .menu{
+        font-size: 2vh;
+        max-width: 40%;
+        padding-right: 30%;
+        padding-left: 30%;
+    }
+
+ 
+}
