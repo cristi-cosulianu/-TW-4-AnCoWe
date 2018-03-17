@@ -1,4 +1,3 @@
-
 class Vector2 {
     constructor(x, y) {
         this.x = x;
@@ -38,16 +37,27 @@ class Vector2 {
 
 }
 
-class GameObject{
-    constructor(type , x , y , height , width){
+class GameObject {
+    constructor(type, x, y, width, height) {
         this.type = type;
-        this.position = new Vector2(x ,y);
+        this.position = new Vector2(x, y);
         this.width = width;
         this.height = height;
     }
 }
 
-function getBottom(object) {return object.position.y + object.height;}
-function getTop(object) {return object.position.y;}
-function getRight(object) {return object.position.x + object.width;}
-function getLeft(object) {return object.position.x;}
+function getBottom(object) {
+    return object.position.y + object.height;
+}
+
+function getTop(object) {
+    return object.position.y;
+}
+
+function getRight(object) {
+    return object.position.x + object.width;
+}
+
+function getLeft(object) {
+    return object.position.x;
+}
