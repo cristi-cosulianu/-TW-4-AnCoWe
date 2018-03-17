@@ -54,6 +54,14 @@ window.onload = () => {
     objects.push(new GameObject(ground, canvas.width / 2 + 264, canvas.height / 2 + 40, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 328, canvas.height / 2 + 0, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 392, canvas.height / 2 - 40, 64, 64));
+    objects.push(new GameObject(ground, canvas.width / 2 + 456, canvas.height / 2 - 40, 128, 64));
+    objects.push(new GameObject(ground, canvas.width / 2 + 584, canvas.height / 2 + 0, 64, 64));
+    objects.push(new GameObject(ground, canvas.width / 2 + 648, canvas.height / 2 + 40, 64, 64));
+    objects.push(new GameObject(ground, canvas.width / 2 + 712, canvas.height / 2 + 80, 64, 64));
+    objects.push(new GameObject(ground, canvas.width / 2 + 1200, canvas.height / 2 + 128, 128, 64));
+    objects.push(new GameObject(ground, canvas.width / 2 + 2000, canvas.height / 2, 64, 256));
+
+
     defaultGroundX = window.innerHeight - player.height - 64;
     groundBase = defaultGroundX;
     this.requestAnimationFrame(game_loop);
@@ -164,9 +172,13 @@ function game_loop() {
     oldplayer = player;
     updateplayerposition();
     if (checkCollision()) {
-        left = false;
-        right = false;
+        if (rightCollision) {
+            left = false;
 
+        }
+        if (leftCollision) {
+            right = false;
+        }
     } else {
         rightCollision = false;
         leftCollision = false;
@@ -199,10 +211,10 @@ function game_loop() {
 }
 
 function updateplayerposition() {
-    if (getLeft(objects[currentPlatformIndex]) + backgroundX - player.width * 3/4 > getLeft(player) || getRight(objects[currentPlatformIndex]) + backgroundX + player.width * 3/4 < getRight(player) || player.position.y < groundBase) {
+    if (getLeft(objects[currentPlatformIndex]) + backgroundX - player.width * 3 / 4 > getLeft(player) || getRight(objects[currentPlatformIndex]) + backgroundX + player.width * 3 / 4 < getRight(player) || player.position.y < groundBase) {
         onPlatform = false;
     }
-    if(getLeft(objects[currentPlatformIndex]) + backgroundX - player.width * 3/4 > getLeft(player) || getRight(objects[currentPlatformIndex]) + backgroundX + player.width < getRight(player)){
+    if (getLeft(objects[currentPlatformIndex]) + backgroundX - player.width * 3 / 4 > getLeft(player) || getRight(objects[currentPlatformIndex]) + backgroundX + player.width < getRight(player)) {
         groundBase = defaultGroundX;
     }
     if (player.position.y < groundBase && !onPlatform) {
@@ -260,7 +272,7 @@ function updateplayerposition() {
 function checkCollision() {
     let response = false;
     for (let i = 0; i < objects.length; ++i) {
-        if (getRight(player) > getLeft(objects[i]) + backgroundX + 15 && getRight(player) < getRight(objects[i]) + backgroundX + 15 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
+        if (getRight(player) > getLeft(objects[i]) + backgroundX + 10 && getRight(player) < getRight(objects[i]) + backgroundX + 10 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
             console.log("LEFT");
             //inAir = false;
             dir.x = 0;
