@@ -11,32 +11,29 @@ body {
     width: 100%;
     display: block;
     opacity: 1;
-    transition: opacity 1s;
+    transition: opacity 0.5s;
     background-image: url('textures/mario.gif');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center; 
 }
 
-header{
+#menuCanvas > header{
     width: 100%;
     height: 20vh;
+    padding-top: 5vh;
+    text-align: center;
+    color: rgb(240, 106, 28);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 18vh;
+    font-weight: bold; 
 }
 
 #menuCanvas.fade{
     opacity: 0;
 }
 
-.menuTitle {
-    padding-top: 5vh;
-    text-align: center;
-    color: rgb(240, 106, 28);
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 18vh;
-    font-weight: bold;  
-}
-
-.menu{
+.menuList{
     max-width: 25%;
     height: 60vh;
     margin: 0%;
@@ -90,20 +87,49 @@ nav ul li {
     height: 90vh;
     width: 90%;
     background-color: tan;
-    padding: 5%;
+    padding: 5vh 5%;
     display: none;
     opacity: 0;
-    transition: opacity 1s;
+    transition: opacity 0.5s;
 }
 
 #chooseCaracterCanvas.fade{
     opacity: 1;
 }
 
-.caractersTable{
-    position: relative  ;
+#chooseCaracterCanvas ul{
+    height: 10%;
     width: 100%;
-    height: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#chooseCaracterCanvas ul li{
+    text-align: center;
+    width: 48%;
+    display: inline-block;
+    color: cornflowerblue;
+    font-size: 6vh;
+    font-weight: bold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.caractersTable{
+    position: relative;
+    width: 48%;
+    height: 90%;
+    display: inline-block;
+    text-align: center;
+    overflow-y: auto;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: none;
+}
+::-webkit-scrollbar-thumb {
+    background: none;
 }
 
 .buttonGame{
@@ -112,7 +138,7 @@ nav ul li {
 
 .icon{
     position: relative;
-    height: 15vh;
+    height: 22.5vh;
     width: 15vh;
     margin: 2vh;
 }
@@ -131,7 +157,7 @@ nav ul li {
     position: relative;
     display: none;
     opacity: 0;
-    transition: opacity 1s;
+    transition: opacity 0.5s;
 }
 
 #gameCanvas.fade{
@@ -142,3 +168,63 @@ canvas{
     position: absolute;
 }
 
+/* -------------------------------------------------------------------- MEDIA SCREEN -- */
+
+
+@media only screen and (min-width: 768px) and (max-width: 979px) {
+    
+    #menuCanvas > header{
+        font-size: 15vh;
+    }
+
+    .menuList{
+        font-size: 2.75vh;
+        max-width: 30%;
+        padding-right: 35%;
+        padding-left: 35%;
+        
+    }
+
+    #chooseCaracterCanvas ul li{
+        font-size: 5vh;
+    }
+
+}
+
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+
+    #menuCanvas > header{
+        font-size: 12vh;
+    }
+
+    .menuList{
+        font-size: 2.25vh;
+        max-width: 35%;
+        padding-right: 32.5%;
+        padding-left: 32.5%;
+    }
+
+    #chooseCaracterCanvas ul li{
+        font-size: 5vh;
+    }
+
+}
+
+@media only screen and (max-width: 479px) {
+
+    #menuCanvas > header{
+        font-size: 9vh;
+    }
+
+    .menuList{
+        font-size: 2vh;
+        max-width: 40%;
+        padding-right: 30%;
+        padding-left: 30%;
+    }
+
+    #chooseCaracterCanvas ul li{
+        font-size: 4vh;
+    }
+
+}
