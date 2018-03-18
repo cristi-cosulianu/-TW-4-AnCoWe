@@ -172,11 +172,11 @@ function game_loop() {
     oldplayer = player;
     updateplayerposition();
     if (checkCollision()) {
+        player = oldplayer;
         if (rightCollision) {
             left = false;
-
         }
-        if (leftCollision) {
+        else if (leftCollision) {
             right = false;
         }
     } else {
@@ -272,7 +272,7 @@ function updateplayerposition() {
 function checkCollision() {
     let response = false;
     for (let i = 0; i < objects.length; ++i) {
-        if (getRight(player) > getLeft(objects[i]) + backgroundX + 10 && getRight(player) < getRight(objects[i]) + backgroundX + 10 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
+        if (getRight(player) > getLeft(objects[i]) + backgroundX + 10 && getRight(player) < getRight(objects[i]) + backgroundX + 10 && getTop(player) < getBottom(objects[i]) && getBottom(player) - 15 > getTop(objects[i])) {
             console.log("LEFT");
             //inAir = false;
             dir.x = 0;
@@ -292,11 +292,11 @@ function checkCollision() {
         }
         if (getBottom(player) > getBottom(objects[i]) && getTop(player) < getBottom(objects[i]) && getLeft(player) > getLeft(objects[i]) + backgroundX - player.width / 2 && getRight(player) < getRight(objects[i]) + backgroundX + player.width) {
             console.log("BOTTOM");
-            dir.y = 2;
+            dir.y = 1;
             bottomCollision = true;
             response = true;
         }
-        if (getLeft(player) < getRight(objects[i]) + backgroundX + 5 && getLeft(player) > getLeft(objects[i]) + backgroundX + 5 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
+        if (getLeft(player) < getRight(objects[i]) + backgroundX + 5 && getLeft(player) > getLeft(objects[i]) + backgroundX + 5 && getTop(player) < getBottom(objects[i]) && getBottom(player) - 15 > getTop(objects[i])) {
             console.log("RIGHT");
             //inAir = false;
             rightCollision = true;
