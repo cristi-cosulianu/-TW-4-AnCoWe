@@ -1,26 +1,6 @@
-function setDisplayNone(firstId,secondId){
-
-    var transitionTime = 500;
-
-    fade(firstId);
-    
-    setTimeout(function(){
-        document.getElementById(firstId).style.display="none";
-        
-        if(secondId == "chooseCaracterCanvas")
-            document.getElementById(secondId).style.display="inline-block";
-        else
-            document.getElementById(secondId).style.display="block";
-
-        setTimeout(function(){
-            fade(secondId);
-        }, transitionTime);
-    }, transitionTime);
-    
-
-}
-
-function fade(element) {
-    var slideSource = document.getElementById(element);
-    slideSource.classList.toggle('fade');
+function sceneTransition(firstId, secondId) {
+    document.getElementById(firstId).classList.remove('visible');
+    document.getElementById(firstId).classList.add('invisible');
+    document.getElementById(secondId).classList.remove('invisible');
+    document.getElementById(secondId).classList.add('visible');
 }
