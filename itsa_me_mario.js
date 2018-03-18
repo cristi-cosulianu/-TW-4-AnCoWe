@@ -49,6 +49,17 @@ window.onload = () => {
     velocity = new Vector2(0, -0.2);
     gravity = new Vector2(0, 0.35);
     player = new GameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
+    loadLevel();
+    this.requestAnimationFrame(game_loop);
+};
+
+window.onresize = () => {
+    defaultGroundX = window.innerHeight - player.height - 64;
+    groundBase = defaultGroundX;
+    render();
+};
+
+function loadLevel() {
     objects.push(new GameObject(ground, canvas.width / 2, canvas.height / 2 + 200, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2, canvas.height / 2 + 264, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 200, canvas.height / 2 + 80, 64, 64));
@@ -60,15 +71,21 @@ window.onload = () => {
     objects.push(new GameObject(ground, canvas.width / 2 + 648, canvas.height / 2 + 40, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 712, canvas.height / 2 + 80, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 1200, canvas.height / 2 + 128, 128, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 2000, canvas.height / 2, 64, 256));
-    this.requestAnimationFrame(game_loop);
-};
+    objects.push(new GameObject(ground, canvas.width / 2 + 1232, canvas.height / 2 - 200, 64, 64));
+    objects.push(new GameObject(ground, canvas.width / 2 + 1500, canvas.height / 2, 128, 64));
+    objects.push(new GameObject(ground, canvas.width / 2 + 1628, canvas.height / 2, 128, 64));
+    objects.push(new GameObject(ground, canvas.width / 2 + 1700, canvas.height / 2 - 160, 128, 64));
+    objects.push(new GameObject(ground, canvas.width / 2 + 1828, canvas.height / 2 - 160, 128, 64));
+    objects.push(new GameObject(ground, canvas.width / 2 + 1956, canvas.height / 2 - 160, 128, 64));
 
-window.onresize = () => {
-    defaultGroundX = window.innerHeight - player.height - 64;
-    groundBase = defaultGroundX;
-    render();
-};
+    objects.push(new GameObject(ground, canvas.width / 2 + 2200, canvas.height / 2 - 160, 128, 64));
+    objects.push(new GameObject(ground, canvas.width / 2 + 2264, canvas.height / 2 - 160, 128, 64));
+    objects.push(new GameObject(ground, canvas.width / 2 + 2756, canvas.height / 2, 64, 64));
+    objects.push(new GameObject(ground, canvas.width / 2 + 3056, canvas.height / 2, 64, 64));
+    objects.push(new GameObject(ground, canvas.width / 2 + 3356, canvas.height / 2, 64, 64));
+    objects.push(new GameObject(ground, canvas.width / 2 + 3056, canvas.height / 2 - 250, 64, 64));
+    objects.reverse();
+}
 
 function loadAudio() {
     jump_sound = new Audio();
@@ -146,6 +163,10 @@ function render() {
 
 function drawObjects() {
     for (let i = 0; i < objects.length; ++i) {
+        if (getRight(objects[i]) + backgroundX < 0) {
+            objects.pop();
+            continue;
+        }
         context.drawImage(objects[i].type, objects[i].position.x + backgroundX, objects[i].position.y, objects[i].width, objects[i].height);
     }
 }
@@ -206,11 +227,13 @@ function game_loop() {
 }
 
 function updateplayerposition() {
-    if (getLeft(objects[currentPlatformIndex]) + backgroundX - player.width * 3 / 4 > getLeft(player) || getRight(objects[currentPlatformIndex]) + backgroundX + player.width * 3 / 4 < getRight(player) || player.position.y < groundBase) {
-        onPlatform = false;
-    }
-    if (getLeft(objects[currentPlatformIndex]) + backgroundX - player.width * 3 / 4 > getLeft(player) || getRight(objects[currentPlatformIndex]) + backgroundX + player.width < getRight(player)) {
-        groundBase = defaultGroundX;
+    if (objects.length > 0) {
+        if (getLeft(objects[currentPlatformIndex]) + backgroundX - player.width * 3 / 4 > getLeft(player) || getRight(objects[currentPlatformIndex]) + backgroundX + player.width * 3 / 4 < getRight(player) || player.position.y < groundBase) {
+            onPlatform = false;
+        }
+        if (getLeft(objects[currentPlatformIndex]) + backgroundX - player.width * 3 / 4 > getLeft(player) || getRight(objects[currentPlatformIndex]) + backgroundX + player.width < getRight(player)) {
+            groundBase = defaultGroundX;
+        }
     }
     if (player.position.y < groundBase && !onPlatform) {
         animation_stage = 0;
@@ -218,6 +241,7 @@ function updateplayerposition() {
         gravity.add(new Vector2(0, 0.01));
         dir.add(gravity);
         player.position.add(dir);
+        currentPlatformIndex = 0;
     }
     if (player.position.y > groundBase) {
         reset();
