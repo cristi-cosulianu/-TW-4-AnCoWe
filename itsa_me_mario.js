@@ -82,9 +82,15 @@ function loadLevel() {
     objects.push(new GameObject(ground, canvas.width / 2 + 2264, canvas.height / 2 - 160, 128, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 2756, canvas.height / 2, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 3056, canvas.height / 2, 64, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 3356, canvas.height / 2, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 3056, canvas.height / 2 - 250, 64, 64));
-    objects.reverse();
+    objects.push(new GameObject(ground, canvas.width / 2 + 3356, canvas.height / 2, 64, 64));
+    objects.sort((a, b) => {
+        if (a.position.x > b.position.x)
+            return -1;
+        if (a.position.x < b.position.x)
+            return 1;
+        return 0;
+    });
 }
 
 function loadAudio() {
@@ -307,7 +313,7 @@ function checkCollision() {
             inAir = false;
             response = true;
         }
-        if (getBottom(player) > getBottom(objects[i]) && getTop(player) < getBottom(objects[i]) && getLeft(player) > getLeft(objects[i]) + backgroundX - player.width / 2 && getRight(player) < getRight(objects[i]) + backgroundX + player.width) {
+        if (getBottom(player) > getBottom(objects[i]) && getTop(player) < getBottom(objects[i]) && getLeft(player) > getLeft(objects[i]) + backgroundX - player.width / 2 - 20 && getRight(player) < getRight(objects[i]) + backgroundX + player.width) {
             console.log("BOTTOM");
             dir.y = 1;
             bottomCollision = true;
