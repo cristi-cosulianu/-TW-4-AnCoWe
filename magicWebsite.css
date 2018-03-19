@@ -163,11 +163,16 @@ nav ul li {
 
 .caractersTable {
     position: relative;
-    width: 48%;
+    width: 46%;
     height: 90%;
-    display: inline-block;
+    padding: 0% 2%;
     text-align: center;
     overflow-y: auto;
+    float: left;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 
 .caractersTable a {
@@ -177,6 +182,10 @@ nav ul li {
     margin: 2vh;
     float: left;
     box-shadow: 5px 5px 10px #000000;
+}
+
+.caractersTable a:hover {
+    border: 5px solid #000000;
 }
 
 ::-webkit-scrollbar {
