@@ -8,24 +8,58 @@ body {
 }
 
 .fullscreen {
+    display: block;
+    position: absolute;
     height: 100%;
     width: 100%;
 }
 
 .visible {
-    position: absolute;
-    display: block;
     top: 0;
-    transform: rotate(0deg);
-    transition: top 1.5s 2s, transform 1.5s 2s;
+    transition: top 0s 0.5s;
 }
 
 .invisible {
-    position: absolute;
-    display: block;
     top: 100%;
-    transform: rotate(360deg);
-    transition: top 1.5s, transform 1.5s;
+    transition: top 0s 0.5s;
+}
+
+@keyframes leftCurtain {
+    0% { right: 100%; }
+    50% { right: 50%; }
+    100% { right: 100%; }
+}
+
+@keyframes rightCurtain {
+    0% { left: 100%; }
+    50% { left: 50%; }
+    100% { left: 100%; }
+}
+
+.leftCurtain {
+    animation-name: leftCurtain;
+    animation-duration: 1s;
+}
+
+.rightCurtain {
+    animation-name: rightCurtain;
+    animation-duration: 1s;
+}
+
+#leftDiv, #rightDiv {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: #000000;
+    z-index: 99;
+}
+
+#leftDiv {
+    right: 100%;
+}
+
+#rightDiv {
+    left: 100%;
 }
 
 /* --------------------------------------------------------------------- MENU CANVAS -- */
