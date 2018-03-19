@@ -4,7 +4,7 @@ var velocity;
 var gravity;
 var context;
 var canvas;
-var ground;
+var ground, pipe;
 var something;
 var last_player = {
     x: -100,
@@ -51,16 +51,6 @@ window.onload = () => {
     player = new GameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
     loadLevel();
     this.requestAnimationFrame(game_loop);
-    
-    /* Cristi's code */
-    document.getElementById("leftDiv").addEventListener("animationend", function() {
-        document.getElementById("leftDiv").classList.remove('leftCurtain');
-    });
-
-
-    document.getElementById("rightDiv").addEventListener("animationend", function() {
-        document.getElementById("rightDiv").classList.remove('rightCurtain');
-    });
 };
 
 window.onresize = () => {
@@ -70,9 +60,8 @@ window.onresize = () => {
 };
 
 function loadLevel() {
-    objects.push(new GameObject(ground, canvas.width / 2, canvas.height / 2 + 200, 64, 64));
-    objects.push(new GameObject(ground, canvas.width / 2, canvas.height / 2 + 264, 64, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 200, canvas.height / 2 + 80, 64, 64));
+    objects.push(new GameObject(pipe, canvas.width / 2, canvas.height / 2 + 264, 64, 128));
+    objects.push(new GameObject(ground, canvas.width / 2 + 200, canvas.height / 2 + 80, 32, 32));
     objects.push(new GameObject(ground, canvas.width / 2 + 264, canvas.height / 2 + 40, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 328, canvas.height / 2 + 0, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 392, canvas.height / 2 - 40, 64, 64));
@@ -94,6 +83,7 @@ function loadLevel() {
     objects.push(new GameObject(ground, canvas.width / 2 + 3056, canvas.height / 2, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 3056, canvas.height / 2 - 250, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 3356, canvas.height / 2, 64, 64));
+    objects.push(new GameObject(pipe, canvas.width / 2 + 3000, canvas.height / 2 + 264, 64, 128));
     objects.sort((a, b) => {
         if (a.position.x > b.position.x)
             return -1;
@@ -124,12 +114,14 @@ function loadTextures() {
     walk_4 = new Image();
     background = new Image();
     ground = new Image();
+    pipe = new Image();
     ground.src = "textures/ground.png";
     walk_1.src = "textures/Hat_man/Walk/Hat_man1.png";
     walk_2.src = "textures/Hat_man/Walk/Hat_man2.png";
     walk_3.src = "textures/Hat_man/Walk/Hat_man3.png";
     walk_4.src = "textures/Hat_man/Walk/Hat_man4.png";
     background.src = "textures/background.png";
+    pipe.src = "textures/pipe.png";
 
 }
 
@@ -205,7 +197,7 @@ function game_loop() {
     oldplayer = player;
     updateplayerposition();
     if (checkCollision()) {
-        player = oldplayer;
+        //player = oldplayer;
         if (rightCollision) {
             left = false;
         } else if (leftCollision) {
@@ -250,6 +242,12 @@ function updateplayerposition() {
         if (getLeft(objects[currentPlatformIndex]) + backgroundX - player.width * 3 / 4 > getLeft(player) || getRight(objects[currentPlatformIndex]) + backgroundX + player.width < getRight(player)) {
             groundBase = defaultGroundX;
         }
+    } else {
+        alert("I think you won");
+        background_sound.pause();
+        document.removeEventListener("keydown", keyPressed, false);
+        document.removeEventListener("keyup", keyReleased, false);
+        exit;
     }
     if (player.position.y < groundBase && !onPlatform) {
         animation_stage = 0;
