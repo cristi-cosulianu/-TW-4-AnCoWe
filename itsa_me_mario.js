@@ -312,7 +312,7 @@ function checkCollision() {
             leftCollision = true;
             response = true;
         }
-        if (getTop(player) + player.height / 2 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && getLeft(player) >= getLeft(objects[i]) + backgroundX - player.width * 3 / 4 && getRight(player) <= getRight(objects[i]) + backgroundX + player.width * 3 / 4) {
+        if (getTop(player) + player.height / 2 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && (getRight(player) > getLeft(objects[i]) + backgroundX  && getLeft(player) < getRight(objects[i]) + backgroundX  || getLeft(player) < getRight(objects[i]) + backgroundX  && getRight(player) > getRight(objects[i]) + backgroundX)) {
             console.log("TOP");
             groundBase = getTop(objects[i]) - player.height;
             topCollision = true;
