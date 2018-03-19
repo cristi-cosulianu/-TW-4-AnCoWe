@@ -51,6 +51,16 @@ window.onload = () => {
     player = new GameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
     loadLevel();
     this.requestAnimationFrame(game_loop);
+    
+    /* Cristi's code */
+    document.getElementById("leftDiv").addEventListener("animationend", function() {
+        document.getElementById("leftDiv").classList.remove('leftCurtain');
+    });
+
+
+    document.getElementById("rightDiv").addEventListener("animationend", function() {
+        document.getElementById("rightDiv").classList.remove('rightCurtain');
+    });
 };
 
 window.onresize = () => {
