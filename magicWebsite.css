@@ -17,7 +17,7 @@ body {
     display: block;
     top: 0;
     transform: rotate(0deg);
-    transition: top 0.5s 0.75s, transform 0.5s 0.75s;
+    transition: top 1.5s 2s, transform 1.5s 2s;
 }
 
 .invisible {
@@ -25,7 +25,7 @@ body {
     display: block;
     top: 100%;
     transform: rotate(360deg);
-    transition: top 0.5s, transform 0.5s;
+    transition: top 1.5s, transform 1.5s;
 }
 
 /* --------------------------------------------------------------------- MENU CANVAS -- */
