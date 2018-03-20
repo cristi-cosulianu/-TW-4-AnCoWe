@@ -194,6 +194,7 @@ function reset() {
 }
 
 function game_loop() {
+    console.log(gravity);
     oldplayer = player;
     updateplayerposition();
     if (checkCollision()) {
@@ -231,7 +232,12 @@ function game_loop() {
             ++rendered;
         }
     }
-    this.requestAnimationFrame(game_loop);
+    if (objects.length > 0) {
+        this.requestAnimationFrame(game_loop);
+    } else {
+        alert("I think you won");
+
+    }
 }
 
 function updateplayerposition() {
@@ -242,12 +248,6 @@ function updateplayerposition() {
         if (getLeft(objects[currentPlatformIndex]) + backgroundX - player.width * 3 / 4 > getLeft(player) || getRight(objects[currentPlatformIndex]) + backgroundX + player.width < getRight(player)) {
             groundBase = defaultGroundX;
         }
-    } else {
-        alert("I think you won");
-        background_sound.pause();
-        document.removeEventListener("keydown", keyPressed, false);
-        document.removeEventListener("keyup", keyReleased, false);
-        exit;
     }
     if (player.position.y < groundBase && !onPlatform) {
         animation_stage = 0;
@@ -305,15 +305,8 @@ function updateplayerposition() {
 function checkCollision() {
     let response = false;
     for (let i = 0; i < objects.length; ++i) {
-        if (getRight(player) > getLeft(objects[i]) + backgroundX + 10 && getRight(player) < getRight(objects[i]) + backgroundX + 10 && getTop(player) < getBottom(objects[i]) && getBottom(player) - 15 > getTop(objects[i])) {
-            console.log("LEFT");
-            dir.x = 0;
-            velocity.x = 0;
-            leftCollision = true;
-            response = true;
-        }
         if (getTop(player) + player.height / 2 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX && getLeft(player) < getRight(objects[i]) + backgroundX) {
-            console.log("TOP");
+            //console.log("TOP");
             groundBase = getTop(objects[i]) - player.height;
             topCollision = true;
             onPlatform = true;
@@ -323,13 +316,29 @@ function checkCollision() {
         }
         if (getBottom(player) > getBottom(objects[i]) && getTop(player) < getBottom(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX + 10 && getLeft(player) < getRight(objects[i]) + backgroundX) {
             console.log("BOTTOM");
-            dir.y = 1;
+            if (!rightCollision && !leftCollision) {
+                dir.x = 0;
+                dir.y = 1;
+            }
             bottomCollision = true;
+            response = true;
+        }
+        if (getRight(player) > getLeft(objects[i]) + backgroundX + 10 && getRight(player) < getRight(objects[i]) + backgroundX + 10 && getTop(player) < getBottom(objects[i]) && getBottom(player) - 15 > getTop(objects[i])) {
+            console.log("LEFT");
+            console.log(dir.x);
+            dir.x = 0;
+            velocity.x = 0;
+            if (!bottomCollision) {
+                leftCollision = true;
+            }
             response = true;
         }
         if (getLeft(player) < getRight(objects[i]) + backgroundX + 5 && getLeft(player) > getLeft(objects[i]) + backgroundX + 5 && getTop(player) < getBottom(objects[i]) && getBottom(player) - 15 > getTop(objects[i])) {
             console.log("RIGHT");
-            rightCollision = true;
+            if (!bottomCollision) {
+                rightCollision = true;
+            }
+            console.log(dir.y);
             dir.x = 0;
             velocity.x = 0;
             response = true;
