@@ -24,6 +24,16 @@ body {
     transition: top 0s 0.5s;
 }
 
+.toTopTransition {
+    top: 0;
+    transition: top 1s 1s;
+}
+
+.toBotTransition {
+    top: 100%;
+    transition: top 1s 0s;
+}
+
 @keyframes leftCurtain {
     0% { right: 100%; }
     50% { right: 50%; }
@@ -86,7 +96,7 @@ body {
     opacity: 0;
 }
 
-.menu{
+.menu {
     max-width: 25%;
     height: 60vh;
     margin: 0%;
@@ -104,7 +114,7 @@ nav {
     color: red;
 }
 
-nav ul{
+nav ul {
     list-style-type: none;
     padding: 0%;
 }
@@ -116,8 +126,15 @@ nav ul li {
 
     margin-top: 5%;
     margin-bottom: 5%;
-    padding: 5%;
-    width: 90%;
+    height: 7vh;
+}
+
+nav ul li a {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
 }
 
 .menuButtonLink{
@@ -134,7 +151,7 @@ nav ul li {
 }
 
 
-/* ---------------------------------------------------------- CHOSE CARACTER CANVAS -- */
+/* ---------------------------------------------------------- CHOOSE CARACTER CANVAS -- */
 
 #chooseCaracterCanvas {
     height: 90vh;
