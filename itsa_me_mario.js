@@ -51,16 +51,6 @@ window.onload = () => {
     player = new GameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
     loadLevel();
     this.requestAnimationFrame(game_loop);
-    
-    /* Cristi's code */
-    document.getElementById("leftDiv").addEventListener("animationend", function() {
-       document.getElementById("leftDiv").classList.remove('leftCurtain'); 
-    });
-    
-    document.getElementById("rightDiv").addEventListener("animationend", function() {
-       document.getElementById("rightDiv").classList.remove('rightCurtain');
-    });
-    /* End Cristi's code */
 };
 
 window.onresize = () => {
@@ -204,7 +194,6 @@ function reset() {
 }
 
 function game_loop() {
-    console.log(gravity);
     oldplayer = player;
     updateplayerposition();
     if (checkCollision()) {
@@ -316,7 +305,7 @@ function checkCollision() {
     let response = false;
     for (let i = 0; i < objects.length; ++i) {
         if (getTop(player) + player.height / 2 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX && getLeft(player) < getRight(objects[i]) + backgroundX) {
-            //console.log("TOP");
+            console.log("TOP");
             groundBase = getTop(objects[i]) - player.height;
             topCollision = true;
             onPlatform = true;
@@ -333,7 +322,7 @@ function checkCollision() {
             bottomCollision = true;
             response = true;
         }
-        if (getRight(player) > getLeft(objects[i]) + backgroundX + 10 && getRight(player) < getRight(objects[i]) + backgroundX + 10 && getTop(player) < getBottom(objects[i]) && getBottom(player) - 15 > getTop(objects[i])) {
+        if (getRight(player) > getLeft(objects[i]) + backgroundX + 5 && getRight(player) < getRight(objects[i]) + backgroundX + 5 && getTop(player) < getBottom(objects[i]) && getBottom(player) - 10 > getTop(objects[i])) {
             console.log("LEFT");
             console.log(dir.x);
             dir.x = 0;
