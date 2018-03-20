@@ -38,26 +38,26 @@ var defaultGroundX = 606;
 function addCharacter(container, name) {
     var url = "https://gateway.marvel.com/v1/public/characters?apikey=15b0df9dd78ed4c3d58e10b0c3d36a57&hash=758e48b905e396fca02324d24f1f7b06&ts=432&name=" + name;
     var xhttp = new XMLHttpRequest();
-    
-    xhttp.onreadystatechange = function() {
+
+    xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             var thumbnail = JSON.parse(this.responseText).data.results[0].thumbnail;
             var imgUrl = thumbnail.path + '/portrait_xlarge.' + thumbnail.extension;
-            
+
             var anchor = document.createElement("a");
             anchor.setAttribute("class", "buttonGame");
             anchor.setAttribute("href", "#gameCanvas");
             anchor.setAttribute("onclick", "sceneTransition(\'chooseCaracterCanvas\',\'gameCanvas\')");
-            
+
             var image = document.createElement("img");
             image.setAttribute("src", imgUrl);
             image.setAttribute("class", "icon");
             image.setAttribute("alt", name);
-            
+
             anchor.appendChild(image);
-            container.appendChild(anchor);            
+            container.appendChild(anchor);
         }
-      };
+    };
     xhttp.open("GET", url, true);
     xhttp.send();
 }
@@ -76,28 +76,30 @@ window.onload = () => {
     velocity = new Vector2(0, -0.2);
     gravity = new Vector2(0, 0.35);
     player = new GameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
+    defaultGroundX = window.innerHeight - player.height - 64;
+    groundBase = defaultGroundX;
     loadLevel();
     this.requestAnimationFrame(game_loop);
-    
+
     /* Cristi's code */
-    document.getElementById("leftDiv").addEventListener("animationend", function() {
-       document.getElementById("leftDiv").classList.remove('leftCurtain'); 
+    document.getElementById("leftDiv").addEventListener("animationend", function () {
+        document.getElementById("leftDiv").classList.remove('leftCurtain');
     });
-    
-    document.getElementById("rightDiv").addEventListener("animationend", function() {
-       document.getElementById("rightDiv").classList.remove('rightCurtain');
+
+    document.getElementById("rightDiv").addEventListener("animationend", function () {
+        document.getElementById("rightDiv").classList.remove('rightCurtain');
     });
-    
-    var heroes = ["Spider-Man", "3-D Man", "Adam Warlock", "A-Bomb (HAS)"];
-    var villains = ["Spider-Man", "3-D Man", "Adam Warlock", "Aegis (Trey Rollins)"];
+
+    var heroes = ["Spider-Man", "Wolverine", "Daredevil", "Captain America", "Iron Man", "Thor", "Black Widow", "Captain Marvel", "Hulk"];
+    var villains = ["Loki", "Red Skull", "Ultron", "Magneto", "Dr. Doom", "Thanos", "Black Cat", "Galactus", "Apocalypse"];
     var heroesDiv = document.getElementById("heroes");
     var villainsDiv = document.getElementById("villains");
-    
-    for(var i = 0; i < heroes.length; ++i) {
+
+    for (var i = 0; i < heroes.length; ++i) {
         addCharacter(heroesDiv, heroes[i]);
     }
-    
-    for(var i = 0; i < villains.length; ++i) {
+
+    for (var i = 0; i < villains.length; ++i) {
         addCharacter(villainsDiv, villains[i]);
     }
     /* End Cristi's code */
@@ -365,10 +367,8 @@ function checkCollision() {
         }
         if (getBottom(player) > getBottom(objects[i]) && getTop(player) < getBottom(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX + 10 && getLeft(player) < getRight(objects[i]) + backgroundX) {
             console.log("BOTTOM");
-            if (!rightCollision && !leftCollision) {
-                dir.x = 0;
-                dir.y = 1;
-            }
+            dir.x = 0;
+            dir.y = 1;
             bottomCollision = true;
             response = true;
         }
@@ -377,16 +377,12 @@ function checkCollision() {
             console.log(dir.x);
             dir.x = 0;
             velocity.x = 0;
-            if (!bottomCollision) {
-                leftCollision = true;
-            }
+            leftCollision = true;
             response = true;
         }
         if (getLeft(player) < getRight(objects[i]) + backgroundX + 5 && getLeft(player) > getLeft(objects[i]) + backgroundX + 5 && getTop(player) < getBottom(objects[i]) && getBottom(player) - 15 > getTop(objects[i])) {
             console.log("RIGHT");
-            if (!bottomCollision) {
-                rightCollision = true;
-            }
+            rightCollision = true;
             console.log(dir.y);
             dir.x = 0;
             velocity.x = 0;

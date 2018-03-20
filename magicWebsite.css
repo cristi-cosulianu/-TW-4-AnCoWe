@@ -48,19 +48,19 @@ body {
 
 .leftCurtain {
     animation-name: leftCurtain;
-    animation-duration: 1s;
+    animation-duration: 1.5s;
 }
 
 .rightCurtain {
     animation-name: rightCurtain;
-    animation-duration: 1s;
+    animation-duration: 1.5s;
 }
 
 #leftDiv, #rightDiv {
     position: absolute;
     height: 100%;
     width: 100%;
-    background-color: #000000;
+    background-color: black;
     z-index: 99;
 }
 
@@ -70,6 +70,13 @@ body {
 
 #rightDiv {
     left: 100%;
+}
+#gameTitle{
+    background-image: url('textures/title.png');
+    background-position:center;
+    background-repeat:no-repeat;
+    background-size:contain;
+    margin-top: 5vh;
 }
 
 /* --------------------------------------------------------------------- MENU CANVAS -- */
@@ -120,13 +127,14 @@ nav ul {
 }
 
 nav ul li {
-    background-color: rgba(122,122,122,0.5); 
+    background-color: rgba(0,0,0,0.5); 
     border-bottom: 0.25vh black solid;
     border-top: 0.25vh black solid;
 
     margin-top: 5%;
     margin-bottom: 5%;
     height: 7vh;
+    text-shadow: 1px 1px 6px;
 }
 
 nav ul li a {
@@ -172,9 +180,10 @@ nav ul li a {
     text-align: center;
     width: 48%;
     display: inline-block;
-    color: cornflowerblue;
+    color: black;
     font-size: 6vh;
-    font-weight: bold;
+    text-shadow: 4px 3px 1px gray;
+    font-weight: 500;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
@@ -202,7 +211,7 @@ nav ul li a {
 }
 
 .caractersTable a:hover {
-    border: 5px solid #000000;
+    border: 2px outset lightgray;
 }
 
 ::-webkit-scrollbar {
@@ -215,11 +224,13 @@ nav ul li a {
 
 .buttonGame {
     text-decoration: none;
+    border-radius: 25px;
 }
 
 .icon {
     width: 100%;
     height: 100%;
+    border-radius: 25px;
 }
 
 /* -------------------------------------------------------------------- GAME CANVAS -- */
