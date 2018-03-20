@@ -312,7 +312,7 @@ function checkCollision() {
             leftCollision = true;
             response = true;
         }
-        if (getTop(player) + player.height / 2 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && (getRight(player) > getLeft(objects[i]) + backgroundX  && getLeft(player) < getRight(objects[i]) + backgroundX  || getLeft(player) < getRight(objects[i]) + backgroundX  && getRight(player) > getRight(objects[i]) + backgroundX)) {
+        if (getTop(player) + player.height / 2 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX && getLeft(player) < getRight(objects[i]) + backgroundX) {
             console.log("TOP");
             groundBase = getTop(objects[i]) - player.height;
             topCollision = true;
@@ -321,7 +321,7 @@ function checkCollision() {
             inAir = false;
             response = true;
         }
-        if (getBottom(player) > getBottom(objects[i]) && getTop(player) < getBottom(objects[i]) && getLeft(player) > getLeft(objects[i]) + backgroundX - player.width / 2 - 20 && getRight(player) < getRight(objects[i]) + backgroundX + player.width) {
+        if (getBottom(player) > getBottom(objects[i]) && getTop(player) < getBottom(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX + 10 && getLeft(player) < getRight(objects[i]) + backgroundX) {
             console.log("BOTTOM");
             dir.y = 1;
             bottomCollision = true;
