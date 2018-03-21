@@ -241,13 +241,12 @@ function reset() {
     velocity.x = 0;
     velocity.y = -0.2;
     gravity.x = 0;
-    gravity.y = 0.09;
+    gravity.y = 0.07;
     player.position.y = groundBase;
 }
 
 function game_loop() {
     oldplayer = player;
-    updateplayerposition();
     if (checkCollision()) {
         //player = oldplayer;
         if (rightCollision) {
@@ -261,6 +260,7 @@ function game_loop() {
         topCollision = false;
         bottomCollision = false;
     }
+    updateplayerposition();
     if (rendered < 10) {
         render();
         ++rendered;
@@ -295,6 +295,7 @@ function updateplayerposition() {
     if (objects.length > 0) {
         if (getLeft(objects[currentPlatformIndex]) + backgroundX - player.width * 3 / 4 > getLeft(player) || getRight(objects[currentPlatformIndex]) + backgroundX + player.width * 3 / 4 < getRight(player) || player.position.y < groundBase) {
             onPlatform = false;
+            dir.x = 0;
         }
         if (getLeft(objects[currentPlatformIndex]) + backgroundX - player.width * 3 / 4 > getLeft(player) || getRight(objects[currentPlatformIndex]) + backgroundX + player.width < getRight(player)) {
             groundBase = defaultGroundX;
@@ -303,7 +304,7 @@ function updateplayerposition() {
     if (player.position.y < groundBase && !onPlatform) {
         animation_stage = 0;
         inAir = true;
-        gravity.add(new Vector2(0, 0.01));
+        gravity.add(new Vector2(0, 0.007));
         dir.add(gravity);
         player.position.add(dir);
         currentPlatformIndex = 0;
@@ -334,10 +335,10 @@ function updateplayerposition() {
             ++double_jump;
             dir.y = -1;
             dir.x = 0;
-            velocity.add(new Vector2(0, -0.1));
+            velocity.add(new Vector2(0, -0.05));
             oldplayer = player;
             dir.add(velocity);
-            dir.mul(4.3);
+            dir.mul(4.5);
             player.position.add(dir);
         }
         if (space && (left === true || right === true)) {
@@ -345,7 +346,7 @@ function updateplayerposition() {
             dir.y = -1;
             dir.x = 0;
             oldplayer = player;
-            dir.mul(5);
+            dir.mul(4.5);
             player.position.add(dir);
 
         }
@@ -358,10 +359,12 @@ function checkCollision() {
     for (let i = 0; i < objects.length; ++i) {
         if (getTop(player) + player.height / 2 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX && getLeft(player) < getRight(objects[i]) + backgroundX) {
             console.log("TOP");
-            groundBase = getTop(objects[i]) - player.height;
+            groundBase = getTop(objects[i]) - player.height - 1;
             topCollision = true;
             onPlatform = true;
             currentPlatformIndex = i;
+            velocity.x = 0;
+            velocity.y = 0;
             inAir = false;
             response = true;
         }
