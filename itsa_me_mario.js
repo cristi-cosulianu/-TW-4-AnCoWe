@@ -241,7 +241,7 @@ function reset() {
     velocity.x = 0;
     velocity.y = -0.2;
     gravity.x = 0;
-    gravity.y = 0.07;
+    gravity.y = 0.27;
     player.position.y = groundBase;
 }
 
@@ -304,7 +304,6 @@ function updateplayerposition() {
     if (player.position.y < groundBase && !onPlatform) {
         animation_stage = 0;
         inAir = true;
-        gravity.add(new Vector2(0, 0.007));
         dir.add(gravity);
         player.position.add(dir);
         currentPlatformIndex = 0;
@@ -357,12 +356,13 @@ function updateplayerposition() {
 function checkCollision() {
     let response = false;
     for (let i = 0; i < objects.length; ++i) {
-        if (getTop(player) + player.height / 2 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX && getLeft(player) < getRight(objects[i]) + backgroundX) {
+        if (getTop(player) + player.height * 3 / 4 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX && getLeft(player) < getRight(objects[i]) + backgroundX) {
             console.log("TOP");
             groundBase = getTop(objects[i]) - player.height - 1;
             topCollision = true;
             onPlatform = true;
             currentPlatformIndex = i;
+            player.position.substract(gravity);
             velocity.x = 0;
             velocity.y = 0;
             inAir = false;
@@ -383,7 +383,7 @@ function checkCollision() {
             leftCollision = true;
             response = true;
         }
-        if (getLeft(player) < getRight(objects[i]) + backgroundX + 5 && getLeft(player) > getLeft(objects[i]) + backgroundX + 5 && getTop(player) < getBottom(objects[i]) && getBottom(player) - 15 > getTop(objects[i])) {
+        if (getLeft(player) < getRight(objects[i]) + backgroundX + 5 && getLeft(player) > getLeft(objects[i]) + backgroundX + 5 && getTop(player) < getBottom(objects[i]) + 10 && getBottom(player) - 15 > getTop(objects[i])) {
             console.log("RIGHT");
             rightCollision = true;
             console.log(dir.y);
