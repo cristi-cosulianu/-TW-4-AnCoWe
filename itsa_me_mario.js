@@ -240,7 +240,7 @@ function random(min, max) {
 }
 
 function reset() {
-    dir.x = 4;
+    dir.x = 2;
     dir.y = 0;
     velocity.x = 0;
     velocity.y = -0.2;
@@ -265,6 +265,8 @@ function game_loop() {
         bottomCollision = false;
     }
     updateplayerposition();
+    console.log(dir.x);
+    //inertia();
     if (rendered < 10) {
         render();
         ++rendered;
@@ -295,11 +297,29 @@ function game_loop() {
     //    }
 }
 
+function inertia() {
+    if (!inAir) {
+        return;
+    }
+    console.log(dir.x);
+    if (dir.x > 0 && right === false) {
+        dir.x -= 0.05;
+        player.position.add(dir);
+        return;
+    }
+    if (dir.x < 0 && left === false) {
+        dir.x += 0.05;
+        player.position.add(dir);
+        return;
+    }
+
+}
+
 function updateplayerposition() {
     if (objects.length > 0) {
         if (getLeft(objects[currentPlatformIndex]) + backgroundX - player.width * 3 / 4 > getLeft(player) || getRight(objects[currentPlatformIndex]) + backgroundX + player.width * 3 / 4 < getRight(player) || player.position.y < groundBase) {
             onPlatform = false;
-            dir.x = 0;
+            //dir.x = 0;
         }
         if (getLeft(objects[currentPlatformIndex]) + backgroundX - player.width * 3 / 4 > getLeft(player) || getRight(objects[currentPlatformIndex]) + backgroundX + player.width < getRight(player)) {
             groundBase = defaultGroundX;
@@ -319,18 +339,38 @@ function updateplayerposition() {
         inAir = false;
     }
     if (right === true && left === false) {
-        if (dir.x === 0) {
-            dir.x = 4;
+        if(dir.x === 0){
+            dir.x = 2;
+        }
+        if (!inAir) {
+            dir.x = Math.abs(dir.x);
+        } else {
+            if (dir.x <= 2) {
+                if (dir.x >= 0 && dir.x <= 2) {
+                    dir.x += 0.5
+                } else {
+                    dir.x += 0.3;
+                }
+            }
         }
         ++animation_stage;
-        dir.x = Math.abs(dir.x);
         player.position.add(dir);
     }
     if (left === true && right === false) {
-        if (dir.x === 0) {
-            dir.x = -4;
+        if(dir.x === 0){
+            dir.x = -2;
         }
-        dir.x = -Math.abs(dir.x);
+        if (!inAir) {
+            dir.x = -Math.abs(dir.x);
+        } else {
+            if (dir.x >= -2) {
+                if (dir.x <= 0 && dir.x >= -2) {
+                    dir.x -= 0.5;
+                } else {
+                    dir.x -= 0.3;
+                }
+            }
+        }
         player.position.add(dir);
     }
     if (double_jump < 1) {
@@ -340,14 +380,14 @@ function updateplayerposition() {
             dir.x = 0;
             velocity.add(new Vector2(0, -0.05));
             dir.add(velocity);
-            dir.mul(7);
+            dir.mul(6.5);
             player.position.add(dir);
         }
         if (space && (left === true || right === true)) {
             ++double_jump;
             dir.y = -1;
             dir.x = 0;
-            dir.mul(7);
+            dir.mul(6.5);
             player.position.add(dir);
 
         }
@@ -409,7 +449,7 @@ function keyPressed(event) {
             animation_stage = 5;
             first_press = true;
         }
-        background_sound.play();
+        //background_sound.play();
     }
     if (event.keyCode === 32) {
         if (double_jump < 3) {
