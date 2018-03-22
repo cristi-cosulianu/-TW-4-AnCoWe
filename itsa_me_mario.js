@@ -136,6 +136,10 @@ function loadLevel() {
     objects.push(new GameObject(ground, canvas.width / 2 + 3056, canvas.height / 2 - 250, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 3356, canvas.height / 2, 64, 64));
     objects.push(new GameObject(pipe, canvas.width / 2 + 3000, canvas.height / 2 + 264, 64, 128));
+    objects.push(new GameObject(ground, canvas.width / 2 + 3600, canvas.height / 3, 64, 512));
+    objects.push(new GameObject(ground, canvas.width / 2 + 3800, canvas.height / 3, 64, 512));
+
+
     objects.sort((a, b) => {
         if (a.position.x > b.position.x)
             return -1;
@@ -151,7 +155,7 @@ function loadAudio() {
     background_sound = new Audio();
     background_sound.src = "sound/04-Sanctuary.mp3";
     background_sound.loop = true;
-    background_sound.volume = 0.05;
+    background_sound.volume = 0.8;
     jump_sound.src = "sound/jump_sound.mp3";
     jump_sound.volume = 0.1;
     jump_land.src = "sound/jump_land.mp3";
@@ -236,7 +240,7 @@ function random(min, max) {
 }
 
 function reset() {
-    dir.x = 2;
+    dir.x = 4;
     dir.y = 0;
     velocity.x = 0;
     velocity.y = -0.2;
@@ -283,12 +287,12 @@ function game_loop() {
             ++rendered;
         }
     }
-    if (objects.length > 0) {
-        this.requestAnimationFrame(game_loop);
-    } else {
-        alert("I think you won");
-
-    }
+    //    if (objects.length > 0) {
+    this.requestAnimationFrame(game_loop);
+    //    } else {
+    //        alert("I think you won");
+    //
+    //    }
 }
 
 function updateplayerposition() {
@@ -316,7 +320,7 @@ function updateplayerposition() {
     }
     if (right === true && left === false) {
         if (dir.x === 0) {
-            dir.x = 2;
+            dir.x = 4;
         }
         ++animation_stage;
         dir.x = Math.abs(dir.x);
@@ -324,12 +328,12 @@ function updateplayerposition() {
     }
     if (left === true && right === false) {
         if (dir.x === 0) {
-            dir.x = -2;
+            dir.x = -4;
         }
         dir.x = -Math.abs(dir.x);
         player.position.add(dir);
     }
-    if (double_jump < 3) {
+    if (double_jump < 1) {
         if (space && left === false && right === false) {
             ++double_jump;
             dir.y = -1;
@@ -355,7 +359,6 @@ function checkCollision() {
     let response = false;
     for (let i = 0; i < objects.length; ++i) {
         if (getTop(player) + player.height / 2 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX - 5 && getLeft(player) < getRight(objects[i]) + backgroundX) {
-            console.log("TOP");
             groundBase = getTop(objects[i]) - player.height;
             topCollision = true;
             onPlatform = true;
@@ -368,17 +371,14 @@ function checkCollision() {
             response = true;
         }
         if (getBottom(player) > getBottom(objects[i]) && getTop(player) < getBottom(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX + 10 && getLeft(player) < getRight(objects[i]) + backgroundX) {
-            console.log("BOTTOM");
             dir.x = 0;
             dir.y = 1;
             bottomCollision = true;
             response = true;
         }
         if (getRight(player) > getLeft(objects[i]) + backgroundX + 3 && getRight(player) < getLeft(objects[i]) + backgroundX + player.width * 1 / 4 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
-            console.log("LEFT");
-            console.log(dir.x);
             if (left && inAir) {
-                double_jump = 1;
+                double_jump = 0;
 
             }
             dir.x = 0;
@@ -387,11 +387,9 @@ function checkCollision() {
             response = true;
         }
         if (getLeft(player) < getRight(objects[i]) + backgroundX + 5 && getLeft(player) > getLeft(objects[i]) + backgroundX + objects[i].width * 3 / 4 && getTop(player) < getBottom(objects[i]) + 10 && getBottom(player) - 15 > getTop(objects[i])) {
-            console.log("RIGHT");
             rightCollision = true;
-            console.log(dir.y);
             if (right && inAir) {
-                double_jump = 1;
+                double_jump = 0;
 
             }
             dir.x = 0;
