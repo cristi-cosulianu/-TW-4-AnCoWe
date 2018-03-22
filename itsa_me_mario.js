@@ -18,7 +18,7 @@ var rendered = 0;
 var walk_1, walk_2, walk_3, walk_4;
 var background;
 var objects = [];
-var gameSpeed = 3;
+var gameSpeed = 6;
 var backgroundX = 0;
 var right = false,
     left = false,
@@ -241,7 +241,7 @@ function reset() {
     velocity.x = 0;
     velocity.y = -0.2;
     gravity.x = 0;
-    gravity.y = 0.27;
+    gravity.y = 0.3;
     player.position.y = groundBase;
 }
 
@@ -316,7 +316,7 @@ function updateplayerposition() {
     }
     if (right === true && left === false) {
         if (dir.x === 0) {
-            dir.x = 1;
+            dir.x = 2;
         }
         ++animation_stage;
         dir.x = Math.abs(dir.x);
@@ -324,28 +324,26 @@ function updateplayerposition() {
     }
     if (left === true && right === false) {
         if (dir.x === 0) {
-            dir.x = -1;
+            dir.x = -2;
         }
         dir.x = -Math.abs(dir.x);
         player.position.add(dir);
     }
-    if (double_jump < 9) {
+    if (double_jump < 3) {
         if (space && left === false && right === false) {
             ++double_jump;
             dir.y = -1;
             dir.x = 0;
             velocity.add(new Vector2(0, -0.05));
-            oldplayer = player;
             dir.add(velocity);
-            dir.mul(4.5);
+            dir.mul(7);
             player.position.add(dir);
         }
         if (space && (left === true || right === true)) {
             ++double_jump;
             dir.y = -1;
             dir.x = 0;
-            oldplayer = player;
-            dir.mul(4.5);
+            dir.mul(7);
             player.position.add(dir);
 
         }
@@ -379,6 +377,10 @@ function checkCollision() {
         if (getRight(player) > getLeft(objects[i]) + backgroundX + 3 && getRight(player) < getLeft(objects[i]) + backgroundX + player.width * 1 / 4 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
             console.log("LEFT");
             console.log(dir.x);
+            if (left && inAir) {
+                double_jump = 1;
+
+            }
             dir.x = 0;
             velocity.x = 0;
             leftCollision = true;
@@ -388,8 +390,11 @@ function checkCollision() {
             console.log("RIGHT");
             rightCollision = true;
             console.log(dir.y);
+            if (right && inAir) {
+                double_jump = 1;
+
+            }
             dir.x = 0;
-            velocity.x = 0;
             response = true;
         }
     }
@@ -409,8 +414,10 @@ function keyPressed(event) {
         background_sound.play();
     }
     if (event.keyCode === 32) {
-        jump_sound.load();
-        jump_sound.play();
+        if (double_jump < 3) {
+            jump_sound.load();
+            jump_sound.play();
+        }
         space = true;
     }
 }
