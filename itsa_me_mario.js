@@ -210,6 +210,7 @@ function player_animation(p) {
 }
 
 function render() {
+    console.log(dir);
     canvas.height = window.innerHeight;
     canvas.width = window.innerWidth;
     if (backgroundX > canvas.width) {
@@ -240,12 +241,12 @@ function random(min, max) {
 }
 
 function reset() {
-    dir.x = 2;
+    dir.x = 0;
     dir.y = 0;
     velocity.x = 0;
     velocity.y = -0.2;
     gravity.x = 0;
-    gravity.y = 0.3;
+    gravity.y = 0.23;
     player.position.y = groundBase;
 }
 
@@ -265,7 +266,6 @@ function game_loop() {
         bottomCollision = false;
     }
     updateplayerposition();
-    console.log(dir.x);
     //inertia();
     if (rendered < 10) {
         render();
@@ -301,7 +301,6 @@ function inertia() {
     if (!inAir) {
         return;
     }
-    console.log(dir.x);
     if (dir.x > 0 && right === false) {
         dir.x -= 0.05;
         player.position.add(dir);
@@ -319,7 +318,6 @@ function updateplayerposition() {
     if (objects.length > 0) {
         if (getLeft(objects[currentPlatformIndex]) + backgroundX - player.width * 3 / 4 > getLeft(player) || getRight(objects[currentPlatformIndex]) + backgroundX + player.width * 3 / 4 < getRight(player) || player.position.y < groundBase) {
             onPlatform = false;
-            //dir.x = 0;
         }
         if (getLeft(objects[currentPlatformIndex]) + backgroundX - player.width * 3 / 4 > getLeft(player) || getRight(objects[currentPlatformIndex]) + backgroundX + player.width < getRight(player)) {
             groundBase = defaultGroundX;
@@ -339,17 +337,17 @@ function updateplayerposition() {
         inAir = false;
     }
     if (right === true && left === false) {
-        if(dir.x === 0){
+        if (dir.x === 0 && !inAir) {
             dir.x = 2;
         }
         if (!inAir) {
             dir.x = Math.abs(dir.x);
         } else {
-            if (dir.x <= 2) {
+            if (dir.x < 2) {
                 if (dir.x >= 0 && dir.x <= 2) {
-                    dir.x += 0.5
+                    dir.x += 0.3
                 } else {
-                    dir.x += 0.3;
+                    dir.x += 0.2;
                 }
             }
         }
@@ -357,17 +355,17 @@ function updateplayerposition() {
         player.position.add(dir);
     }
     if (left === true && right === false) {
-        if(dir.x === 0){
+        if (dir.x === 0 && !inAir) {
             dir.x = -2;
         }
         if (!inAir) {
             dir.x = -Math.abs(dir.x);
         } else {
-            if (dir.x >= -2) {
+            if (dir.x > -2) {
                 if (dir.x <= 0 && dir.x >= -2) {
-                    dir.x -= 0.5;
-                } else {
                     dir.x -= 0.3;
+                } else {
+                    dir.x -= 0.2;
                 }
             }
         }
@@ -380,14 +378,14 @@ function updateplayerposition() {
             dir.x = 0;
             velocity.add(new Vector2(0, -0.05));
             dir.add(velocity);
-            dir.mul(6.5);
+            dir.mul(6);
             player.position.add(dir);
         }
         if (space && (left === true || right === true)) {
             ++double_jump;
             dir.y = -1;
             dir.x = 0;
-            dir.mul(6.5);
+            dir.mul(6);
             player.position.add(dir);
 
         }
@@ -405,8 +403,6 @@ function checkCollision() {
             currentPlatformIndex = i;
             player.position.substract(gravity);
             //dir.y = 1;
-            velocity.x = 0;
-            velocity.y = 0;
             inAir = false;
             response = true;
         }
@@ -417,22 +413,23 @@ function checkCollision() {
             response = true;
         }
         if (getRight(player) > getLeft(objects[i]) + backgroundX + 3 && getRight(player) < getLeft(objects[i]) + backgroundX + player.width * 1 / 4 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
-            if (left && inAir) {
+            if (inAir && space) {
                 double_jump = 0;
-
+                dir.x = -2;
+            } else {
+                dir.x = 0;
             }
-            dir.x = 0;
-            velocity.x = 0;
             leftCollision = true;
             response = true;
         }
         if (getLeft(player) < getRight(objects[i]) + backgroundX + 5 && getLeft(player) > getLeft(objects[i]) + backgroundX + objects[i].width * 3 / 4 && getTop(player) < getBottom(objects[i]) + 10 && getBottom(player) - 15 > getTop(objects[i])) {
-            rightCollision = true;
-            if (right && inAir) {
+            if (inAir && space) {
                 double_jump = 0;
-
+                dir.x = 2;
+            } else {
+                dir.x = 0;
             }
-            dir.x = 0;
+            rightCollision = true;
             response = true;
         }
     }
