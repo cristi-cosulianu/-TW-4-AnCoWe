@@ -320,7 +320,6 @@ function updateplayerposition() {
         }
     }
     if(getRight(player) < getLeft(objects[currentPlatformIndex]) + backgroundX + player.width || getLeft(player) > getRight(objects[currentPlatformIndex]) + backgroundX){
-        console.log("Working");
         onPlatform  = false;
         //player.position.y += 1;
     }
@@ -397,7 +396,7 @@ function updateplayerposition() {
 function checkCollision() {
     let response = false;
     for (let i = 0; i < objects.length; ++i) {
-        if (getTop(player) + player.height  * 6 / 10 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX + 3 && getLeft(player) < getRight(objects[i]) + backgroundX) {
+        if (getTop(player) + player.height  * 6 / 10 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX + player.width * 1 / 4 && getLeft(player) < getRight(objects[i]) + backgroundX) {
             console.log("top");
             groundBase = getTop(objects[i]) - player.height;
             topCollision = true;
