@@ -319,7 +319,7 @@ function updateplayerposition() {
             groundBase = defaultGroundX;
         }
     }
-    if(getRight(player) < getLeft(objects[currentPlatformIndex]) + backgroundX + player.width || getLeft(player) > getRight(objects[currentPlatformIndex]) + backgroundX){
+    if(getRight(player) < getLeft(objects[currentPlatformIndex]) + backgroundX || getLeft(player) > getRight(objects[currentPlatformIndex]) + backgroundX){
         onPlatform  = false;
         //player.position.y += 1;
     }
@@ -396,7 +396,7 @@ function updateplayerposition() {
 function checkCollision() {
     let response = false;
     for (let i = 0; i < objects.length; ++i) {
-        if (getTop(player) + player.height  * 6 / 10 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX + player.width * 1 / 4 && getLeft(player) < getRight(objects[i]) + backgroundX) {
+        if (getTop(player) + player.height  * 6 / 10 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX + player.width * 6 / 10 && getLeft(player) < getRight(objects[i]) + backgroundX) {
             console.log("top");
             groundBase = getTop(objects[i]) - player.height;
             topCollision = true;
@@ -425,7 +425,7 @@ function checkCollision() {
             leftCollision = true;
             response = true;
         }
-        if (getLeft(player) < getRight(objects[i]) + backgroundX && getLeft(player) > getLeft(objects[i]) + backgroundX + objects[i].width * 3 / 4 && getTop(player) < getBottom(objects[i]) && getBottom(player)  > getTop(objects[i])) {
+        if (getLeft(player) < getRight(objects[i]) + backgroundX + 5 && getLeft(player) > getLeft(objects[i]) + backgroundX + objects[i].width * 3 / 4 && getTop(player) < getBottom(objects[i]) && getBottom(player)  > getTop(objects[i])) {
             console.log("right");   
             if (inAir && space) {
                 double_jump = 0;
