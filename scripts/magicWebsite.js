@@ -41,6 +41,11 @@ function addCharacter(container, name) {
 	xhttp.send();
 }
 
+function startSlider(elementId){
+	document.getElementById(elementId).classList.remove('animationPaused');
+	document.getElementById(elementId).classList.remove('animationInitial');
+}
+
 window.onload = () => {
 	document.getElementById("leftDiv").addEventListener("animationend", function () {
 		document.getElementById("leftDiv").classList.remove('leftCurtain');
