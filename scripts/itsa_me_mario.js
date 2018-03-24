@@ -17,6 +17,7 @@ var oldplayer;
 var rendered = 0;
 var walk_1, walk_2, walk_3, walk_4;
 var background;
+var bounce = false;
 var objects = [];
 var gameSpeed = 6;
 var backgroundX = 0;
@@ -35,7 +36,32 @@ var spriteSize;
 var currentPlatformIndex = 0;
 var defaultGroundX = 606;
 
+function addCharacter(container, name) {
+    var url = "https://gateway.marvel.com/v1/public/characters?apikey=15b0df9dd78ed4c3d58e10b0c3d36a57&hash=758e48b905e396fca02324d24f1f7b06&ts=432&name=" + name;
+    var xhttp = new XMLHttpRequest();
 
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var thumbnail = JSON.parse(this.responseText).data.results[0].thumbnail;
+            var imgUrl = thumbnail.path + '/portrait_xlarge.' + thumbnail.extension;
+
+            var anchor = document.createElement("a");
+            anchor.setAttribute("class", "buttonGame");
+            anchor.setAttribute("href", "#gameCanvas");
+            anchor.setAttribute("onclick", "sceneTransition(\'chooseCaracterCanvas\',\'gameCanvas\')");
+
+            var image = document.createElement("img");
+            image.setAttribute("src", imgUrl);
+            image.setAttribute("class", "icon");
+            image.setAttribute("alt", name);
+
+            anchor.appendChild(image);
+            container.appendChild(anchor);
+        }
+    };
+    xhttp.open("GET", url, true);
+    xhttp.send();
+}
 
 window.onload = () => {
     canvas = document.querySelector("#gameCanvas canvas");
@@ -51,16 +77,37 @@ window.onload = () => {
     velocity = new Vector2(0, -0.2);
     gravity = new Vector2(0, 0.35);
     player = new GameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
-    defaultGroundX = window.innerHeight - player.height - 64;
+    defaultGroundX = window.innerHeight - 64 - 40;
     groundBase = defaultGroundX;
     loadLevel();
     this.requestAnimationFrame(game_loop);
 
-    
+    /* Cristi's code */
+    document.getElementById("leftDiv").addEventListener("animationend", function () {
+        document.getElementById("leftDiv").classList.remove('leftCurtain');
+    });
+
+    document.getElementById("rightDiv").addEventListener("animationend", function () {
+        document.getElementById("rightDiv").classList.remove('rightCurtain');
+    });
+
+    var heroes = ["Spider-Man", "Wolverine", "Daredevil", "Captain America", "Iron Man", "Thor", "Black Widow", "Hulk"];
+    var villains = ["Loki", "Red Skull", "Ultron", "Magneto", "Thanos", "Black Cat", "Galactus", "Apocalypse"];
+    var heroesDiv = document.getElementById("heroes");
+    var villainsDiv = document.getElementById("villains");
+
+    for (var i = 0; i < heroes.length; ++i) {
+        addCharacter(heroesDiv, heroes[i]);
+    }
+
+    for (var i = 0; i < villains.length; ++i) {
+        addCharacter(villainsDiv, villains[i]);
+    }
+    /* End Cristi's code */
 };
 
 window.onresize = () => {
-    defaultGroundX = window.innerHeight - player.height - 64;
+    defaultGroundX = window.innerHeight - 64 - 40;
     groundBase = defaultGroundX;
     render();
 };
@@ -107,12 +154,12 @@ function loadAudio() {
     jump_sound = new Audio();
     jump_land = new Audio();
     background_sound = new Audio();
-    background_sound.src = "../sound/04-Sanctuary.mp3";
+    background_sound.src = "sound/04-Sanctuary.mp3";
     background_sound.loop = true;
     background_sound.volume = 0.8;
-    jump_sound.src = "../sound/jump_sound.mp3";
+    jump_sound.src = "sound/jump_sound.mp3";
     jump_sound.volume = 0.1;
-    jump_land.src = "../sound/jump_land.mp3";
+    jump_land.src = "sound/jump_land.mp3";
     jump_land.volume = 0.1;
 
 }
@@ -125,13 +172,13 @@ function loadTextures() {
     background = new Image();
     ground = new Image();
     pipe = new Image();
-    ground.src = "../textures/ground.png";
-    walk_1.src = "../textures/Hat_man/Walk/Hat_man1.png";
-    walk_2.src = "../textures/Hat_man/Walk/Hat_man2.png";
-    walk_3.src = "../textures/Hat_man/Walk/Hat_man3.png";
-    walk_4.src = "../textures/Hat_man/Walk/Hat_man4.png";
-    background.src = "../textures/background.png";
-    pipe.src = "../textures/pipe.png";
+    ground.src = "textures/ground.png";
+    walk_1.src = "textures/Hat_man/Walk/Hat_man1.png";
+    walk_2.src = "textures/Hat_man/Walk/Hat_man2.png";
+    walk_3.src = "textures/Hat_man/Walk/Hat_man3.png";
+    walk_4.src = "textures/Hat_man/Walk/Hat_man4.png";
+    background.src = "textures/background.png";
+    pipe.src = "textures/pipe.png";
 
 }
 
@@ -204,6 +251,8 @@ function reset() {
 }
 
 function game_loop() {
+            console.log(inAir);
+
     oldplayer = player;
     if (checkCollision()) {
         //player = oldplayer;
@@ -219,7 +268,9 @@ function game_loop() {
         bottomCollision = false;
     }
     updateplayerposition();
-    //inertia();
+    if (bounce) {
+        inertia();
+    }
     if (rendered < 10) {
         render();
         ++rendered;
@@ -251,20 +302,13 @@ function game_loop() {
 }
 
 function inertia() {
-    if (!inAir) {
-        return;
+    if(leftCollision){
+            dir.x -= 2;
     }
-    if (dir.x > 0 && right === false) {
-        dir.x -= 0.05;
-        player.position.add(dir);
-        return;
+    if(rightCollision){
+        dir.x += 2;
     }
-    if (dir.x < 0 && left === false) {
-        dir.x += 0.05;
-        player.position.add(dir);
-        return;
-    }
-
+    bounce = false;
 }
 
 function updateplayerposition() {
@@ -363,13 +407,14 @@ function checkCollision() {
             dir.x = 0;
             dir.y = 1;
             bottomCollision = true;
+            double_jump = 1;
             response = true;
         }
         if (getRight(player) > getLeft(objects[i]) + backgroundX + 5 && getRight(player) < getLeft(objects[i]) + backgroundX + player.width * 1 / 4 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
             console.log("left");
             if (inAir && space) {
                 double_jump = 0;
-                dir.x = -4;
+                bounce = true;
             } else {
                 dir.x = 0;
             }
@@ -380,7 +425,7 @@ function checkCollision() {
             console.log("right");
             if (inAir && space) {
                 double_jump = 0;
-                dir.x = 4;
+                bounce = true;
             } else {
                 dir.x = 0;
             }
