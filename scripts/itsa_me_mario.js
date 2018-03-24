@@ -37,7 +37,7 @@ var currentPlatformIndex = 0;
 var defaultGroundX = 606;
 
 window.onload = () => {
-    canvas = document.querySelector("#gameCanvas canvas");
+    canvas = document.querySelectorAll("#gameCanvas canvas");
     context = canvas.getContext("2d");
     document.addEventListener("keydown", keyPressed, false);
     document.addEventListener("keyup", keyReleased, false);
