@@ -37,7 +37,7 @@ var currentPlatformIndex = 0;
 var defaultGroundX = 606;
 
 window.onload = () => {
-    canvas = document.querySelectorAll("#gameCanvas canvas");
+    canvas = document.querySelector("#gameCanvas canvas");
     context = canvas.getContext("2d");
     document.addEventListener("keydown", keyPressed, false);
     document.addEventListener("keyup", keyReleased, false);
@@ -272,7 +272,9 @@ function updateplayerposition() {
     if (player.position.y < groundBase) {
         animation_stage = 0;
         inAir = true;
-        dir.add(gravity);
+        if (Math.abs(dir.y) < 10) {
+            dir.add(gravity);
+        }
         player.position.add(dir);
         currentPlatformIndex = 0;
     }
@@ -291,7 +293,7 @@ function updateplayerposition() {
         } else {
             if (dir.x < 2) {
                 if (dir.x >= 0 && dir.x <= 2) {
-                    dir.x += 0.3
+                    dir.x += 0.5
                 } else {
                     dir.x += 0.2;
                 }
@@ -309,7 +311,7 @@ function updateplayerposition() {
         } else {
             if (dir.x > -2) {
                 if (dir.x <= 0 && dir.x >= -2) {
-                    dir.x -= 0.3;
+                    dir.x -= 0.5;
                 } else {
                     dir.x -= 0.2;
                 }
@@ -317,19 +319,19 @@ function updateplayerposition() {
         }
         player.position.add(dir);
     }
-    if (double_jump < 1) {
+    if (double_jump < 1 && Math.abs(dir.y) <= 6) {
         if (space && left === false && right === false) {
             ++double_jump;
             dir.y = -1;
             dir.x = 0;
-            dir.mul(6);
+            dir.mul(5);
             player.position.add(dir);
         }
         if (space && (left === true || right === true)) {
             ++double_jump;
             dir.y = -1;
             dir.x = 0;
-            dir.mul(6);
+            dir.mul(5);
             player.position.add(dir);
         }
     }
@@ -363,6 +365,7 @@ function checkCollision() {
             if (inAir && space) {
                 double_jump = 0;
                 bounce = true;
+                dir.y = 0;
             } else {
                 dir.x = 0;
             }
@@ -374,6 +377,7 @@ function checkCollision() {
             if (inAir && space) {
                 double_jump = 0;
                 bounce = true;
+                dir.y = 0;
             } else {
                 dir.x = 0;
             }
