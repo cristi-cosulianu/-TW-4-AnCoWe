@@ -4,7 +4,7 @@ var velocity;
 var gravity;
 var context;
 var canvas;
-var ground, pipe;
+var ground, pipe, wall;
 var something;
 var last_player = {
     x: -100,
@@ -87,8 +87,10 @@ function loadLevel() {
     objects.push(new GameObject(ground, canvas.width / 2 + 3056, canvas.height / 2 - 250, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 3356, canvas.height / 2, 64, 64));
     objects.push(new GameObject(pipe, canvas.width / 2 + 3000, canvas.height / 2 + 264, 64, 128));
-    objects.push(new GameObject(ground, canvas.width / 2 + 3600, canvas.height / 3, 64, 512));
-    objects.push(new GameObject(ground, canvas.width / 2 + 3800, canvas.height / 3, 64, 512));
+    objects.push(new GameObject(wall, canvas.width / 2 + 3600, canvas.height / 2, 64, 512));
+    objects.push(new GameObject(wall, canvas.width / 2 + 3800, canvas.height / 8, 64, 512));
+    objects.push(new GameObject(wall, canvas.width / 2 + 4000, 100, 64, 512));
+
 
 
     objects.sort((a, b) => {
@@ -119,6 +121,7 @@ function loadTextures() {
     walk_2 = new Image();
     walk_3 = new Image();
     walk_4 = new Image();
+    wall = new Image();
     background = new Image();
     ground = new Image();
     pipe = new Image();
@@ -129,6 +132,7 @@ function loadTextures() {
     walk_4.src = "../textures/Hat_man/Walk/Hat_man4.png";
     background.src = "../textures/background.png";
     pipe.src = "../textures/pipe.png";
+    wall.src = "../textures/wall.png";
 
 }
 
@@ -362,7 +366,7 @@ function checkCollision() {
         }
         if (getRight(player) > getLeft(objects[i]) + backgroundX + 5 && getRight(player) < getLeft(objects[i]) + backgroundX + player.width * 1 / 4 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
             console.log("left");
-            if (inAir && space) {
+            if (inAir && space && objects[i].type === wall) {
                 double_jump = 0;
                 bounce = true;
                 dir.y = 0;
@@ -374,7 +378,7 @@ function checkCollision() {
         }
         if (getLeft(player) < getRight(objects[i]) + backgroundX + 5 && getLeft(player) > getLeft(objects[i]) + backgroundX + objects[i].width * 3 / 4 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
             console.log("right");
-            if (inAir && space) {
+            if (inAir && space && objects[i].type === wall) {
                 double_jump = 0;
                 bounce = true;
                 dir.y = 0;
