@@ -17,6 +17,7 @@ var oldplayer;
 var rendered = 0;
 var walk_1, walk_2, walk_3, walk_4;
 var background;
+var bounce = false;
 var objects = [];
 var gameSpeed = 6;
 var backgroundX = 0;
@@ -76,7 +77,7 @@ window.onload = () => {
     velocity = new Vector2(0, -0.2);
     gravity = new Vector2(0, 0.35);
     player = new GameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
-    defaultGroundX = window.innerHeight - player.height - 64;
+    defaultGroundX = window.innerHeight - 64 - 40;
     groundBase = defaultGroundX;
     loadLevel();
     this.requestAnimationFrame(game_loop);
@@ -106,7 +107,7 @@ window.onload = () => {
 };
 
 window.onresize = () => {
-    defaultGroundX = window.innerHeight - player.height - 64;
+    defaultGroundX = window.innerHeight - 64 - 40;
     groundBase = defaultGroundX;
     render();
 };
@@ -265,7 +266,9 @@ function game_loop() {
         bottomCollision = false;
     }
     updateplayerposition();
-    //inertia();
+    if (bounce) {
+        inertia();
+    }
     if (rendered < 10) {
         render();
         ++rendered;
@@ -297,20 +300,13 @@ function game_loop() {
 }
 
 function inertia() {
-    if (!inAir) {
-        return;
+    if (leftCollision) {
+        dir.x -= 2;
     }
-    if (dir.x > 0 && right === false) {
-        dir.x -= 0.05;
-        player.position.add(dir);
-        return;
+    if (rightCollision) {
+        dir.x += 2;
     }
-    if (dir.x < 0 && left === false) {
-        dir.x += 0.05;
-        player.position.add(dir);
-        return;
-    }
-
+    bounce = false;
 }
 
 function updateplayerposition() {
@@ -409,13 +405,14 @@ function checkCollision() {
             dir.x = 0;
             dir.y = 1;
             bottomCollision = true;
+            double_jump = 1;
             response = true;
         }
         if (getRight(player) > getLeft(objects[i]) + backgroundX + 5 && getRight(player) < getLeft(objects[i]) + backgroundX + player.width * 1 / 4 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
             console.log("left");
             if (inAir && space) {
                 double_jump = 0;
-                dir.x = -4;
+                bounce = true;
             } else {
                 dir.x = 0;
             }
@@ -426,7 +423,7 @@ function checkCollision() {
             console.log("right");
             if (inAir && space) {
                 double_jump = 0;
-                dir.x = 4;
+                bounce = true;
             } else {
                 dir.x = 0;
             }
