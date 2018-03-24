@@ -4,7 +4,7 @@ var velocity;
 var gravity;
 var context;
 var canvas;
-var ground, pipe, wall;
+var ground, pipe, wall, platform;
 var something;
 var last_player = {
     x: -100,
@@ -81,7 +81,7 @@ function loadLevel() {
     objects.push(new GameObject(ground, canvas.width / 2 + 1956, canvas.height / 2 - 160, 128, 64));
 
     objects.push(new GameObject(ground, canvas.width / 2 + 2200, canvas.height / 2 - 160, 128, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 2264, canvas.height / 2 - 160, 128, 64));
+    objects.push(new GameObject(platform, canvas.width / 2 + 2400, canvas.height / 2 - 160, 256, 32));
     objects.push(new GameObject(ground, canvas.width / 2 + 2756, canvas.height / 2, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 3056, canvas.height / 2, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 3056, canvas.height / 2 - 250, 64, 64));
@@ -90,6 +90,8 @@ function loadLevel() {
     objects.push(new GameObject(wall, canvas.width / 2 + 3600, canvas.height / 2, 64, 512));
     objects.push(new GameObject(wall, canvas.width / 2 + 3800, canvas.height / 8, 64, 512));
     objects.push(new GameObject(wall, canvas.width / 2 + 4000, 100, 64, 512));
+    objects.push(new GameObject(platform, canvas.width / 2 + 4200, canvas.height / 2 + 150, 256, 32));
+
 
 
 
@@ -121,6 +123,7 @@ function loadTextures() {
     walk_2 = new Image();
     walk_3 = new Image();
     walk_4 = new Image();
+    platform = new Image();
     wall = new Image();
     background = new Image();
     ground = new Image();
@@ -133,6 +136,7 @@ function loadTextures() {
     background.src = "../textures/background.png";
     pipe.src = "../textures/pipe.png";
     wall.src = "../textures/wall.png";
+    platform.src = "../textures/platform.png";
 
 }
 
