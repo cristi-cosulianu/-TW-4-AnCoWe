@@ -4,7 +4,7 @@ var velocity;
 var gravity;
 var context;
 var canvas;
-var ground, pipe, wall, platform;
+var ground, pipe, wall, platform, spikes;
 var something;
 var last_player = {
     x: -100,
@@ -64,8 +64,8 @@ window.onresize = () => {
 
 function loadLevel() {
     objects.push(new GameObject(pipe, canvas.width / 2, canvas.height / 2 + 264, 64, 128));
-    objects.push(new GameObject(ground, canvas.width / 2 + 200, canvas.height / 2 + 80, 32, 32));
-    objects.push(new GameObject(ground, canvas.width / 2 + 264, canvas.height / 2 + 40, 64, 64));
+    objects.push(new GameObject(spikes, canvas.width / 2 + 200, canvas.height / 2 + 180, 64, 64));
+    objects.push(new GameObject(spikes, canvas.width / 2 + 264, canvas.height / 2 + 180, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 328, canvas.height / 2 + 0, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 392, canvas.height / 2 - 40, 64, 64));
     objects.push(new GameObject(ground, canvas.width / 2 + 456, canvas.height / 2 - 40, 128, 64));
@@ -124,6 +124,7 @@ function loadTextures() {
     walk_3 = new Image();
     walk_4 = new Image();
     platform = new Image();
+    spikes = new Image();
     wall = new Image();
     background = new Image();
     ground = new Image();
@@ -137,6 +138,7 @@ function loadTextures() {
     pipe.src = "../textures/pipe.png";
     wall.src = "../textures/wall.png";
     platform.src = "../textures/platform.png";
+    spikes.src = "../textures/spikes.png";
 
 }
 
@@ -353,6 +355,9 @@ function checkCollision() {
             console.log("top");
             groundBase = getTop(objects[i]) - player.height;
             topCollision = true;
+            if (objects[i].type === spikes) {
+                console.log("You died");
+            }
             onPlatform = true;
             currentPlatformIndex = i;
             player.position.substract(gravity);
@@ -365,11 +370,17 @@ function checkCollision() {
             dir.x = 0;
             dir.y = 1;
             bottomCollision = true;
+            if (objects[i].type === spikes) {
+                console.log("You died");
+            }
             double_jump = 1;
             response = true;
         }
         if (getRight(player) > getLeft(objects[i]) + backgroundX + 5 && getRight(player) < getLeft(objects[i]) + backgroundX + player.width * 1 / 4 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
             console.log("left");
+            if (objects[i].type === spikes) {
+                console.log("You died");
+            }
             if (inAir && space && objects[i].type === wall) {
                 double_jump = 0;
                 bounce = true;
@@ -382,6 +393,9 @@ function checkCollision() {
         }
         if (getLeft(player) < getRight(objects[i]) + backgroundX + 5 && getLeft(player) > getLeft(objects[i]) + backgroundX + objects[i].width * 3 / 4 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
             console.log("right");
+            if (objects[i].type === spikes) {
+                console.log("You died");
+            }
             if (inAir && space && objects[i].type === wall) {
                 double_jump = 0;
                 bounce = true;
