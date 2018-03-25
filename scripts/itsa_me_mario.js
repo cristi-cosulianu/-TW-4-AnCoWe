@@ -171,7 +171,6 @@ function player_animation(p) {
 }
 
 function render() {
-    console.log(dir);
     canvas.height = window.innerHeight;
     canvas.width = window.innerWidth;
     if (backgroundX > canvas.width) {
@@ -215,9 +214,9 @@ function game_loop() {
     oldplayer = player;
     if (checkCollision()) {
         //player = oldplayer;
-        if (rightCollision) {
+        if (rightCollision && !bounce) {
             left = false;
-        } else if (leftCollision) {
+        } else if (leftCollision && !bounce) {
             right = false;
         }
     } else {
@@ -269,6 +268,7 @@ function inertia() {
         dir.x += 2;
         dir.y = -5;
     }
+    gravity.y = 0.18;
     bounce = false;
 }
 
