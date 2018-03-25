@@ -4,7 +4,7 @@ var velocity;
 var gravity;
 var context;
 var canvas;
-var ground, pipe, wall, platform, spikes;
+var ground, pipe, wall, platform, spikes, crane;
 var something;
 var last_player = {
     x: -100,
@@ -91,10 +91,8 @@ function loadLevel() {
     objects.push(new GameObject(wall, canvas.width / 2 + 3800, canvas.height / 8, 64, 512));
     objects.push(new GameObject(wall, canvas.width / 2 + 4000, 100, 64, 512));
     objects.push(new GameObject(platform, canvas.width / 2 + 4200, canvas.height / 2 + 150, 256, 32));
-
-
-
-
+    objects.push(new GameObject(crane, canvas.width / 2 + 4800, canvas.height / 2 + 150, 32, 64));
+    objects.push(new GameObject(crane, canvas.width / 2 + 4800, canvas.height / 2 + 90, 32, 64));
     objects.sort((a, b) => {
         if (a.position.x > b.position.x)
             return -1;
@@ -127,6 +125,7 @@ function loadTextures() {
     spikes = new Image();
     wall = new Image();
     background = new Image();
+    crane = new Image();
     ground = new Image();
     pipe = new Image();
     ground.src = "../textures/ground.png";
@@ -139,6 +138,7 @@ function loadTextures() {
     wall.src = "../textures/wall.png";
     platform.src = "../textures/platform.png";
     spikes.src = "../textures/spikes.png";
+    crane.src = "../textures/smallwall.png";
 
 }
 
@@ -171,6 +171,7 @@ function player_animation(p) {
 }
 
 function render() {
+    console.log(dir);
     canvas.height = window.innerHeight;
     canvas.width = window.innerWidth;
     if (backgroundX > canvas.width) {
@@ -261,10 +262,12 @@ function game_loop() {
 
 function inertia() {
     if (leftCollision) {
-        dir.x -= 2;
+        dir.x -= 2.5;
+        dir.y = -6;
     }
     if (rightCollision) {
-        dir.x += 2;
+        dir.x += 2.5;
+        dir.y = -6;
     }
     bounce = false;
 }
@@ -305,7 +308,7 @@ function updateplayerposition() {
                 if (dir.x >= 0 && dir.x <= 2) {
                     dir.x += 0.5
                 } else {
-                    dir.x += 0.2;
+                    dir.x += 0.35;
                 }
             }
         }
@@ -323,7 +326,7 @@ function updateplayerposition() {
                 if (dir.x <= 0 && dir.x >= -2) {
                     dir.x -= 0.5;
                 } else {
-                    dir.x -= 0.2;
+                    dir.x -= 0.35;
                 }
             }
         }
