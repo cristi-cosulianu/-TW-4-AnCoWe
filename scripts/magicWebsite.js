@@ -46,7 +46,7 @@ function startSlider(elementId){
 	document.getElementById(elementId).classList.remove('animationInitial');
 }
 
-window.onload = () => {
+window.addEventListener("load", () => {
 	document.getElementById("leftDiv").addEventListener("animationend", function () {
 		document.getElementById("leftDiv").classList.remove('leftCurtain');
 	});
@@ -67,4 +67,4 @@ window.onload = () => {
 	for (var i = 0; i < villains.length; ++i) {
 			addCharacter(villainsDiv, villains[i]);
 	}
-}
+});
