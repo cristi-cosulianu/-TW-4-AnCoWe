@@ -207,7 +207,7 @@ function reset() {
     velocity.x = 0;
     velocity.y = -0.2;
     gravity.x = 0;
-    gravity.y = 0.23;
+    gravity.y = 0.2;
     player.position.y = groundBase;
 }
 
@@ -262,12 +262,12 @@ function game_loop() {
 
 function inertia() {
     if (leftCollision) {
-        dir.x -= 2.5;
-        dir.y = -6;
+        dir.x -= 2;
+        dir.y = -5;
     }
     if (rightCollision) {
-        dir.x += 2.5;
-        dir.y = -6;
+        dir.x += 2;
+        dir.y = -5;
     }
     bounce = false;
 }
@@ -308,7 +308,7 @@ function updateplayerposition() {
                 if (dir.x >= 0 && dir.x <= 2) {
                     dir.x += 0.5
                 } else {
-                    dir.x += 0.35;
+                    dir.x += 0.25;
                 }
             }
         }
@@ -326,7 +326,7 @@ function updateplayerposition() {
                 if (dir.x <= 0 && dir.x >= -2) {
                     dir.x -= 0.5;
                 } else {
-                    dir.x -= 0.35;
+                    dir.x -= 0.25;
                 }
             }
         }
