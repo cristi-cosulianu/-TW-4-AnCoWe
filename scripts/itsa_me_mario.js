@@ -1,6 +1,5 @@
 var dir;
 var player;
-var velocity;
 var gravity;
 var context;
 var canvas;
@@ -47,7 +46,6 @@ window.onload = () => {
     loadAudio();
     loadTextures();
     dir.mul(2);
-    velocity = new Vector2(0, -0.2);
     gravity = new Vector2(0, 0.35);
     player = new GameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
     defaultGroundX = window.innerHeight - 64 - 40;
@@ -201,12 +199,12 @@ function random(min, max) {
 }
 
 function reset() {
+    console.log("WORKS");
     dir.x = 0;
     dir.y = 0;
-    velocity.x = 0;
-    velocity.y = -0.2;
     gravity.x = 0;
     gravity.y = 0.2;
+    double_jump = 0;
     player.position.y = groundBase;
 }
 
@@ -279,7 +277,7 @@ function updateplayerposition() {
         }
         if (getRight(player) < getLeft(objects[currentPlatformIndex]) + backgroundX || getLeft(player) > getRight(objects[currentPlatformIndex]) + backgroundX) {
             onPlatform = false;
-            //player.position.y += 1;
+            player.position.y += 1;
         }
     }
     if (player.position.y < groundBase) {
