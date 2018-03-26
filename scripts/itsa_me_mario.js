@@ -1,6 +1,5 @@
 var dir;
 var player;
-var velocity;
 var gravity;
 var context;
 var canvas;
@@ -47,7 +46,6 @@ window.onload = () => {
     loadAudio();
     loadTextures();
     dir.mul(2);
-    velocity = new Vector2(0, -0.2);
     gravity = new Vector2(0, 0.35);
     player = new GameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
     defaultGroundX = window.innerHeight - 64 - 40;
@@ -203,11 +201,12 @@ function random(min, max) {
 function reset() {
     dir.x = 0;
     dir.y = 0;
-    velocity.x = 0;
-    velocity.y = -0.2;
     gravity.x = 0;
-    gravity.y = 0.2;
+    gravity.y = 0.21;
     player.position.y = groundBase;
+    double_jump = 0;
+
+
 }
 
 function game_loop() {
@@ -273,6 +272,7 @@ function inertia() {
 }
 
 function updateplayerposition() {
+    console.log(dir.y);
     if (objects.length > 0) {
         if (player.position.y < groundBase || !onPlatform) {
             groundBase = defaultGroundX;
@@ -294,7 +294,6 @@ function updateplayerposition() {
     if (player.position.y > groundBase) {
         reset();
         jump_land.play();
-        double_jump = 0;
         inAir = false;
     }
     if (right === true && left === false) {
