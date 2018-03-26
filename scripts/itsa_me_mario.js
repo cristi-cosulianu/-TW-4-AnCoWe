@@ -3,7 +3,7 @@ var player;
 var gravity;
 var context;
 var canvas;
-var ground, pipe, wall, platform, spikes, crane;
+var ground, pipe, wall, platform, spikes, crane, goomba;
 var something;
 var last_player = {
     x: -100,
@@ -91,6 +91,8 @@ function loadLevel() {
     objects.push(new GameObject(platform, canvas.width / 2 + 4200, canvas.height / 2 + 150, 256, 32));
     objects.push(new GameObject(crane, canvas.width / 2 + 4800, canvas.height / 2 + 150, 32, 64));
     objects.push(new GameObject(crane, canvas.width / 2 + 4800, canvas.height / 2 + 90, 32, 64));
+    objects.push(new GameObject(goomba, canvas.width / 2 + 4800, 680, 32, 32));
+
     objects.sort((a, b) => {
         if (a.position.x > b.position.x)
             return -1;
@@ -120,6 +122,7 @@ function loadTextures() {
     walk_3 = new Image();
     walk_4 = new Image();
     platform = new Image();
+    goomba = new Image();
     spikes = new Image();
     wall = new Image();
     background = new Image();
@@ -137,7 +140,7 @@ function loadTextures() {
     platform.src = "../textures/platform.png";
     spikes.src = "../textures/spikes.png";
     crane.src = "../textures/smallwall.png";
-
+    goomba.src = "../textures/goomba.png";
 }
 
 function player_animation(p) {
