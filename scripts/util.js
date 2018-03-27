@@ -61,3 +61,12 @@ function getRight(object) {
 function getLeft(object) {
     return object.position.x;
 }
+
+function getGameObjectCopy(object){
+    var copy = new GameObject(null , null , null , null , null);
+    copy.type = object.type;
+    copy.position = new Vector2(object.position.x , object.position.y)
+    copy.height = object.height;
+    copy.width = object.width;
+    return copy;  
+}

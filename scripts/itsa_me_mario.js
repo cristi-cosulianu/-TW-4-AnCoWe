@@ -20,6 +20,7 @@ var bounce = false;
 var objects = [];
 var gameSpeed = 6;
 var backgroundX = 0;
+var willColideTop = false;
 var right = false,
     left = false,
     space = false;
@@ -46,7 +47,7 @@ window.onload = () => {
     loadAudio();
     loadTextures();
     dir.mul(2);
-    gravity = new Vector2(0, 0.35);
+    gravity = new Vector2(0, 0.21);
     player = new GameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
     defaultGroundX = window.innerHeight - 64 - 40;
     groundBase = defaultGroundX;
@@ -171,6 +172,16 @@ function player_animation(p) {
 
 }
 
+function castRay(startPoint, direction, size) {
+    for (let i = 0; i < size; ++i) {
+        startPoint.position.add(direction);
+        if (checkCollision(startPoint, false) && willColideTop) {
+            console.log("HIT");
+            dir.y = 2;
+        }
+    }
+}
+
 function render() {
     canvas.height = window.innerHeight;
     canvas.width = window.innerWidth;
@@ -208,13 +219,12 @@ function reset() {
     gravity.y = 0.21;
     player.position.y = groundBase;
     double_jump = 0;
-
-
+    willColideTop = false;
 }
 
 function game_loop() {
     oldplayer = player;
-    if (checkCollision()) {
+    if (checkCollision(player, true)) {
         //player = oldplayer;
         if (rightCollision && !bounce) {
             left = false;
@@ -275,7 +285,6 @@ function inertia() {
 }
 
 function updateplayerposition() {
-    console.log(dir.y);
     if (objects.length > 0) {
         if (player.position.y < groundBase || !onPlatform) {
             groundBase = defaultGroundX;
@@ -285,11 +294,16 @@ function updateplayerposition() {
             //player.position.y += 1;
         }
     }
+    if (inAir && dir.y > 0 ) {
+        castRay(getGameObjectCopy(player), new Vector2(0, 1), 10);
+    }
     if (player.position.y < groundBase) {
         animation_stage = 0;
         inAir = true;
         if (Math.abs(dir.y) < 10) {
             dir.add(gravity);
+        } else {
+            gravity.y = 0.1;
         }
         player.position.add(dir);
         currentPlatformIndex = 0;
@@ -353,67 +367,69 @@ function updateplayerposition() {
 }
 
 
-function checkCollision() {
+function checkCollision(player, takeAction) {
     let response = false;
     for (let i = 0; i < objects.length; ++i) {
         if (getTop(player) + player.height * 6 / 10 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX + player.width * 3 / 10 && getLeft(player) < getRight(objects[i]) + backgroundX) {
-            console.log("top");
-            groundBase = getTop(objects[i]) - player.height;
-            topCollision = true;
-            if (objects[i].type === spikes) {
-                console.log("You died");
+            if (takeAction === true) {
+                groundBase = getTop(objects[i]) - player.height;
+                if (objects[i].type === spikes) {
+                    console.log("You died");
+                }
+                onPlatform = true;
+                currentPlatformIndex = i;
+                player.position.substract(gravity);
+                //dir.y = 1;
+                inAir = false;
+                topCollision = true;
             }
-            onPlatform = true;
-            currentPlatformIndex = i;
-            player.position.substract(gravity);
-            //dir.y = 1;
-            inAir = false;
+            else{
+                willColideTop = true;
+            }
             response = true;
         }
         if (getBottom(player) > getBottom(objects[i]) && getTop(player) < getBottom(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX + player.width * 1 / 4 && getLeft(player) < getRight(objects[i]) + backgroundX - player.width * 1 / 4) {
-            console.log("bottom");
-            dir.x = 0;
-            dir.y = 1;
-            bottomCollision = true;
-            if (objects[i].type === spikes) {
-                console.log("You died");
+            if (takeAction === true) {
+                dir.x = 0;
+                dir.y = 1;
+                double_jump = 1;
+                bottomCollision = true;
+
             }
-            double_jump = 1;
             response = true;
         }
         if (getRight(player) > getLeft(objects[i]) + backgroundX + 5 && getRight(player) < getLeft(objects[i]) + backgroundX + player.width * 1 / 4 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
-            console.log("left");
-            if (objects[i].type === spikes) {
-                console.log("You died");
+            if (takeAction === true) {
+                if (inAir && space && objects[i].type === wall) {
+                    double_jump = 0;
+                    bounce = true;
+                    dir.y = 0;
+                } else {
+                    dir.x = 0;
+                }
+                leftCollision = true;
+
             }
-            if (inAir && space && objects[i].type === wall) {
-                double_jump = 0;
-                bounce = true;
-                dir.y = 0;
-            } else {
-                dir.x = 0;
-            }
-            leftCollision = true;
             response = true;
         }
         if (getLeft(player) < getRight(objects[i]) + backgroundX + 5 && getLeft(player) > getLeft(objects[i]) + backgroundX + objects[i].width * 3 / 4 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
-            console.log("right");
-            if (objects[i].type === spikes) {
-                console.log("You died");
+            if (takeAction === true) {
+                if (inAir && space && objects[i].type === wall) {
+                    double_jump = 0;
+                    bounce = true;
+                    dir.y = 0;
+                } else {
+                    dir.x = 0;
+                }
+                rightCollision = true;
+
             }
-            if (inAir && space && objects[i].type === wall) {
-                double_jump = 0;
-                bounce = true;
-                dir.y = 0;
-            } else {
-                dir.x = 0;
-            }
-            rightCollision = true;
             response = true;
         }
     }
     return response;
 }
+
 
 function keyPressed(event) {
     if (event.keyCode === 37 && !rightCollision) {
