@@ -18,13 +18,14 @@ var walk_1, walk_2, walk_3, walk_4;
 var background;
 var bounce = false;
 var objects = [];
-var gameSpeed = 6;
+var gameSpeed = 9;
 var backgroundX = 0;
 var willColideTop = false;
 var right = false,
     left = false,
     space = false;
 var double_jump = 0;
+var movementSpeed = 0;
 var onPlatform = false;
 var inAir = false;
 var groundBase = 606;
@@ -46,7 +47,7 @@ window.onload = () => {
     dir = new Vector2(1, 0);
     loadAudio();
     loadTextures();
-    dir.mul(2);
+    movementSpeed = 3;
     gravity = new Vector2(0, 0.21);
     player = new GameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
     defaultGroundX = window.innerHeight - 64 - 40;
@@ -177,7 +178,7 @@ function castRay(startPoint, direction, size) {
         startPoint.position.add(direction);
         if (checkCollision(startPoint, false) && willColideTop) {
             console.log("HIT");
-            dir.y = 2;
+            dir.normalize();
         }
     }
 }
@@ -216,7 +217,7 @@ function reset() {
     dir.x = 0;
     dir.y = 0;
     gravity.x = 0;
-    gravity.y = 0.21;
+    gravity.y = 0.31;
     player.position.y = groundBase;
     double_jump = 0;
     willColideTop = false;
@@ -271,20 +272,21 @@ function game_loop() {
     //    }
 }
 
-function inertia() {
+function inertia(){ 
     if (leftCollision) {
-        dir.x -= 2;
-        dir.y = -5;
+        dir.x -= movementSpeed;
+        dir.y = -7;
     }
     if (rightCollision) {
-        dir.x += 2;
-        dir.y = -5;
+        dir.x += movementSpeed;
+        dir.y = -7;
     }
-    gravity.y = 0.18;
+    gravity.y = 0.28;
     bounce = false;
 }
 
 function updateplayerposition() {
+    console.log(dir.y);
     if (objects.length > 0) {
         if (player.position.y < groundBase || !onPlatform) {
             groundBase = defaultGroundX;
@@ -295,16 +297,14 @@ function updateplayerposition() {
         }
     }
     if (inAir && dir.y > 0 ) {
-        castRay(getGameObjectCopy(player), new Vector2(0, 1), 10);
+        castRay(getGameObjectCopy(player), new Vector2(0, 1), 15);
     }
     if (player.position.y < groundBase) {
         animation_stage = 0;
         inAir = true;
-        if (Math.abs(dir.y) < 10) {
+        if (Math.abs(dir.y) < 15) {
             dir.add(gravity);
-        } else {
-            gravity.y = 0.1;
-        }
+        } 
         player.position.add(dir);
         currentPlatformIndex = 0;
     }
@@ -315,13 +315,13 @@ function updateplayerposition() {
     }
     if (right === true && left === false) {
         if (dir.x === 0 && !inAir) {
-            dir.x = 2;
+            dir.x = movementSpeed;
         }
         if (!inAir) {
             dir.x = Math.abs(dir.x);
         } else {
-            if (dir.x < 2) {
-                if (dir.x >= 0 && dir.x <= 2) {
+            if (dir.x < movementSpeed) {
+                if (dir.x >= 0 && dir.x <= movementSpeed) {
                     dir.x += 0.5
                 } else {
                     dir.x += 0.25;
@@ -333,13 +333,13 @@ function updateplayerposition() {
     }
     if (left === true && right === false) {
         if (dir.x === 0 && !inAir) {
-            dir.x = -2;
+            dir.x = -movementSpeed;
         }
         if (!inAir) {
             dir.x = -Math.abs(dir.x);
         } else {
-            if (dir.x > -2) {
-                if (dir.x <= 0 && dir.x >= -2) {
+            if (dir.x > -movementSpeed) {
+                if (dir.x <= 0 && dir.x >= -movementSpeed) {
                     dir.x -= 0.5;
                 } else {
                     dir.x -= 0.25;
@@ -353,14 +353,14 @@ function updateplayerposition() {
             ++double_jump;
             dir.y = -1;
             dir.x = 0;
-            dir.mul(5);
+            dir.mul(7);
             player.position.add(dir);
         }
         if (space && (left === true || right === true)) {
             ++double_jump;
             dir.y = -1;
             dir.x = 0;
-            dir.mul(5);
+            dir.mul(7);
             player.position.add(dir);
         }
     }
