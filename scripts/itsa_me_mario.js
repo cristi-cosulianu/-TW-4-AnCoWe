@@ -19,7 +19,7 @@ var walk_1, walk_2, walk_3, walk_4;
 var background;
 var bounce = false;
 var objects = [];
-var gameSpeed = 9;
+var gameSpeed = 8;
 var backgroundX = 0;
 var willColideTop = false;
 var right = false,
@@ -41,7 +41,6 @@ var defaultGroundX = 606;
 window.onload = () => {
     canvas = document.querySelector("#gameCanvas canvas");
     context = canvas.getContext("2d");
-    context.drawImage(canvas, 0, 0);
     document.addEventListener("keydown", keyPressed, false);
     document.addEventListener("keyup", keyReleased, false);
     canvas.height = window.innerHeight;
@@ -255,9 +254,6 @@ function game_loop() {
             player.position.x = canvas.width / 2 - player.width;
         } else if (player.position.x + player.width < player.width) {
             player.position.x = 0;
-        } else if (player.position.y < -player.height) {
-            player.position.y = -player.height;
-            dir.y = 1;
         }
         render();
         last_player.x = player.position.x;
@@ -292,8 +288,8 @@ function inertia() {
 }
 
 function updateplayerposition() {
-    console.log(movementSpeed);
-    if (dir.y > 5) {
+    console.log(dir.y);
+    if (dir.y > 8) {
         movementSpeed = 1;
     }
     if (objects.length > 0) {
@@ -322,7 +318,7 @@ function updateplayerposition() {
         jump_land.play();
         inAir = false;
     }
-    if (right === true && left === false) {
+    if (right === true && left === false && dir.y < 12) {
         if (dir.x === 0 && !inAir) {
             dir.x = movementSpeed;
         }
@@ -340,7 +336,7 @@ function updateplayerposition() {
         ++animation_stage;
         player.position.add(dir);
     }
-    if (left === true && right === false) {
+    if (left === true && right === false && dir.y < 12) {
         if (dir.x === 0 && !inAir) {
             dir.x = -movementSpeed;
         }
