@@ -13,6 +13,7 @@ var jump_sound, background_sound, jump_land;
 var animation_stage = 0;
 var first_press;
 var oldplayer;
+var hasDropDown = true;
 var rendered = 0;
 var walk_1, walk_2, walk_3, walk_4;
 var background;
@@ -40,6 +41,7 @@ var defaultGroundX = 606;
 window.onload = () => {
     canvas = document.querySelector("#gameCanvas canvas");
     context = canvas.getContext("2d");
+    context.drawImage(canvas, 0, 0);
     document.addEventListener("keydown", keyPressed, false);
     document.addEventListener("keyup", keyReleased, false);
     canvas.height = window.innerHeight;
@@ -221,6 +223,7 @@ function reset() {
     player.position.y = groundBase;
     double_jump = 0;
     willColideTop = false;
+    movementSpeed = 3;
 }
 
 function game_loop() {
@@ -252,6 +255,9 @@ function game_loop() {
             player.position.x = canvas.width / 2 - player.width;
         } else if (player.position.x + player.width < player.width) {
             player.position.x = 0;
+        } else if (player.position.y < -player.height) {
+            player.position.y = -player.height;
+            dir.y = 1;
         }
         render();
         last_player.x = player.position.x;
@@ -272,7 +278,7 @@ function game_loop() {
     //    }
 }
 
-function inertia(){ 
+function inertia() {
     if (leftCollision) {
         dir.x -= movementSpeed;
         dir.y = -7;
@@ -286,7 +292,10 @@ function inertia(){
 }
 
 function updateplayerposition() {
-    console.log(dir.y);
+    console.log(movementSpeed);
+    if (dir.y > 5) {
+        movementSpeed = 1;
+    }
     if (objects.length > 0) {
         if (player.position.y < groundBase || !onPlatform) {
             groundBase = defaultGroundX;
@@ -296,15 +305,15 @@ function updateplayerposition() {
             //player.position.y += 1;
         }
     }
-    if (inAir && dir.y > 0 ) {
-        castRay(getGameObjectCopy(player), new Vector2(0, 1), 15);
+    if (inAir && dir.y > 0) {
+        castRay(getGameObjectCopy(player), new Vector2(0, 1), 12);
     }
     if (player.position.y < groundBase) {
         animation_stage = 0;
         inAir = true;
-        if (Math.abs(dir.y) < 15) {
+        if (Math.abs(dir.y) < 12) {
             dir.add(gravity);
-        } 
+        }
         player.position.add(dir);
         currentPlatformIndex = 0;
     }
@@ -382,8 +391,7 @@ function checkCollision(player, takeAction) {
                 //dir.y = 1;
                 inAir = false;
                 topCollision = true;
-            }
-            else{
+            } else {
                 willColideTop = true;
             }
             response = true;
@@ -449,6 +457,10 @@ function keyPressed(event) {
             jump_sound.play();
         }
         space = true;
+    }
+    if (event.keyCode === 40 && inAir && hasDropDown) {
+        dir.y = 11;
+        dir.x = 0;
     }
 }
 
