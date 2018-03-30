@@ -23,12 +23,12 @@
         <div id="menuCanvas" class="fullscreen toTopTransition">
             <header id="gameTitle"></header>
 
-            <nav class="menu"> 
+            <nav class="menu themeText"> 
                 <ul>
-                    <li><a class="menuButtonLink" onclick="sceneTransition('menuCanvas','chooseCaracterCanvas')" href="#chooseCaracterCanvas">Start game</a></li>
-                    <li><a class="menuButtonLink" href="">Options</a></li>
-                    <li><a class="menuButtonLink" href="">Hall Of Fame</a></li>
-                    <li><a class="menuButtonLink" onclick="sceneTransition('menuCanvas','credits');startSlider('slider')" href="#credits">Credits</a></li>
+                    <li><a class="menuButtonLink themeBox" onclick="sceneTransition('menuCanvas','chooseCharacterCanvas')" href="#chooseCharacterCanvas">Start game</a></li>
+                    <li><a class="menuButtonLink themeBox" onclick="sceneTransition('menuCanvas','options')" href="#options">Options</a></li>
+                    <li><a class="menuButtonLink themeBox" onclick="sceneTransition('menuCanvas','hallOfFame')" href="#hallOfFame">Hall Of Fame</a></li>
+                    <li><a class="menuButtonLink themeBox" onclick="sceneTransition('menuCanvas','credits');startSlider('slider')" href="#credits">Credits</a></li>
                 </ul>
             </nav>
         </div>
@@ -56,12 +56,42 @@
             </div>
         </div>
 
+        <!-- - - - - - - - - - - - -  OPTIONS CANVAS - - - - - - - - - - - - -->
+
+        <div id="options" class="fullscreen toBotTransition">
+            
+            <div class="listOfOptions themeBox themeText">
+                <p>adasdasdasdasdas</p>
+            </div>
+
+        </div>
+
+        <!-- - - - - - - - - - - - -  HALL OF FAME CANVAS - - - - - - - - - - - - -->
+
+        <div id="hallOfFame" class="fullscreen toBotTransition">
+            
+            <div class="listOfPlayers themeBox themeText">
+                <ul>
+                    <li>Alex Loghin : 5031</li>
+                    <li>Alex Loghin : 2313</li>
+                    <li>Alex Loghin : 1231</li>
+                    <li>Alex Loghin : 542</li>
+                    <li>Alex Loghin : 140</li>
+                    <li>Alex Loghin : 5031</li>
+                    <li>Alex Loghin : 2313</li>
+                    <li>Alex Loghin : 1231</li>
+                    <li>Alex Loghin : 542</li>
+                    <li>Alex Loghin : 140</li>
+                </ul>
+            </div>
+
+        </div>
 
         <!-- - - - - - - - - - - - -  CHOSE CARACTER CANVAS - - - - - - - - - - - - -->
 
-        <div id="chooseCaracterCanvas" class="fullscreen toBotTransition">
+        <div id="chooseCharacterCanvas" class="fullscreen toBotTransition">
 
-            <ul>
+            <ul class"themeText">
                 <li> Heroes </li>
                 <li> Villans </li>
             </ul>

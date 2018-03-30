@@ -34,6 +34,18 @@ body {
     transition: top 1s 0s;
 }
 
+.themeBox{
+    background-color: rgba(0,0,0,0.5); 
+    border-bottom: 0.25vh black solid;
+    border-top: 0.25vh black solid;
+}
+
+.themeText{
+    font-size: 3vh;
+    text-shadow: 1px 1px 6px;
+    font-family: Courier New, Courier, monospace;
+}
+
 @keyframes leftCurtain {
     0% { right: 100%; }
     50% { right: 50%; }
@@ -105,27 +117,18 @@ body {
     padding-left: 37.5%;
     padding-right: 37.5%;
     padding-top: 4%;
-    font-weight: 500;
-    font-size: 3vh;
 }
 
 nav {
-    font-weight: bold;
     text-align: center;
-    font-family: Courier New, Courier, monospace;
-    color: red;
 }
 
-nav ul {
+ul {
     list-style-type: none;
     padding: 0%;
 }
 
 nav ul li {
-    background-color: rgba(0,0,0,0.5); 
-    border-bottom: 0.25vh black solid;
-    border-top: 0.25vh black solid;
-
     margin-top: 5%;
     margin-bottom: 5%;
     height: 7vh;
@@ -151,6 +154,43 @@ nav ul li a {
 
 .menuButtonLink:active{
     color:darkslategray;
+}
+
+/* ---------------------------------------------------------- OPTIONS CANVAS -- */
+
+#options{
+    background-color: #feda4a
+}
+
+.listOfOptions{
+    position: relative;
+    width: 60%;
+    height: 80%;
+    margin: 10% 20%;
+}
+
+/* ---------------------------------------------------------- HALL OF FAME CANVAS -- */
+
+#hallOfFame{
+    background-color: aquamarine;
+}
+
+.listOfPlayers{
+    position: relative;
+
+    width: 40%;
+    height: 80%;
+    margin: 10% 30%;
+    
+    font-size: 3vh;
+    font-family: Courier New, Courier, monospace;
+}
+
+.listOfPlayers ul li{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
 }
 
 /* ---------------------------------------------------------- CREDITS CANVAS -- */
@@ -222,14 +262,14 @@ nav ul li a {
 
 /* ---------------------------------------------------------- CHOOSE CARACTER CANVAS -- */
 
-#chooseCaracterCanvas {
+#chooseCharacterCanvas {
     height: 90vh;
     width: 90%;
     background-color: tan;
     padding: 5vh 5%;
 }
 
-#chooseCaracterCanvas ul{
+#chooseCharacterCanvas ul{
     height: 10%;
     width: 100%;
     list-style-type: none;
@@ -237,7 +277,7 @@ nav ul li a {
     padding: 0;
 }
 
-#chooseCaracterCanvas ul li{
+#chooseCharacterCanvas ul li{
     text-align: center;
     width: 48%;
     display: inline-block;
@@ -324,7 +364,7 @@ canvas{
         
     }
 
-    #chooseCaracterCanvas ul li{
+    #chooseCharacterCanvas ul li{
         font-size: 5vh;
     }
 
@@ -343,7 +383,7 @@ canvas{
         padding-left: 32.5%;
     }
 
-    #chooseCaracterCanvas ul li{
+    #chooseCharacterCanvas ul li{
         font-size: 5vh;
     }
 
@@ -362,7 +402,7 @@ canvas{
         padding-left: 30%;
     }
 
-    #chooseCaracterCanvas ul li{
+    #chooseCharacterCanvas ul li{
         font-size: 4vh;
     }
 

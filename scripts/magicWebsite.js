@@ -26,7 +26,7 @@ function addCharacter(container, name) {
 					var anchor = document.createElement("a");
 					anchor.setAttribute("class", "buttonGame");
 					anchor.setAttribute("href", "#gameCanvas");
-					anchor.setAttribute("onclick", "sceneTransition(\'chooseCaracterCanvas\',\'gameCanvas\')");
+					anchor.setAttribute("onclick", "sceneTransition(\'chooseCharacterCanvas\',\'gameCanvas\')");
 
 					var image = document.createElement("img");
 					image.setAttribute("src", imgUrl);
