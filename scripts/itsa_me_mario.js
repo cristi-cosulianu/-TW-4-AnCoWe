@@ -148,8 +148,8 @@ function loadTextures() {
 
 function player_animation(p) {
     context.save();
-    context.shadowOffsetX = -3;
-    context.shadowOffsetY = 3;
+    context.shadowOffsetX = -6;
+    context.shadowOffsetY = 6;
     context.shadowColor = "black";
     context.shadowBlur = 20;
     if (p >= 25) {
@@ -230,9 +230,11 @@ function game_loop() {
     if (checkCollision(player, true)) {
         //player = oldplayer;
         if (rightCollision && !bounce) {
-            left = false;
+            //left = false;
+            movementSpeed = 0;
         } else if (leftCollision && !bounce) {
-            right = false;
+//            right = false;
+            movementSpeed = 0;
         }
     } else {
         rightCollision = false;
@@ -402,7 +404,7 @@ function checkCollision(player, takeAction) {
             }
             response = true;
         }
-        if (getRight(player) > getLeft(objects[i]) + backgroundX + 5 && getRight(player) < getLeft(objects[i]) + backgroundX + player.width * 1 / 4 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
+        if (getRight(player) > getLeft(objects[i]) + backgroundX + 5 && getRight(player) < getLeft(objects[i]) + backgroundX + player.width * 1 / 2 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
             if (takeAction === true) {
                 if (inAir && space && objects[i].type === wall) {
                     double_jump = 0;
@@ -455,7 +457,7 @@ function keyPressed(event) {
         space = true;
     }
     if (event.keyCode === 40 && inAir && hasDropDown) {
-        dir.y = 11;
+        dir.y = 7;
         dir.x = 0;
     }
 }
