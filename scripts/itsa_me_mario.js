@@ -230,11 +230,20 @@ function game_loop() {
     if (checkCollision(player, true)) {
         //player = oldplayer;
         if (rightCollision && !bounce) {
-            //left = false;
+            //left = false
             movementSpeed = 0;
+            if (right) {
+                movementSpeed = 3;
+            }
         } else if (leftCollision && !bounce) {
-//            right = false;
+            //right = false;
             movementSpeed = 0;
+            if (left) {
+                movementSpeed = 3;
+            }
+        }
+        if (bounce) {
+            movementSpeed = 3;
         }
     } else {
         rightCollision = false;
@@ -290,7 +299,7 @@ function inertia() {
 }
 
 function updateplayerposition() {
-    console.log(dir.y);
+    console.log(movementSpeed);
     if (dir.y > 8) {
         movementSpeed = 1;
     }
@@ -457,7 +466,7 @@ function keyPressed(event) {
         space = true;
     }
     if (event.keyCode === 40 && inAir && hasDropDown) {
-        dir.y = 7;
+        dir.y = 12;
         dir.x = 0;
     }
 }
