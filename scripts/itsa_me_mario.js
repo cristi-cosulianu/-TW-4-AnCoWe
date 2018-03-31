@@ -151,7 +151,7 @@ function player_animation(p) {
     context.shadowOffsetX = -6;
     context.shadowOffsetY = 6;
     context.shadowColor = "black";
-    context.shadowBlur = 20;
+    context.shadowBlur = 10;
     if (p >= 25) {
         p %= 25;
     }
@@ -185,12 +185,10 @@ function castRay(startPoint, direction, size) {
 }
 
 function render() {
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
     if (backgroundX > canvas.width) {
         backgroundX %= canvas.width;
     }
-    context.restore();
+   //context.restore();
     context.drawImage(background, backgroundX % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background, canvas.width + backgroundX % canvas.width, 0, canvas.width, canvas.height);
     for (let i = 0; i < canvas.width - backgroundX; i += 64) {
@@ -198,12 +196,16 @@ function render() {
     }
     drawObjects();
     player_animation(animation_stage);
+    context.restore();
 }
 
 function drawObjects() {
     for (let i = 0; i < objects.length; ++i) {
         if (getRight(objects[i]) + backgroundX < 0) {
             objects.pop();
+            continue;
+        }
+        if(getLeft(objects[i]) + backgroundX > canvas.width){
             continue;
         }
         context.drawImage(objects[i].type, objects[i].position.x + backgroundX, objects[i].position.y, objects[i].width, objects[i].height);
@@ -299,7 +301,6 @@ function inertia() {
 }
 
 function updateplayerposition() {
-    console.log(movementSpeed);
     if (dir.y > 8) {
         movementSpeed = 1;
     }
@@ -386,6 +387,9 @@ function updateplayerposition() {
 function checkCollision(player, takeAction) {
     let response = false;
     for (let i = 0; i < objects.length; ++i) {
+        if(getLeft(objects[i]) + backgroundX > canvas.width){
+            continue;
+        }
         if (getTop(player) + player.height * 6 / 10 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX + player.width * 3 / 10 && getLeft(player) < getRight(objects[i]) + backgroundX) {
             if (takeAction === true) {
                 groundBase = getTop(objects[i]) - player.height;
