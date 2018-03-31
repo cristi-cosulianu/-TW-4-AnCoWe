@@ -14,6 +14,11 @@ function sceneTransition(firstId, secondId) {
 	}
 }
 
+function startSlider(elementId){
+	document.getElementById(elementId).classList.remove('animationPaused');
+	document.getElementById(elementId).classList.remove('animationInitial');
+}
+
 function addCharacter(container, name) {
 	var url = "https://gateway.marvel.com/v1/public/characters?apikey=15b0df9dd78ed4c3d58e10b0c3d36a57&hash=758e48b905e396fca02324d24f1f7b06&ts=432&name=" + name;
 	var xhttp = new XMLHttpRequest();
@@ -41,11 +46,6 @@ function addCharacter(container, name) {
 	xhttp.send();
 }
 
-function startSlider(elementId){
-	document.getElementById(elementId).classList.remove('animationPaused');
-	document.getElementById(elementId).classList.remove('animationInitial');
-}
-
 window.addEventListener("load", () => {
 	document.getElementById("leftDiv").addEventListener("animationend", function () {
 		document.getElementById("leftDiv").classList.remove('leftCurtain');
@@ -68,3 +68,8 @@ window.addEventListener("load", () => {
 			addCharacter(villainsDiv, villains[i]);
 	}
 });
+
+function afiseazaValoare()
+{
+    console.log(document.querySelector("#volume").value);
+}

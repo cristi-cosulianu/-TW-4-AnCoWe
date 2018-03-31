@@ -164,9 +164,65 @@ nav ul li a {
 
 .listOfOptions{
     position: relative;
-    width: 60%;
-    height: 80%;
-    margin: 10% 20%;
+    width: 60vw;
+    height: 80vh;
+    margin: 10vh 20vw;
+}
+
+.listOfOptions > ul {
+    position: relative;
+    width: 50%;
+    height: 20%;
+    margin: 2vh 2vw;
+}
+
+.listOfOptions > ul li{
+    width: 100%;
+    padding: 2vh 0;
+}
+
+.listOfOptions > ul li p{
+    display: inline-block;
+    margin: 0;
+    position: relative;
+    width: 30%;
+}
+
+.listOfOptions > ul li input{
+    display: inline-block;
+    position: relative;
+    width: 50%;
+}
+
+.changeKeys{
+    position: relative;
+    height: 60%;
+    margin: 2vh 2vw;
+}
+
+.changeKeys > ul li{
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.changeKeys > ul li p{
+    position: relative;
+    float: left;
+    width: 30%;
+}
+
+.changeKeys > ul li a{
+    float: right;
+    margin: 3vh 0;
+}
+
+.changeKeys > ul li a:hover{
+    color: aqua;
+}
+
+.soundOption{
+
 }
 
 /* ---------------------------------------------------------- HALL OF FAME CANVAS -- */
@@ -178,10 +234,10 @@ nav ul li a {
 .listOfPlayers{
     position: relative;
 
-    width: 40%;
-    height: 80%;
-    margin: 10% 30%;
-    
+    width: 40vw;
+    height: 80vh;
+    margin: 10vh 30vw;
+
     font-size: 3vh;
     font-family: Courier New, Courier, monospace;
 }
@@ -267,6 +323,7 @@ nav ul li a {
     width: 90%;
     background-color: tan;
     padding: 5vh 5%;
+    overflow: hidden;
 }
 
 #chooseCharacterCanvas ul{
@@ -278,7 +335,7 @@ nav ul li a {
 }
 
 #chooseCharacterCanvas ul li{
-    text-align: center;
+    text-align: center; 
     width: 48%;
     display: inline-block;
     color: black;
@@ -294,7 +351,7 @@ nav ul li a {
     height: 90%;
     padding: 0% 2%;
     text-align: center;
-    overflow-y: auto;
+    overflow-y: scroll;
     float: left;
     display: flex;
     flex-direction: row;
