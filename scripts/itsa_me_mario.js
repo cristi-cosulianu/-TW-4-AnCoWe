@@ -15,11 +15,11 @@ var first_press;
 var oldplayer;
 var hasDropDown = true;
 var rendered = 0;
+var maxLeftBound = 0;
 var walk_1, walk_2, walk_3, walk_4;
 var background;
 var bounce = false;
 var objects = [];
-var gameSpeed = 8;
 var backgroundX = 0;
 var willColideTop = false;
 var right = false,
@@ -37,6 +37,7 @@ var rightCollision = false,
 var spriteSize;
 var currentPlatformIndex = 0;
 var defaultGroundX = 606;
+const speed = 2;
 
 window.onload = () => {
     canvas = document.querySelector("#gameCanvas canvas");
@@ -48,7 +49,7 @@ window.onload = () => {
     dir = new Vector2(1, 0);
     loadAudio();
     loadTextures();
-    movementSpeed = 3;
+    movementSpeed = speed;
     gravity = new Vector2(0, 0.21);
     player = new GameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
     defaultGroundX = window.innerHeight - 64 - 40;
@@ -188,7 +189,7 @@ function render() {
     if (backgroundX > canvas.width) {
         backgroundX %= canvas.width;
     }
-   //context.restore();
+    //context.restore();
     context.drawImage(background, backgroundX % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background, canvas.width + backgroundX % canvas.width, 0, canvas.width, canvas.height);
     for (let i = 0; i < canvas.width - backgroundX; i += 64) {
@@ -205,7 +206,7 @@ function drawObjects() {
             objects.pop();
             continue;
         }
-        if(getLeft(objects[i]) + backgroundX > canvas.width){
+        if (getLeft(objects[i]) + backgroundX > canvas.width) {
             continue;
         }
         context.drawImage(objects[i].type, objects[i].position.x + backgroundX, objects[i].position.y, objects[i].width, objects[i].height);
@@ -224,10 +225,13 @@ function reset() {
     player.position.y = groundBase;
     double_jump = 0;
     willColideTop = false;
-    movementSpeed = 3;
+    movementSpeed = speed;
 }
 
 function game_loop() {
+    if (backgroundX < maxLeftBound) {
+        maxLeftBound = backgroundX;
+    }
     oldplayer = player;
     if (checkCollision(player, true)) {
         //player = oldplayer;
@@ -235,19 +239,22 @@ function game_loop() {
             //left = false
             movementSpeed = 0;
             if (right) {
-                movementSpeed = 3;
+                movementSpeed = speed;
             }
         } else if (leftCollision && !bounce) {
             //right = false;
             movementSpeed = 0;
             if (left) {
-                movementSpeed = 3;
+                movementSpeed = speed;
             }
         }
         if (bounce) {
-            movementSpeed = 3;
+            movementSpeed = speed;
         }
     } else {
+        if (backgroundX - dir.x < 0 && (right || left) && backgroundX - dir.x * 2.5 <= maxLeftBound + 50) {
+            backgroundX -= dir.x * 2.5;
+        }
         rightCollision = false;
         leftCollision = false;
         topCollision = false;
@@ -262,11 +269,14 @@ function game_loop() {
         ++rendered;
     }
     if (player.position.x != last_player.x || player.position.y != last_player.y) {
-        if (player.position.x + player.width > canvas.width / 2) {
-            backgroundX -= gameSpeed;
-            player.position.x = canvas.width / 2 - player.width;
-        } else if (player.position.x + player.width < player.width) {
+        if (player.position.x + player.width < player.width) {
             player.position.x = 0;
+        }
+        if (player.position.x + player.width > canvas.width / 2) {
+            player.position.x = canvas.width / 2 - player.width;
+        }
+        if (player.position.x + player.width > canvas.width) {
+            player.position.x = canvas.width - player.width;
         }
         render();
         last_player.x = player.position.x;
@@ -301,6 +311,7 @@ function inertia() {
 }
 
 function updateplayerposition() {
+    console.log(maxLeftBound);
     if (dir.y > 8) {
         movementSpeed = 1;
     }
@@ -387,7 +398,7 @@ function updateplayerposition() {
 function checkCollision(player, takeAction) {
     let response = false;
     for (let i = 0; i < objects.length; ++i) {
-        if(getLeft(objects[i]) + backgroundX > canvas.width){
+        if (getLeft(objects[i]) + backgroundX > canvas.width) {
             continue;
         }
         if (getTop(player) + player.height * 6 / 10 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX + player.width * 3 / 10 && getLeft(player) < getRight(objects[i]) + backgroundX) {
