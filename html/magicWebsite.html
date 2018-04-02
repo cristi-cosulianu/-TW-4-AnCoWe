@@ -61,9 +61,45 @@
         <div id="options" class="fullscreen toBotTransition">
             
             <div class="listOfOptions themeBox themeText">
-                <p>adasdasdasdasdas</p>
-            </div>
+                <ul>
+                    <li class="soundOption">
+                        <p>MUSIC</p>
 
+                        <input id="volume" type="range" min="0" max="1" value="1" step="0.1" onclick="afiseazaValoare()">        
+                    </li>
+                                    
+                    <li class="soundOption">
+                        <p>SOUND</p>
+                        <input id="volume" type="range" min="0" max="1" value="1" step="0.1" onclick="afiseazaValoare()">
+                    </li>
+                </ul>
+                
+                <div class="changeKeys">
+                    <ul>
+                        <li>
+                            <p>LEFT</p>
+                            <a>Left arrow</a>
+                        </li>
+                        <li>
+                            <p>RIGHT</p>
+                            <a>Right arrow</a>
+                        </li>
+                        <li>
+                            <p>DOWN</p>
+                            <a>Down arrow</a>
+                        </li>
+                        <li>
+                            <p>DASH</p>
+                            <a>Shift</a>
+                        </li>
+                        <li>
+                            <p>JUMP</p>
+                            <a>Space</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
         </div>
 
         <!-- - - - - - - - - - - - -  HALL OF FAME CANVAS - - - - - - - - - - - - -->
@@ -95,7 +131,7 @@
                 <li> Heroes </li>
                 <li> Villans </li>
             </ul>
-
+            
             <div id="heroes" class="caractersTable"></div>
             <div id="villains" class="caractersTable"></div>
 
