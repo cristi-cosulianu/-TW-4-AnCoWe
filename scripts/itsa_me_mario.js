@@ -17,7 +17,7 @@ var hasDropDown = true;
 var rendered = 0;
 var maxLeftBound = 0;
 var walk_1, walk_2, walk_3, walk_4;
-var background;
+var background_layer1, background_layer2, background_layer3, background_layer4, background_layer5, background_layer6, background_layer7;
 var bounce = false;
 var objects = [];
 var backgroundX = 0;
@@ -129,7 +129,13 @@ function loadTextures() {
     goomba = new Image();
     spikes = new Image();
     wall = new Image();
-    background = new Image();
+    background_layer1 = new Image();
+    background_layer2 = new Image();
+    background_layer3 = new Image();
+    background_layer4 = new Image();
+    background_layer5 = new Image();
+    background_layer6 = new Image();
+    background_layer7 = new Image();
     crane = new Image();
     ground = new Image();
     pipe = new Image();
@@ -138,7 +144,13 @@ function loadTextures() {
     walk_2.src = "../textures/Hat_man/Walk/Hat_man2.png";
     walk_3.src = "../textures/Hat_man/Walk/Hat_man3.png";
     walk_4.src = "../textures/Hat_man/Walk/Hat_man4.png";
-    background.src = "../textures/background.png";
+    background_layer1.src = "../textures/background/sky.png";
+    background_layer2.src = "../textures/background/mountains.png";
+    background_layer3.src = "../textures/background/cloud_lonely.png";
+    background_layer4.src = "../textures/background/clouds_BG.png";
+    background_layer5.src = "../textures/background/clouds_MG_3.png";
+    background_layer6.src = "../textures/background/clouds_MG_2.png";
+    background_layer7.src = "../textures/background/clouds_MG_1.png";
     pipe.src = "../textures/pipe.png";
     wall.src = "../textures/wall.png";
     platform.src = "../textures/platform.png";
@@ -179,7 +191,6 @@ function castRay(startPoint, direction, size) {
     for (let i = 0; i < size; ++i) {
         startPoint.position.add(direction);
         if (checkCollision(startPoint, false) && willColideTop) {
-            console.log("HIT");
             dir.normalize();
         }
     }
@@ -189,15 +200,27 @@ function render() {
     if (backgroundX > canvas.width) {
         backgroundX %= canvas.width;
     }
-    //context.restore();
-    context.drawImage(background, backgroundX % canvas.width, 0, canvas.width, canvas.height);
-    context.drawImage(background, canvas.width + backgroundX % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer1, backgroundX % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer1, canvas.width + backgroundX % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer2, backgroundX / 5 % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer2, canvas.width + backgroundX / 5 % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer3, backgroundX / 4 % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer3, canvas.width + backgroundX / 4 % canvas.width, 0, canvas.width, canvas.height);
+    //    context.drawImage(background_layer4, backgroundX % canvas.width, 0, canvas.width, canvas.height);
+    //    context.drawImage(background_layer4, canvas.width + backgroundX % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer5, backgroundX / 2 % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer5, canvas.width + backgroundX / 2 % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer6, backgroundX / 1.5 % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer6, canvas.width + backgroundX / 1.5 % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer7, backgroundX % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer7, canvas.width + backgroundX % canvas.width, 0, canvas.width, canvas.height);
     for (let i = 0; i < canvas.width - backgroundX; i += 64) {
         context.drawImage(ground, i + backgroundX, defaultGroundX + 64, 64, 64);
     }
     drawObjects();
     player_animation(animation_stage);
     context.restore();
+
 }
 
 function drawObjects() {
@@ -211,10 +234,6 @@ function drawObjects() {
         }
         context.drawImage(objects[i].type, objects[i].position.x + backgroundX, objects[i].position.y, objects[i].width, objects[i].height);
     }
-}
-
-function random(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 function reset() {
@@ -253,7 +272,17 @@ function game_loop() {
         }
     } else {
         if (backgroundX - dir.x < 0 && (right || left) && backgroundX - dir.x * 2.5 <= maxLeftBound + 50) {
-            backgroundX -= dir.x * 2.5;
+            if (right && left) {
+
+            } else if (dir.x === 0) {
+                if (right) {
+                    backgroundX -= speed * 2.5;
+                } else if (left) {
+                    backgroundX += speed * 2.5;
+                }
+            } else {
+                backgroundX -= dir.x * 2.5;
+            }
         }
         rightCollision = false;
         leftCollision = false;
@@ -311,7 +340,7 @@ function inertia() {
 }
 
 function updateplayerposition() {
-    console.log(maxLeftBound);
+    console.log(dir.x);
     if (dir.y > 8) {
         movementSpeed = 1;
     }
@@ -321,7 +350,6 @@ function updateplayerposition() {
         }
         if (getRight(player) < getLeft(objects[currentPlatformIndex]) + backgroundX || getLeft(player) > getRight(objects[currentPlatformIndex]) + backgroundX) {
             onPlatform = false;
-            //player.position.y += 1;
         }
     }
     if (inAir && dir.y > 0) {
