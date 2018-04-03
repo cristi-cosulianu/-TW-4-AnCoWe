@@ -110,9 +110,9 @@ function loadAudio() {
     jump_sound = new Audio();
     jump_land = new Audio();
     background_sound = new Audio();
-    background_sound.src = "../sound/04-Sanctuary.mp3";
+    background_sound.src = "../sound/background_sound.mp3";
     background_sound.loop = true;
-    background_sound.volume = 0.8;
+    background_sound.volume = 0.4;
     jump_sound.src = "../sound/jump_sound.mp3";
     jump_sound.volume = 0.1;
     jump_land.src = "../sound/jump_land.mp3";
@@ -499,7 +499,7 @@ function keyPressed(event) {
             animation_stage = 5;
             first_press = true;
         }
-        //background_sound.play();
+        background_sound.play();
     }
     if (event.keyCode === 32) {
         if (double_jump < 3) {
