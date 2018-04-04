@@ -276,12 +276,12 @@ function game_loop() {
 
             } else if (dir.x === 0) {
                 if (right) {
-                    backgroundX -= speed * 2.5;
+                    backgroundX -= speed * 3;
                 } else if (left) {
-                    backgroundX += speed * 2.5;
+                    backgroundX += speed * 3;
                 }
             } else {
-                backgroundX -= dir.x * 2.5;
+                backgroundX -= dir.x * 3;
             }
         }
         rightCollision = false;
@@ -377,7 +377,7 @@ function updateplayerposition() {
             dir.x = Math.abs(dir.x);
         } else {
             if (dir.x < movementSpeed) {
-                if (dir.x >= 0 && dir.x <= movementSpeed) {
+                if (dir.x > 0 && dir.x <= movementSpeed) {
                     dir.x += 0.5
                 } else {
                     dir.x += 0.25;
@@ -395,7 +395,7 @@ function updateplayerposition() {
             dir.x = -Math.abs(dir.x);
         } else {
             if (dir.x > -movementSpeed) {
-                if (dir.x <= 0 && dir.x >= -movementSpeed) {
+                if (dir.x < 0 && dir.x >= -movementSpeed) {
                     dir.x -= 0.5;
                 } else {
                     dir.x -= 0.25;
