@@ -38,6 +38,7 @@ var spriteSize;
 var currentPlatformIndex = 0;
 var defaultGroundX = 606;
 const speed = 2;
+const cameraSoftness = 1;
 
 window.onload = () => {
     canvas = document.querySelector("#gameCanvas canvas");
@@ -276,12 +277,12 @@ function game_loop() {
 
             } else if (dir.x === 0) {
                 if (right) {
-                    backgroundX -= speed * 3;
+                    backgroundX -= speed * 2.75 + cameraSoftness;
                 } else if (left) {
-                    backgroundX += speed * 3;
+                    backgroundX += speed * 2.75 - cameraSoftness;
                 }
             } else {
-                backgroundX -= dir.x * 3;
+                backgroundX -= dir.x * 2.75 + cameraSoftness;
             }
         }
         rightCollision = false;
@@ -377,9 +378,9 @@ function updateplayerposition() {
             dir.x = Math.abs(dir.x);
         } else {
             if (dir.x < movementSpeed) {
-                if (dir.x > 0 && dir.x <= movementSpeed) {
+                if (dir.x > 0 && dir.x + 0.5 < movementSpeed) {
                     dir.x += 0.5
-                } else {
+                } else if (dir.x < movementSpeed) {
                     dir.x += 0.25;
                 }
             }
@@ -395,9 +396,9 @@ function updateplayerposition() {
             dir.x = -Math.abs(dir.x);
         } else {
             if (dir.x > -movementSpeed) {
-                if (dir.x < 0 && dir.x >= -movementSpeed) {
+                if (dir.x < 0 && dir.x - 0.5 > -movementSpeed) {
                     dir.x -= 0.5;
-                } else {
+                } else if (dir.x > -movementSpeed) {
                     dir.x -= 0.25;
                 }
             }
