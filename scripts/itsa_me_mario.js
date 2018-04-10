@@ -17,6 +17,7 @@ var hasDropDown = true;
 var rendered = 0;
 var maxLeftBound = 0;
 var walk_1, walk_2, walk_3, walk_4;
+var smoke_1, smoke_2, smoke_3, smoke_4;
 var background_layer1, background_layer2, background_layer3, background_layer4, background_layer5, background_layer6, background_layer7;
 var bounce = false;
 var objects = [];
@@ -126,6 +127,10 @@ function loadTextures() {
     walk_2 = new Image();
     walk_3 = new Image();
     walk_4 = new Image();
+    smoke_1 = new Image();
+    smoke_2 = new Image();
+    smoke_3 = new Image();
+    smoke_4 = new Image();
     platform = new Image();
     goomba = new Image();
     spikes = new Image();
@@ -145,6 +150,10 @@ function loadTextures() {
     walk_2.src = "../textures/Hat_man/Walk/Hat_man2.png";
     walk_3.src = "../textures/Hat_man/Walk/Hat_man3.png";
     walk_4.src = "../textures/Hat_man/Walk/Hat_man4.png";
+    smoke_1.src = "../textures/Smoke/smoke_1.png";
+    smoke_2.src = "../textures/Smoke/smoke_2.png";
+    smoke_3.src = "../textures/Smoke/smoke_3.png";
+    smoke_4.src = "../textures/Smoke/smoke_4.png";
     background_layer1.src = "../textures/background/sky.png";
     background_layer2.src = "../textures/background/mountains.png";
     background_layer3.src = "../textures/background/cloud_lonely.png";
@@ -162,12 +171,30 @@ function loadTextures() {
 
 function player_animation(p) {
     context.save();
-    context.shadowOffsetX = -6;
+    if (left) {
+        context.translate(2 * player.position.x + player.width, 0);
+        context.scale(-1, 1);
+    }
+    context.shadowOffsetX = -3;
     context.shadowOffsetY = 6;
     context.shadowColor = "black";
     context.shadowBlur = 10;
-    if (p >= 25) {
-        p %= 25;
+    if (p > 0 && !inAir) {
+        if (p < 10) {
+            context.drawImage(smoke_1, player.position.x - 30, player.position.y + player.height - 24);
+        }
+        if (p < 14) {
+            context.drawImage(smoke_2, player.position.x - 30, player.position.y + player.height - 24);
+
+        }
+        if (p < 18) {
+            context.drawImage(smoke_3, player.position.x - 30, player.position.y + player.height - 24);
+
+        }
+        if (p < 24) {
+            context.drawImage(smoke_4, player.position.x - 30, player.position.y + player.height - 24);
+
+        }
     }
     if (p % 25 < 6) {
         context.drawImage(walk_1, player.position.x, player.position.y, player.width, player.height);
@@ -175,6 +202,7 @@ function player_animation(p) {
     }
     if (p % 25 < 12) {
         context.drawImage(walk_2, player.position.x, player.position.y, player.width, player.height);
+
         return;
     }
     if (p % 25 < 18) {
@@ -249,7 +277,7 @@ function reset() {
 }
 
 function game_loop() {
-    console.log(cameraSpeed);
+    console.log(animation_stage);
     if (backgroundX < maxLeftBound) {
         maxLeftBound = backgroundX;
     }
@@ -275,10 +303,12 @@ function game_loop() {
         }
     } else {
         if (Math.abs(cameraSpeed + dir.x / 10) <= 2) {
-            cameraSpeed += dir.x / 10;
+            if (!right || !left)
+                cameraSpeed += dir.x / 10;
         }
         if (backgroundX - cameraSpeed * 2.75 < 0 && (right || left) && backgroundX - cameraSpeed * 2.75 <= maxLeftBound + 50) {
-            backgroundX -= cameraSpeed * 2.75;
+            if (!right || !left)
+                backgroundX -= cameraSpeed * 2.75;
         }
         rightCollision = false;
         leftCollision = false;
@@ -355,7 +385,7 @@ function updateplayerposition() {
         castRay(getGameObjectCopy(player), new Vector2(0, 1), 12);
     }
     if (player.position.y < groundBase) {
-        animation_stage = 0;
+        animation_stage = 25;
         inAir = true;
         if (Math.abs(dir.y) < 12) {
             dir.add(gravity);
@@ -401,6 +431,7 @@ function updateplayerposition() {
                 }
             }
         }
+        ++animation_stage;
         player.position.add(dir);
     }
     if (double_jump < 1 && Math.abs(dir.y) <= 6) {
@@ -516,6 +547,7 @@ function keyPressed(event) {
 function keyReleased(event) {
 
     if (event.keyCode === 37) {
+        animation_stage = 0;
         left = false;
     }
     if (event.keyCode === 39) {
