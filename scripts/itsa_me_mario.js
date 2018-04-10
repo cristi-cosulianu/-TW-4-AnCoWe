@@ -277,7 +277,6 @@ function reset() {
 }
 
 function game_loop() {
-    console.log(animation_stage);
     if (backgroundX < maxLeftBound) {
         maxLeftBound = backgroundX;
     }
@@ -459,7 +458,7 @@ function checkCollision(player, takeAction) {
         if (getLeft(objects[i]) + backgroundX > canvas.width) {
             continue;
         }
-        if (getTop(player) + player.height * 6 / 10 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX + player.width * 3 / 10 && getLeft(player) < getRight(objects[i]) + backgroundX) {
+        if (getTop(player) + player.height * 6 / 10 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && ((getRight(player) - 10 > getLeft(objects[i]) + backgroundX && getRight(player) < getRight(objects[i]) + backgroundX) || (getLeft(player) + 10 < getRight(objects[i]) + backgroundX && getLeft(player) > getLeft(objects[i]) + backgroundX))) {
             if (takeAction === true) {
                 groundBase = getTop(objects[i]) - player.height;
                 if (objects[i].type === spikes) {
@@ -471,6 +470,8 @@ function checkCollision(player, takeAction) {
                 //dir.y = 1;
                 inAir = false;
                 topCollision = true;
+                console.log("top");
+
             } else {
                 willColideTop = true;
             }
@@ -482,33 +483,37 @@ function checkCollision(player, takeAction) {
                 dir.y = 1;
                 double_jump = 1;
                 bottomCollision = true;
+                console.log("bottom");
+
 
             }
             response = true;
         }
-        if (getRight(player) > getLeft(objects[i]) + backgroundX + 5 && getRight(player) < getLeft(objects[i]) + backgroundX + player.width * 1 / 2 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
+        if (getRight(player) > getLeft(objects[i]) + backgroundX && getRight(objects[i]) + backgroundX > getRight(player) && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i]) + 5) {
             if (takeAction === true) {
-                if (inAir && space && objects[i].type === wall) {
+                if (inAir && space && objects[i].type === wall && !bottomCollision) {
                     double_jump = 0;
                     bounce = true;
                     dir.y = 0;
                 } else {
                     dir.x = 0;
                 }
+                console.log("left");
                 leftCollision = true;
 
             }
             response = true;
         }
-        if (getLeft(player) < getRight(objects[i]) + backgroundX + 5 && getLeft(player) > getLeft(objects[i]) + backgroundX + objects[i].width * 3 / 4 && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i])) {
+        if (getLeft(player) < getRight(objects[i]) + backgroundX && getLeft(objects[i]) + backgroundX < getLeft(player) && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i]) + 5) {
             if (takeAction === true) {
-                if (inAir && space && objects[i].type === wall) {
+                if (inAir && space && objects[i].type === wall && !bottomCollision) {
                     double_jump = 0;
                     bounce = true;
                     dir.y = 0;
                 } else {
                     dir.x = 0;
                 }
+                console.log("right");
                 rightCollision = true;
 
             }
