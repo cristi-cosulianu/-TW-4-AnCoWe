@@ -55,6 +55,7 @@ window.onload = () => {
     defaultGroundX = window.innerHeight - 64 - 40;
     groundBase = defaultGroundX;
     loadLevel();
+    makeSynchronousRequest("http://localhost:3000/game?action=start&player=1");
     this.requestAnimationFrame(game_loop);
 };
 
@@ -367,6 +368,8 @@ function inertia() {
 }
 
 function updateplayerposition() {
+    var data = JSON.parse(makeSynchronousRequest("http://localhost:3000/game?action=get-data&player=1"));
+    updateData(data);
     if (dir.y > 8) {
         movementSpeed = 1;
     }
@@ -513,7 +516,6 @@ function checkCollision(player, takeAction) {
                 }
                 console.log("right");
                 rightCollision = true;
-
             }
             response = true;
         }
@@ -523,11 +525,14 @@ function checkCollision(player, takeAction) {
 
 
 function keyPressed(event) {
+    keyPressed = true;
     if (event.keyCode === 37 && !rightCollision) {
-        left = true;
+        //left = true;
+        makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&player=1&keycode=37");
     }
     if (event.keyCode === 39 && !leftCollision) {
-        right = true;
+        makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&player=1&keycode=39");
+        // right = true;
         if (first_press === false) {
             animation_stage = 5;
             first_press = true;
@@ -535,11 +540,13 @@ function keyPressed(event) {
         background_sound.play();
     }
     if (event.keyCode === 32) {
+        makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&player=1&keycode=32");
+
         if (double_jump < 3) {
             jump_sound.load();
             jump_sound.play();
         }
-        space = true;
+        //space = true;
     }
     if (event.keyCode === 40 && inAir && hasDropDown) {
         dir.y = 12;
@@ -548,17 +555,25 @@ function keyPressed(event) {
 }
 
 function keyReleased(event) {
-
     if (event.keyCode === 37) {
+        makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=37");
         animation_stage = 0;
-        left = false;
+        // left = false;
     }
     if (event.keyCode === 39) {
+        makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=39");
         animation_stage = 0;
-        right = false;
+        //right = false;
         first_press = false;
     }
     if (event.keyCode === 32) {
-        space = false;
+        makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=32");
+        // space = false;
     }
+}
+
+function updateData(data) {
+    right = data.right;
+    left = data.left;
+    space = data.space;
 }

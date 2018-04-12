@@ -1,4 +1,5 @@
 const fs = require('fs');
+const gameData = require('./gameData.js');
 
 module.exports = {
 	processRequest: function(params) {
@@ -32,11 +33,11 @@ startGame = function(player, info) {
 	// put start data here as JSON object
 	// var data = queryParams['info'];
 
-	data = { attr: "fe" };
+	data = new gameData();
 
 	fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
 	  if (err) throw err;
-	  console.log('Saved!');
+	  //console.log('Saved!');
 	});
 	
 	return { code: 200, message: 'startGame' };
@@ -44,12 +45,19 @@ startGame = function(player, info) {
 
 keyPressed = function(player, keycode) {
 	var data = JSON.parse(fs.readFileSync('server/data/' + player + '.txt'));
-	
 	// do stuff with data
-	
+    if(keycode == 37){
+        data.left = true;
+    }
+        if(keycode == 39){
+        data.right = true;
+    }
+    if(keycode == 32){
+        data.space = true;
+    }
 	fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
 	  if (err) throw err;
-	  console.log('Saved!');
+	 // console.log('Saved!');
 	});
 	
 	return { code: 200, message: 'key-pressed' };
@@ -57,12 +65,18 @@ keyPressed = function(player, keycode) {
 
 keyReleased = function(player, keycode) {
 	var data = JSON.parse(fs.readFileSync('server/data/' + player + '.txt'));
-	
-	// do stuff with data
-	
+    if(keycode == 37){
+        data.left = false;
+    }
+        if(keycode == 39){
+        data.right = false;
+    }
+    if(keycode == 32){
+        data.space = false;
+    }
 	fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
 	  if (err) throw err;
-	  console.log('Saved!');
+	  //console.log('Saved!');
 	});
 	
 	return { code: 200, message: 'key-released' };
@@ -75,7 +89,7 @@ resize = function(player, info) {
 	
 	fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
 	  if (err) throw err;
-	  console.log('Saved!');
+	  //console.log('Saved!');
 	});
 	
 	return { code: 200, message: 'resize' };

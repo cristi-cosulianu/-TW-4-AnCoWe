@@ -1,3 +1,6 @@
+var xmlRequest = new XMLHttpRequest();
+
+
 class Vector2 {
     constructor(x, y) {
         this.x = x;
@@ -62,11 +65,17 @@ function getLeft(object) {
     return object.position.x;
 }
 
-function getGameObjectCopy(object){
-    var copy = new GameObject(null , null , null , null , null);
+function getGameObjectCopy(object) {
+    var copy = new GameObject(null, null, null, null, null);
     copy.type = object.type;
-    copy.position = new Vector2(object.position.x , object.position.y)
+    copy.position = new Vector2(object.position.x, object.position.y)
     copy.height = object.height;
     copy.width = object.width;
-    return copy;  
+    return copy;
+}
+
+function makeSynchronousRequest(url) {
+    xmlRequest.open("GET", url, false);
+    xmlRequest.send();
+    return xmlRequest.response;
 }

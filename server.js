@@ -4,7 +4,6 @@ const fs = require('fs');
 const path = require('path');
 var mime = require('mime-types');
 const game = require('./server/game.js');
-
 const hostname = '127.0.0.1';
 const port = 3000;
 
@@ -28,7 +27,7 @@ const server = http.createServer((req, res) => {
 	}
 	
 	var filename = '.' + pathname;
-	console.log(filename);
+	//console.log(filename);
 	
 	fs.readFile(filename,function (err, data) {
 		if(!err) {
