@@ -34,7 +34,7 @@ startGame = function(player, info) {
 
 	data = { attr: "fe" };
 
-	fs.writeFile('data/' + player + '.txt', JSON.stringify(data), function (err) {
+	fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
 	  if (err) throw err;
 	  console.log('Saved!');
 	});
@@ -43,11 +43,11 @@ startGame = function(player, info) {
 };
 
 keyPressed = function(player, keycode) {
-	var data = JSON.parse(fs.readFileSync('data/' + player + '.txt'));
+	var data = JSON.parse(fs.readFileSync('server/data/' + player + '.txt'));
 	
 	// do stuff with data
 	
-	fs.writeFile('data/' + player + '.txt', JSON.stringify(data), function (err) {
+	fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
 	  if (err) throw err;
 	  console.log('Saved!');
 	});
@@ -56,11 +56,11 @@ keyPressed = function(player, keycode) {
 }
 
 keyReleased = function(player, keycode) {
-	var data = JSON.parse(fs.readFileSync('data/' + player + '.txt'));
+	var data = JSON.parse(fs.readFileSync('server/data/' + player + '.txt'));
 	
 	// do stuff with data
 	
-	fs.writeFile('data/' + player + '.txt', JSON.stringify(data), function (err) {
+	fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
 	  if (err) throw err;
 	  console.log('Saved!');
 	});
@@ -69,11 +69,11 @@ keyReleased = function(player, keycode) {
 }
 
 resize = function(player, info) {
-	var data = JSON.parse(fs.readFileSync('data/' + player + '.txt'));
+	var data = JSON.parse(fs.readFileSync('server/data/' + player + '.txt'));
 	
 	// do stuff with data
 	
-	fs.writeFile('data/' + player + '.txt', JSON.stringify(data), function (err) {
+	fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
 	  if (err) throw err;
 	  console.log('Saved!');
 	});
@@ -82,7 +82,7 @@ resize = function(player, info) {
 }
 
 getData = function(player) {
-	var data = fs.readFileSync('data/' + player + '.txt');
+	var data = fs.readFileSync('server/data/' + player + '.txt');
   
   return { code: 200, message: data };
 };
