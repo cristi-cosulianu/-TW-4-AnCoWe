@@ -38,6 +38,7 @@ var currentPlatformIndex = 0;
 var defaultGroundX = 606;
 const speed = 2;
 var cameraSpeed = 0;
+var xmlRequest = new XMLHttpRequest();
 
 window.onload = () => {
     canvas = document.querySelector("#gameCanvas canvas");
@@ -50,12 +51,12 @@ window.onload = () => {
     loadAudio();
     loadTextures();
     movementSpeed = speed;
-    gravity = new Vector2(0, 0.21);
+    gravity = new Vector2(0, 0.31);
     player = new GameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
     defaultGroundX = window.innerHeight - 64 - 40;
     groundBase = defaultGroundX;
     loadLevel();
-    makeSynchronousRequest("http://localhost:3000/game?action=start&player=1");
+    makeSynchronousRequest("http://localhost:3000/game?action=start&player=1&info=" + JSON.stringify(player));
     this.requestAnimationFrame(game_loop);
 };
 
@@ -368,7 +369,8 @@ function inertia() {
 }
 
 function updateplayerposition() {
-    var data = JSON.parse(makeSynchronousRequest("http://localhost:3000/game?action=get-data&player=1"));
+    var data = makeSynchronousRequest("http://localhost:3000/game?action=get-data&player=1");
+    data = JSON.parse(data);
     updateData(data);
     if (dir.y > 8) {
         movementSpeed = 1;
@@ -525,13 +527,11 @@ function checkCollision(player, takeAction) {
 
 
 function keyPressed(event) {
-    keyPressed = true;
+    makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&player=1&keycode=" + event.keyCode);
     if (event.keyCode === 37 && !rightCollision) {
         //left = true;
-        makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&player=1&keycode=37");
     }
     if (event.keyCode === 39 && !leftCollision) {
-        makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&player=1&keycode=39");
         // right = true;
         if (first_press === false) {
             animation_stage = 5;
@@ -540,8 +540,6 @@ function keyPressed(event) {
         background_sound.play();
     }
     if (event.keyCode === 32) {
-        makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&player=1&keycode=32");
-
         if (double_jump < 3) {
             jump_sound.load();
             jump_sound.play();
@@ -555,19 +553,17 @@ function keyPressed(event) {
 }
 
 function keyReleased(event) {
+    makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=" + event.keyCode);
     if (event.keyCode === 37) {
-        makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=37");
         animation_stage = 0;
         // left = false;
     }
     if (event.keyCode === 39) {
-        makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=39");
         animation_stage = 0;
         //right = false;
         first_press = false;
     }
     if (event.keyCode === 32) {
-        makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=32");
         // space = false;
     }
 }
@@ -576,4 +572,10 @@ function updateData(data) {
     right = data.right;
     left = data.left;
     space = data.space;
+}
+
+function makeSynchronousRequest(url) {
+    xmlRequest.open("GET", url, false);
+    xmlRequest.send();
+    return xmlRequest.response;
 }

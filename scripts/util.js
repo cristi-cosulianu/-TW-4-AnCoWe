@@ -1,6 +1,3 @@
-var xmlRequest = new XMLHttpRequest();
-
-
 class Vector2 {
     constructor(x, y) {
         this.x = x;
@@ -74,8 +71,5 @@ function getGameObjectCopy(object) {
     return copy;
 }
 
-function makeSynchronousRequest(url) {
-    xmlRequest.open("GET", url, false);
-    xmlRequest.send();
-    return xmlRequest.response;
-}
+module.exports = {Vector2
+ , GameObject};

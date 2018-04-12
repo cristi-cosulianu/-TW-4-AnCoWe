@@ -1,5 +1,6 @@
 const fs = require('fs');
 const gameData = require('./gameData.js');
+const util = require('../scripts/util.js');
 
 module.exports = {
 	processRequest: function(params) {
@@ -32,9 +33,8 @@ module.exports = {
 startGame = function(player, info) {
 	// put start data here as JSON object
 	// var data = queryParams['info'];
-
 	data = new gameData();
-
+    data.player = JSON.parse(info);
 	fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
 	  if (err) throw err;
 	  //console.log('Saved!');
@@ -46,15 +46,7 @@ startGame = function(player, info) {
 keyPressed = function(player, keycode) {
 	var data = JSON.parse(fs.readFileSync('server/data/' + player + '.txt'));
 	// do stuff with data
-    if(keycode == 37){
-        data.left = true;
-    }
-        if(keycode == 39){
-        data.right = true;
-    }
-    if(keycode == 32){
-        data.space = true;
-    }
+    updateKeys(keycode , "pressed" ,data);
 	fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
 	  if (err) throw err;
 	 // console.log('Saved!');
@@ -65,15 +57,7 @@ keyPressed = function(player, keycode) {
 
 keyReleased = function(player, keycode) {
 	var data = JSON.parse(fs.readFileSync('server/data/' + player + '.txt'));
-    if(keycode == 37){
-        data.left = false;
-    }
-        if(keycode == 39){
-        data.right = false;
-    }
-    if(keycode == 32){
-        data.space = false;
-    }
+    updateKeys(keycode , "released" , data);
 	fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
 	  if (err) throw err;
 	  //console.log('Saved!');
@@ -100,3 +84,30 @@ getData = function(player) {
   
   return { code: 200, message: data };
 };
+
+updateKeys = function (keyCode, action , data) {
+    if (keyCode == 37) {
+        if(action === "pressed"){
+            data.left = true;
+        }
+        else{
+            data.left = false;
+        }
+    }
+    if (keyCode == 39) {
+        if(action === "pressed"){
+            data.right = true;
+        }
+        else{
+            data.right = false;
+        }
+    }
+    if (keyCode == 32) {
+        if(action === "pressed"){
+            data.space = true;
+        }
+        else{
+            data.space = false;
+        }     
+    }
+}
