@@ -71,5 +71,15 @@ function getGameObjectCopy(object) {
     return copy;
 }
 
+isValidJson = function(input){
+    try{
+        JSON.parse(input);
+    }catch(e){
+        console.log(input);
+        return false;
+    }
+    return true;
+}
+
 module.exports = {Vector2
- , GameObject};
+ , GameObject , isValidJson};

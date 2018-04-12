@@ -44,43 +44,46 @@ startGame = function(player, info) {
 };
 
 keyPressed = function(player, keycode) {
-	var data = JSON.parse(fs.readFileSync('server/data/' + player + '.txt'));
+	var data = fs.readFileSync('server/data/' + player + '.txt' , 'utf8');
 	// do stuff with data
-    updateKeys(keycode , "pressed" ,data);
-	fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
-	  if (err) throw err;
-	 // console.log('Saved!');
-	});
+    if(util.isValidJson(data)){
+        data = JSON.parse(data);
+       updateKeys(keycode , "pressed" ,data);
+	   fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
+        if (err) throw err;
+	   });   
+    }
 	
 	return { code: 200, message: 'key-pressed' };
 }
 
 keyReleased = function(player, keycode) {
-	var data = JSON.parse(fs.readFileSync('server/data/' + player + '.txt'));
-    updateKeys(keycode , "released" , data);
-	fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
-	  if (err) throw err;
-	  //console.log('Saved!');
-	});
-	
+	var data = fs.readFileSync('server/data/' + player + '.txt' , 'utf8');
+    if(util.isValidJson(data)){
+        data = JSON.parse(data);
+        updateKeys(keycode , "released" , data);
+        fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
+        if (err) throw err;
+        //console.log('Saved!');
+	   });
+    } 
 	return { code: 200, message: 'key-released' };
 }
 
 resize = function(player, info) {
-	var data = JSON.parse(fs.readFileSync('server/data/' + player + '.txt'));
-	
-	// do stuff with data
-	
-	fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
-	  if (err) throw err;
-	  //console.log('Saved!');
-	});
-	
+	var data = fs.readFileSync('server/data/' + player + '.txt' , 'utf8');
+	if(util.isValidJson(data)){
+	   // do stuff with data
+	   fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
+	   if (err) throw err;
+	   //console.log('Saved!');
+	   });
+    }
 	return { code: 200, message: 'resize' };
 }
 
 getData = function(player) {
-	var data = fs.readFileSync('server/data/' + player + '.txt');
+	var data = fs.readFileSync('server/data/' + player + '.txt' , 'utf8');
   
   return { code: 200, message: data };
 };

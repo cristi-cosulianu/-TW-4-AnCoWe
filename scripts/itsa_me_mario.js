@@ -370,8 +370,10 @@ function inertia() {
 
 function updateplayerposition() {
     var data = makeSynchronousRequest("http://localhost:3000/game?action=get-data&player=1");
-    data = JSON.parse(data);
-    updateData(data);
+    if (isValidJson(data)) {
+        data = JSON.parse(data);
+        updateData(data);
+    }
     if (dir.y > 8) {
         movementSpeed = 1;
     }
