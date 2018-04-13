@@ -6,11 +6,13 @@ class gameData {
         this.right = false;
         this.left = false;
         this.space = false;
+        this.objects = []; 
         this.backgroundX = 0;
         this.leftCollision = false;
         this.rightCollision = false;
         this.topCollision = false;
         this.bottomCollision = false;
+        this.animation_stage = 0;
         this.bounce = false;
         this.inAir = false;
         this.willCollideTop = false;
@@ -21,6 +23,9 @@ class gameData {
         this.defaultGroundX = 606;
         this.groundBase = 606;
         this.currentPlatformIndex = 0;
+        this.movementSpeed = 0;
+        this.double_jump = 0;
     }
 }
+
 module.exports = gameData;

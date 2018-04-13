@@ -34,7 +34,8 @@ startGame = function(player, info) {
 	// put start data here as JSON object
 	// var data = queryParams['info'];
 	data = new gameData();
-    data.player = JSON.parse(info);
+    data.player = JSON.parse(info[0]);
+    data.objects = JSON.parse(info[1]);
 	fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
 	  if (err) throw err;
 	  //console.log('Saved!');
@@ -48,8 +49,8 @@ keyPressed = function(player, keycode) {
 	// do stuff with data
     if(util.isValidJson(data)){
         data = JSON.parse(data);
-       updateKeys(keycode , "pressed" ,data);
-	   fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
+        updateKeys(keycode , "pressed" ,data);
+	    fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
         if (err) throw err;
 	   });   
     }
@@ -74,18 +75,28 @@ resize = function(player, info) {
 	var data = fs.readFileSync('server/data/' + player + '.txt' , 'utf8');
 	if(util.isValidJson(data)){
 	   // do stuff with data
-	   fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
-	   if (err) throw err;
-	   //console.log('Saved!');
-	   });
+
     }
 	return { code: 200, message: 'resize' };
 }
 
 getData = function(player) {
-	var data = fs.readFileSync('server/data/' + player + '.txt' , 'utf8');
-  
-  return { code: 200, message: data };
+	var dataFile = fs.readFileSync('server/data/' + player + '.txt' , 'utf8');
+    if(util.isValidJson(dataFile)){
+        var data = JSON.parse(dataFile);
+
+        try{
+            updatePlayerPosition(data);
+
+        }catch(e){
+            console.log(data);
+        }
+        fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
+        if (err) throw err;
+	       //console.log('Saved!');
+        });
+    }
+    return { code: 200, message: dataFile };
 };
 
 updateKeys = function (keyCode, action , data) {
@@ -114,3 +125,87 @@ updateKeys = function (keyCode, action , data) {
         }     
     }
 }
+
+function updatePlayerPosition(data){
+    let player  = data.player;
+    player.position = new util.Vector2(data.player.position.x , data.player.position.y);
+    let dir = new util.Vector2(data.dir.x , data.dir.y);
+    let gravity = new util.Vector2(data.gravity.x , data.gravity.y);
+    if (player.position.y < data.groundBase) {
+        data.animation_stage = 25;
+        data.inAir = true;
+        if (Math.abs(dir.y) < 12) {
+            dir.add(gravity);
+        }
+        player.position.add(dir);
+        data.currentPlatformIndex = 0;
+    }
+    if (player.position.y > data.groundBase) {
+            dir.x = 0;
+            dir.y = 0;
+            gravity.x = 0;
+            gravity.y = 0.31;
+            player.position.y = data.groundBase;
+            data.double_jump = 0;
+            data.willColideTop = false;
+            data.movementSpeed = data.speed;
+            data.inAir = false;
+    }
+    if (data.right === true && data.left === false && dir.y < 12) {
+        if (dir.x === 0 && !data.inAir) {
+            dir.x = data.movementSpeed;
+        }
+        if (!data.inAir) {
+            dir.x = Math.abs(dir.x);
+        } else {
+            if (dir.x < data.movementSpeed) {
+                if (dir.x > 0 && dir.x + 0.5 < data.movementSpeed) {
+                    dir.x += 0.5
+                } else if (dir.x < data.movementSpeed) {
+                    dir.x += 0.25;
+                }
+            }
+        }
+        ++data.animation_stage;
+        player.position.add(dir);
+    }
+    if (data.left === true && data.right === false && dir.y < 12) {
+        if (dir.x === 0 && !data.inAir) {
+            dir.x = -data.movementSpeed;
+        }
+        if (!data.inAir) {
+            dir.x = -Math.abs(dir.x);
+        } else {
+            if (dir.x > -data.movementSpeed) {
+                if (dir.x < 0 && dir.x - 0.5 > -data.movementSpeed) {
+                    dir.x -= 0.5;
+                } else if (dir.x > -data.movementSpeed) {
+                    dir.x -= 0.25;
+                }
+            }
+        }
+        ++data.animation_stage;
+        player.position.add(dir);
+    }
+    if (data.double_jump < 1 && Math.abs(dir.y) <= 6) {
+        if (data.space && data.left === false && data.right === false) {
+            ++data.double_jump;
+            dir.y = -1;
+            dir.x = 0;
+            dir.mul(7);
+            player.position.add(dir);
+        }
+        if (data.space && (data.left === true || data.right === true)) {
+            ++data.double_jump;
+            dir.y = -1;
+            dir.x = 0;
+            dir.mul(7);
+            player.position.add(dir);
+        }
+    }
+    data.dir = dir;
+    data.player.position = player.position;
+}
+
+
+   

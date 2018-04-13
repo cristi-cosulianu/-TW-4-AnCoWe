@@ -39,6 +39,7 @@ var defaultGroundX = 606;
 const speed = 2;
 var cameraSpeed = 0;
 var xmlRequest = new XMLHttpRequest();
+var data;
 
 window.onload = () => {
     canvas = document.querySelector("#gameCanvas canvas");
@@ -56,7 +57,7 @@ window.onload = () => {
     defaultGroundX = window.innerHeight - 64 - 40;
     groundBase = defaultGroundX;
     loadLevel();
-    makeSynchronousRequest("http://localhost:3000/game?action=start&player=1&info=" + JSON.stringify(player));
+    makeSynchronousRequest("http://localhost:3000/game?action=start&player=1&info=" + JSON.stringify(player) + "&info=" + JSON.stringify(objects));
     this.requestAnimationFrame(game_loop);
 };
 
@@ -254,7 +255,7 @@ function render() {
 function drawObjects() {
     for (let i = 0; i < objects.length; ++i) {
         if (getRight(objects[i]) + backgroundX < 0) {
-            objects.pop();
+            //objects.pop();
             continue;
         }
         if (getLeft(objects[i]) + backgroundX > canvas.width) {
@@ -264,19 +265,19 @@ function drawObjects() {
     }
 }
 
-function reset() {
-    dir.x = 0;
-    dir.y = 0;
-    gravity.x = 0;
-    gravity.y = 0.31;
-    player.position.y = groundBase;
-    double_jump = 0;
-    willColideTop = false;
-    movementSpeed = speed;
-}
 
 function game_loop() {
-
+    last_player.x = player.position.x;
+    last_player.y = player.position.y;
+    data = makeSynchronousRequest("http://localhost:3000/game?action=get-data&player=1");
+    if (isValidJson(data)) {
+        data = JSON.parse(data);
+        try {
+            updateData(data);
+        } catch (e) {
+            console.log(data);
+        }
+    }
     if (backgroundX < maxLeftBound) {
         maxLeftBound = backgroundX;
     }
@@ -333,10 +334,10 @@ function game_loop() {
             player.position.x = canvas.width - player.width;
         }
         render();
-        last_player.x = player.position.x;
-        last_player.y = player.position.y;
+
         rendered = 3;
     } else {
+        console.log("Working");
         dir.x = 0;
         if (!right && !left) {
             cameraSpeed = 0;
@@ -369,14 +370,10 @@ function inertia() {
 }
 
 function updateplayerposition() {
-    var data = makeSynchronousRequest("http://localhost:3000/game?action=get-data&player=1");
-    if (isValidJson(data)) {
-        data = JSON.parse(data);
-        updateData(data);
-    }
-    if (dir.y > 8) {
-        movementSpeed = 1;
-    }
+
+    //    if (dir.y > 8) {
+    //        movementSpeed = 1;
+    //    }
     if (objects.length > 0) {
         if (player.position.y < groundBase || !onPlatform) {
             groundBase = defaultGroundX;
@@ -385,75 +382,9 @@ function updateplayerposition() {
             onPlatform = false;
         }
     }
-    if (inAir && dir.y > 0) {
-        castRay(getGameObjectCopy(player), new Vector2(0, 1), 12);
-    }
-    if (player.position.y < groundBase) {
-        animation_stage = 25;
-        inAir = true;
-        if (Math.abs(dir.y) < 12) {
-            dir.add(gravity);
-        }
-        player.position.add(dir);
-        currentPlatformIndex = 0;
-    }
-    if (player.position.y > groundBase) {
-        reset();
-        jump_land.play();
-        inAir = false;
-    }
-    if (right === true && left === false && dir.y < 12) {
-        if (dir.x === 0 && !inAir) {
-            dir.x = movementSpeed;
-        }
-        if (!inAir) {
-            dir.x = Math.abs(dir.x);
-        } else {
-            if (dir.x < movementSpeed) {
-                if (dir.x > 0 && dir.x + 0.5 < movementSpeed) {
-                    dir.x += 0.5
-                } else if (dir.x < movementSpeed) {
-                    dir.x += 0.25;
-                }
-            }
-        }
-        ++animation_stage;
-        player.position.add(dir);
-    }
-    if (left === true && right === false && dir.y < 12) {
-        if (dir.x === 0 && !inAir) {
-            dir.x = -movementSpeed;
-        }
-        if (!inAir) {
-            dir.x = -Math.abs(dir.x);
-        } else {
-            if (dir.x > -movementSpeed) {
-                if (dir.x < 0 && dir.x - 0.5 > -movementSpeed) {
-                    dir.x -= 0.5;
-                } else if (dir.x > -movementSpeed) {
-                    dir.x -= 0.25;
-                }
-            }
-        }
-        ++animation_stage;
-        player.position.add(dir);
-    }
-    if (double_jump < 1 && Math.abs(dir.y) <= 6) {
-        if (space && left === false && right === false) {
-            ++double_jump;
-            dir.y = -1;
-            dir.x = 0;
-            dir.mul(7);
-            player.position.add(dir);
-        }
-        if (space && (left === true || right === true)) {
-            ++double_jump;
-            dir.y = -1;
-            dir.x = 0;
-            dir.mul(7);
-            player.position.add(dir);
-        }
-    }
+    //    if (inAir && dir.y > 0) {
+    //        castRay(getGameObjectCopy(player), new Vector2(0, 1), 12);
+    //    }
 }
 
 
@@ -471,7 +402,6 @@ function checkCollision(player, takeAction) {
                 }
                 onPlatform = true;
                 currentPlatformIndex = i;
-                player.position.substract(gravity);
                 //dir.y = 1;
                 inAir = false;
                 topCollision = true;
@@ -539,7 +469,7 @@ function keyPressed(event) {
             animation_stage = 5;
             first_press = true;
         }
-        background_sound.play();
+        // background_sound.play();
     }
     if (event.keyCode === 32) {
         if (double_jump < 3) {
@@ -574,6 +504,15 @@ function updateData(data) {
     right = data.right;
     left = data.left;
     space = data.space;
+    animation_stage = data.animation_stage;
+    gravity = data.gravity;
+    dir = data.dir;
+    player.position = data.player.position;
+    inAir = data.inAir;
+    movementSpeed = data.movementSpeed;
+    double_jump = data.double_jump;
+    onPlatform = data.onPlatform;
+    groundBase = data.groundBase;
 }
 
 function makeSynchronousRequest(url) {
