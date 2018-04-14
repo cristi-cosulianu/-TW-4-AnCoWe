@@ -196,20 +196,20 @@ function player_animation(p) {
 
         }
     }
-    if (p % 25 < 6) {
+    if (p % 21 < 6) {
         context.drawImage(walk_1, player.position.x, player.position.y, player.width, player.height);
         return;
     }
-    if (p % 25 < 12) {
+    if (p % 21 < 11) {
         context.drawImage(walk_2, player.position.x, player.position.y, player.width, player.height);
 
         return;
     }
-    if (p % 25 < 18) {
+    if (p % 21 < 16) {
         context.drawImage(walk_3, player.position.x, player.position.y, player.width, player.height);
         return;
     }
-    if (p % 25 < 25) {
+    if (p % 21 < 21) {
         context.drawImage(walk_4, player.position.x, player.position.y, player.width, player.height);
         return;
     }
