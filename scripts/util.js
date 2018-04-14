@@ -82,4 +82,4 @@ isValidJson = function(input){
 }
 
 module.exports = {Vector2
- , GameObject , isValidJson};
+ , GameObject , isValidJson , getBottom , getLeft , getTop , getRight};

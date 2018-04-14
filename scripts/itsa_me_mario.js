@@ -57,7 +57,7 @@ window.onload = () => {
     defaultGroundX = window.innerHeight - 64 - 40;
     groundBase = defaultGroundX;
     loadLevel();
-    makeSynchronousRequest("http://localhost:3000/game?action=start&player=1&info=" + JSON.stringify(player) + "&info=" + JSON.stringify(objects));
+    makeSynchronousRequest("http://localhost:3000/game?action=start&player=1&info=" + JSON.stringify(player) + "&info=" + JSON.stringify(objects) + "&info=" + JSON.stringify(defaultGroundX) + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
     this.requestAnimationFrame(game_loop);
 };
 
@@ -226,9 +226,9 @@ function castRay(startPoint, direction, size) {
 }
 
 function render() {
-    if (backgroundX > canvas.width) {
-        backgroundX %= canvas.width;
-    }
+    //    if (backgroundX > canvas.width) {
+    //        backgroundX %= canvas.width;
+    //    }
     context.drawImage(background_layer1, backgroundX % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer1, canvas.width + backgroundX % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer2, backgroundX / 5 % canvas.width, 0, canvas.width, canvas.height);
@@ -267,8 +267,7 @@ function drawObjects() {
 
 
 function game_loop() {
-    last_player.x = player.position.x;
-    last_player.y = player.position.y;
+    console.log(backgroundX);
     data = makeSynchronousRequest("http://localhost:3000/game?action=get-data&player=1");
     if (isValidJson(data)) {
         data = JSON.parse(data);
@@ -278,76 +277,10 @@ function game_loop() {
             console.log(data);
         }
     }
-    if (backgroundX < maxLeftBound) {
-        maxLeftBound = backgroundX;
-    }
-    oldplayer = player;
-    if (checkCollision(player, true)) {
-        cameraSpeed = 0;
-        //player = oldplayer;
-        if (rightCollision && !bounce) {
-            //left = false
-            movementSpeed = 0;
-            if (right) {
-                movementSpeed = speed;
-            }
-        } else if (leftCollision && !bounce) {
-            //right = false;
-            movementSpeed = 0;
-            if (left) {
-                movementSpeed = speed;
-            }
-        }
-        if (bounce) {
-            movementSpeed = speed;
-        }
-    } else {
-        if (Math.abs(cameraSpeed + dir.x / 10) <= 2) {
-            if (!right || !left)
-                cameraSpeed += dir.x / 10;
-        }
-        if (backgroundX - cameraSpeed * 2.75 < 0 && (right || left) && backgroundX - cameraSpeed * 2.75 <= maxLeftBound + 50) {
-            if (!right || !left)
-                backgroundX -= cameraSpeed * 2.75;
-        }
-        rightCollision = false;
-        leftCollision = false;
-        topCollision = false;
-        bottomCollision = false;
-    }
-    updateplayerposition();
-    if (bounce) {
-        inertia();
-    }
-    if (rendered < 10) {
-        render();
-        ++rendered;
-    }
-    if (player.position.x != last_player.x || player.position.y != last_player.y) {
-        if (player.position.x + player.width < player.width) {
-            player.position.x = 0;
-        }
-        if (player.position.x + player.width > canvas.width / 2) {
-            player.position.x = canvas.width / 2 - player.width;
-        }
-        if (player.position.x + player.width > canvas.width) {
-            player.position.x = canvas.width - player.width;
-        }
-        render();
-
-        rendered = 3;
-    } else {
-        console.log("Working");
-        dir.x = 0;
-        if (!right && !left) {
-            cameraSpeed = 0;
-        }
-        animation_stage = 0;
-        if (rendered < 20) {
-            render();
-            ++rendered;
-        }
-    }
+    //    if (backgroundX < maxLeftBound) {
+    //        maxLeftBound = backgroundX;
+    //    }
+    render();
     //    if (objects.length > 0) {
     this.requestAnimationFrame(game_loop);
     //    } else {
@@ -374,95 +307,17 @@ function updateplayerposition() {
     //    if (dir.y > 8) {
     //        movementSpeed = 1;
     //    }
-    if (objects.length > 0) {
-        if (player.position.y < groundBase || !onPlatform) {
-            groundBase = defaultGroundX;
-        }
-        if (getRight(player) < getLeft(objects[currentPlatformIndex]) + backgroundX || getLeft(player) > getRight(objects[currentPlatformIndex]) + backgroundX) {
-            onPlatform = false;
-        }
-    }
+
     //    if (inAir && dir.y > 0) {
     //        castRay(getGameObjectCopy(player), new Vector2(0, 1), 12);
     //    }
 }
 
 
-function checkCollision(player, takeAction) {
-    let response = false;
-    for (let i = 0; i < objects.length; ++i) {
-        if (getLeft(objects[i]) + backgroundX > canvas.width) {
-            continue;
-        }
-        if (getTop(player) + player.height * 6 / 10 < getTop(objects[i]) && getBottom(player) > getTop(objects[i]) && ((getRight(player) - 10 > getLeft(objects[i]) + backgroundX && getRight(player) < getRight(objects[i]) + backgroundX) || (getLeft(player) + 10 < getRight(objects[i]) + backgroundX && getLeft(player) > getLeft(objects[i]) + backgroundX))) {
-            if (takeAction === true) {
-                groundBase = getTop(objects[i]) - player.height;
-                if (objects[i].type === spikes) {
-                    console.log("You died");
-                }
-                onPlatform = true;
-                currentPlatformIndex = i;
-                //dir.y = 1;
-                inAir = false;
-                topCollision = true;
-                console.log("top");
-
-            } else {
-                willColideTop = true;
-            }
-            response = true;
-        }
-        if (getBottom(player) > getBottom(objects[i]) && getTop(player) < getBottom(objects[i]) && getRight(player) > getLeft(objects[i]) + backgroundX + player.width * 1 / 4 && getLeft(player) < getRight(objects[i]) + backgroundX - player.width * 1 / 4) {
-            if (takeAction === true) {
-                dir.x = 0;
-                dir.y = 1;
-                double_jump = 1;
-                bottomCollision = true;
-                console.log("bottom");
-
-
-            }
-            response = true;
-        }
-        if (getRight(player) > getLeft(objects[i]) + backgroundX && getRight(objects[i]) + backgroundX > getRight(player) && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i]) + 5) {
-            if (takeAction === true) {
-                if (inAir && space && objects[i].type === wall && !bottomCollision) {
-                    double_jump = 0;
-                    bounce = true;
-                    dir.y = 0;
-                } else {
-                    dir.x = 0;
-                }
-                console.log("left");
-                leftCollision = true;
-
-            }
-            response = true;
-        }
-        if (getLeft(player) < getRight(objects[i]) + backgroundX && getLeft(objects[i]) + backgroundX < getLeft(player) && getTop(player) < getBottom(objects[i]) && getBottom(player) > getTop(objects[i]) + 5) {
-            if (takeAction === true) {
-                if (inAir && space && objects[i].type === wall && !bottomCollision) {
-                    double_jump = 0;
-                    bounce = true;
-                    dir.y = 0;
-                } else {
-                    dir.x = 0;
-                }
-                console.log("right");
-                rightCollision = true;
-            }
-            response = true;
-        }
-    }
-    return response;
-}
-
 
 function keyPressed(event) {
     makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&player=1&keycode=" + event.keyCode);
-    if (event.keyCode === 37 && !rightCollision) {
-        //left = true;
-    }
+
     if (event.keyCode === 39 && !leftCollision) {
         // right = true;
         if (first_press === false) {
@@ -486,18 +341,7 @@ function keyPressed(event) {
 
 function keyReleased(event) {
     makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=" + event.keyCode);
-    if (event.keyCode === 37) {
-        animation_stage = 0;
-        // left = false;
-    }
-    if (event.keyCode === 39) {
-        animation_stage = 0;
-        //right = false;
-        first_press = false;
-    }
-    if (event.keyCode === 32) {
-        // space = false;
-    }
+
 }
 
 function updateData(data) {
@@ -512,7 +356,12 @@ function updateData(data) {
     movementSpeed = data.movementSpeed;
     double_jump = data.double_jump;
     onPlatform = data.onPlatform;
+    defaultGroundX = data.defaultGroundX;
     groundBase = data.groundBase;
+    onPlatform = data.onPlatform;
+    currentPlatformIndex = data.currentPlatformIndex;
+    cameraSpeed = data.cameraSpeed;
+    backgroundX = data.backgroundX;
 }
 
 function makeSynchronousRequest(url) {
