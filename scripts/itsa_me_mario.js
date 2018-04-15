@@ -267,7 +267,7 @@ function drawObjects() {
 
 
 function game_loop() {
-    console.log(backgroundX);
+    console.log(movementSpeed);
     data = makeSynchronousRequest("http://localhost:3000/game?action=get-data&player=1");
     if (isValidJson(data)) {
         data = JSON.parse(data);
@@ -289,18 +289,7 @@ function game_loop() {
     //    }
 }
 
-function inertia() {
-    if (leftCollision) {
-        dir.x -= movementSpeed;
-        dir.y = -7;
-    }
-    if (rightCollision) {
-        dir.x += movementSpeed;
-        dir.y = -7;
-    }
-    gravity.y = 0.28;
-    bounce = false;
-}
+
 
 function updateplayerposition() {
 

@@ -79,7 +79,6 @@ resize = function(player, info) {
 	var data = fs.readFileSync('server/data/' + player + '.txt' , 'utf8');
 	if(util.isValidJson(data)){
 	   // do stuff with data
-
     }
 	return { code: 200, message: 'resize' };
 }
@@ -88,13 +87,11 @@ getData = function(player) {
 	var dataFile = fs.readFileSync('server/data/' + player + '.txt' , 'utf8');
     if(util.isValidJson(dataFile)){
         var data = JSON.parse(dataFile);
-
-//        try{
+        try{
             update(data);
-//
-//        }catch(e){
-//            console.log(data);
-//        }
+        }catch(e){
+            console.log(data);
+        }
         fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
         if (err) throw err;
 	       //console.log('Saved!');
@@ -103,7 +100,7 @@ getData = function(player) {
     return { code: 200, message: dataFile };
 };
 
-updateKeys = function (keyCode, action , data) {
+function updateKeys(keyCode, action , data) {
     if(action !== "pressed"){
         data.animation_stage = 0;
     }
@@ -259,7 +256,7 @@ function checkCollision(data , player, takeAction) {
         }
         if (util.getRight(player) > util.getLeft(data.objects[i]) + data.backgroundX && util.getRight(data.objects[i]) + data.backgroundX > util.getRight(player) && util.getTop(player) < util.getBottom(data.objects[i]) && util.getBottom(player) > util.getTop(data.objects[i]) + 5) {
             if (takeAction === true) {
-                if (data.inAir && data.space && data.objects[i].type === "wall" && !data.bottomCollision) {
+                if (data.inAir && data.space && !data.bottomCollision) {
                     data.double_jump = 0;
                     data.bounce = true;
                     data.dir.y = 0;
@@ -274,7 +271,7 @@ function checkCollision(data , player, takeAction) {
         }
         if (util.getLeft(player) < util.getRight(data.objects[i]) + data.backgroundX && util.getLeft(data.objects[i]) + data.backgroundX < util.getLeft(player) && util.getTop(player) < util.getBottom(data.objects[i]) && util.getBottom(player) > util.getTop(data.objects[i]) + 5) {
             if (takeAction === true) {
-                if (data.inAir && data.space && data.objects[i].type === "wall" && !data.bottomCollision) {
+                if (data.inAir && data.space && !data.bottomCollision) {
                     data.double_jump = 0;
                     data.bounce = true;
                     data.dir.y = 0;
@@ -323,12 +320,31 @@ function update(data){
         data.leftCollision = false;
         data.topCollision = false;
         data.bottomCollision = false;
+        data.movementSpeed = data.speed;
     }
     updatePlayerPosition(data);
-//    if (data.bounce) {
-//        inertia();
-//    }
-    
+    if(data.bounce){
+        inertia(data);
+    }
+    if (data.player.position.x + data.player.width < data.player.width) {
+        data.player.position.x = 0;
+    }
+    if (data.player.position.x + data.player.width > data.canvasWidth / 2) {
+        data.player.position.x = data.canvasWidth / 2 - data.player.width;
+    }
+}
+
+function inertia(data) {
+    if (data.leftCollision) {
+        data.dir.x -= data.movementSpeed;
+        data.dir.y = -7;
+    }
+    if (data.rightCollision) {
+        data.dir.x += data.movementSpeed;
+        data.dir.y = -7;
+    }
+    data.gravity.y = 0.28;
+    data.bounce = false;
 }
 
    
