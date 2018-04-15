@@ -171,14 +171,18 @@ function loadTextures() {
 
 function player_animation(p) {
     context.save();
+    context.shadowOffsetX = -3;
+    context.shadowOffsetY = 3;
+    context.shadowColor = "black";
+    context.shadowBlur = 10;
     if (left) {
         context.translate(2 * player.position.x + player.width, 0);
         context.scale(-1, 1);
+        context.shadowOffsetX = 3;
+        context.shadowOffsetY = 3;
+        context.shadowColor = "black";
+        context.shadowBlur = 10;
     }
-    context.shadowOffsetX = -3;
-    context.shadowOffsetY = 6;
-    context.shadowColor = "black";
-    context.shadowBlur = 10;
     if (p > 0 && !inAir) {
         if (p < 10) {
             context.drawImage(smoke_1, player.position.x - 30, player.position.y + player.height - 24);
