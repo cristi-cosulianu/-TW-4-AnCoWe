@@ -14,6 +14,7 @@ var first_press;
 var oldplayer;
 var hasDropDown = true;
 var rendered = 0;
+var gp = null;
 var maxLeftBound = 0;
 var walk_1, walk_2, walk_3, walk_4;
 var smoke_1, smoke_2, smoke_3, smoke_4;
@@ -60,6 +61,24 @@ window.onload = () => {
     makeSynchronousRequest("http://localhost:3000/game?action=start&player=1&info=" + JSON.stringify(player) + "&info=" + JSON.stringify(objects) + "&info=" + JSON.stringify(defaultGroundX) + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
     this.requestAnimationFrame(game_loop);
 };
+
+// GamePad Controls
+
+window.addEventListener("gamepadconnected", function (e) {
+    gp = navigator.getGamepads()[1];
+    document.removeEventListener("keydown", keyPressed, false);
+    document.removeEventListener("keyup", keyReleased, false);
+
+});
+
+
+window.addEventListener("gamepaddisconnected", function (e) {
+    document.addEventListener("keydown", keyPressed, false);
+    document.addEventListener("keyup", keyReleased, false);
+    gp = null;
+});
+
+
 
 window.onresize = () => {
     defaultGroundX = window.innerHeight - 64 - 40;
@@ -271,7 +290,6 @@ function drawObjects() {
 
 
 function game_loop() {
-    console.log(movementSpeed);
     data = makeSynchronousRequest("http://localhost:3000/game?action=get-data&player=1");
     if (isValidJson(data)) {
         data = JSON.parse(data);
@@ -281,10 +299,15 @@ function game_loop() {
             console.log(data);
         }
     }
+    console.log(animation_stage);
+
     //    if (backgroundX < maxLeftBound) {
     //        maxLeftBound = backgroundX;
     //    }
     render();
+    if (gp != null) {
+        checkGamepad();
+    }
     //    if (objects.length > 0) {
     this.requestAnimationFrame(game_loop);
     //    } else {
@@ -307,6 +330,27 @@ function updateplayerposition() {
 }
 
 
+function checkGamepad() {
+    try {
+        var gp = navigator.getGamepads()[1];
+        var axeLF = gp.axes[0];
+        if (axeLF < -0.5) {
+            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&player=1&keycode=37");
+        } else if (axeLF > 0.5) {
+            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&player=1&keycode=39");
+        } else {
+            makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=37");
+            makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=39");
+        }
+        if (gp.buttons[0].pressed) {
+            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&player=1&keycode=32");
+        } else if(space){
+            makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=32");
+        }
+    } catch (e) {
+        console.log("GamePadRemoved");
+    }
+}
 
 function keyPressed(event) {
     makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&player=1&keycode=" + event.keyCode);
@@ -334,7 +378,6 @@ function keyPressed(event) {
 
 function keyReleased(event) {
     makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=" + event.keyCode);
-
 }
 
 function updateData(data) {
