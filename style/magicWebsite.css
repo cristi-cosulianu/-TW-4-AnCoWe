@@ -156,9 +156,39 @@ nav ul li a {
     color:darkslategray;
 }
 
+.backToMenuButton {
+    max-width: 25%;
+    margin: 0%;
+    padding-left: 37.5%;
+    padding-right: 37.5%;
+    bottom: 11vh;
+    text-align: center;
+    position: relative;
+}
+
+.backToMenuButton > ul {
+    list-style-type: none;
+    padding: 0%;
+}
+
+.backToMenuButton > ul li {
+    margin-top: 5%;
+    margin-bottom: 5%;
+    height: 7vh;
+    text-shadow: 1px 1px 6px;
+}
+
+.backToMenuButton > ul li a {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
 /* ---------------------------------------------------------- OPTIONS CANVAS -- */
 
-#options{
+#optionsCanvas{
     background-color: #feda4a
 }
 
@@ -166,7 +196,7 @@ nav ul li a {
     position: relative;
     width: 60vw;
     height: 80vh;
-    margin: 10vh 20vw;
+    margin: 5vh 20vw 15vh 20vw;
 }
 
 .listOfOptions > ul {
@@ -184,12 +214,7 @@ nav ul li a {
 .listOfOptions > ul li p{
     display: inline-block;
     margin: 0;
-    position: relative;
-    width: 30%;
-}
-
-.listOfOptions > ul li input{
-    display: inline-block;
+    position: relative;f
     position: relative;
     width: 50%;
 }
@@ -227,7 +252,7 @@ nav ul li a {
 
 /* ---------------------------------------------------------- HALL OF FAME CANVAS -- */
 
-#hallOfFame{
+#hallOfFameCanvas{
     background-color: aquamarine;
 }
 
@@ -236,7 +261,7 @@ nav ul li a {
 
     width: 40vw;
     height: 80vh;
-    margin: 10vh 30vw;
+    margin: 5vh 30vw 15vh 30vw;
 
     font-size: 3vh;
     font-family: Courier New, Courier, monospace;
@@ -251,7 +276,7 @@ nav ul li a {
 
 /* ---------------------------------------------------------- CREDITS CANVAS -- */
 
-#credits {
+#creditsCanvas {
     background-image: url("../textures/creditsBackground.jpg");
     background-color: black;
 }
@@ -281,17 +306,13 @@ nav ul li a {
 #slider {
     position: relative;
     top: 9999px;
+    
+}
+
+.sliderAnimation{
     animation-name: slider;
     animation-duration: 60s;
     animation-timing-function: linear;
-}
-
-.animationPaused{
-    animation-play-state: paused;
-}
-
-.animationInitial{
-    animation-play-state: initial;
 }
 
 #slider > .title {
@@ -314,6 +335,18 @@ nav ul li a {
         transform: rotateX(25deg) translateZ(-2500px);
     }
 }
+
+.creditsBackButton{
+    position: relative;
+    left: 2vw;
+    top: 2vh;
+}
+
+.creditsBackButton > img {
+    width: 5vh;
+    height: 5vh;
+}
+
 
 
 /* ---------------------------------------------------------- CHOOSE CARACTER CANVAS -- */

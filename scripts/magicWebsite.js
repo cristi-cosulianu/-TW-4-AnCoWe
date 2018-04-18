@@ -14,9 +14,12 @@ function sceneTransition(firstId, secondId) {
 	}
 }
 
-function startSlider(elementId){
-	document.getElementById(elementId).classList.remove('animationPaused');
-	document.getElementById(elementId).classList.remove('animationInitial');
+function addSlider(elementId){
+	document.getElementById(elementId).classList.add('sliderAnimation');
+}
+
+function removeSlider(elementId){
+	document.getElementById(elementId).classList.remove('sliderAnimation');
 }
 
 function addCharacter(container, name) {

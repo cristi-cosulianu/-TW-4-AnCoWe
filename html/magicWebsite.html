@@ -10,8 +10,6 @@
         <script src = "../scripts/magicWebsite.js"></script>
         <script src = "../scripts/util.js"></script>
 
-
-
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
@@ -26,21 +24,23 @@
             <nav class="menu themeText"> 
                 <ul>
                     <li><a class="menuButtonLink themeBox" onclick="sceneTransition('menuCanvas','chooseCharacterCanvas')" href="#chooseCharacterCanvas">Start game</a></li>
-                    <li><a class="menuButtonLink themeBox" onclick="sceneTransition('menuCanvas','options')" href="#options">Options</a></li>
-                    <li><a class="menuButtonLink themeBox" onclick="sceneTransition('menuCanvas','hallOfFame')" href="#hallOfFame">Hall Of Fame</a></li>
-                    <li><a class="menuButtonLink themeBox" onclick="sceneTransition('menuCanvas','credits');startSlider('slider')" href="#credits">Credits</a></li>
+                    <li><a class="menuButtonLink themeBox" onclick="sceneTransition('menuCanvas','optionsCanvas')" href="#options">Options</a></li>
+                    <li><a class="menuButtonLink themeBox" onclick="sceneTransition('menuCanvas','hallOfFameCanvas')" href="#hallOfFame">Hall Of Fame</a></li>
+                    <li><a class="menuButtonLink themeBox" onclick="sceneTransition('menuCanvas','creditsCanvas');addSlider('slider')" href="#credits">Credits</a></li>
                 </ul>
             </nav>
         </div>
 
         <!-- - - - - - - - - - - - - - - - CREDITS CANVAS - - - - - - - - - - - - - - - - -->
 
-        <div id="credits" class="fullscreen toBotTransition">
-            <div class="fade-text"></div>
+        <div id="creditsCanvas" class="fullscreen toBotTransition">
+            <div class="fade-text">
+                <a class="creditsBackButton" onclick="sceneTransition('creditsCanvas','menuCanvas');removeSlider('slider')" href="#menuCanvas"><img src="../textures/backButton.png"></a>
+            </div>
 
             <div class="star-wars-text">
             
-              <div id="slider" class="animationPaused">
+              <div id="slider" class="">
             
                 <div class="title">
                   <p>Episode IV</p>
@@ -58,7 +58,7 @@
 
         <!-- - - - - - - - - - - - -  OPTIONS CANVAS - - - - - - - - - - - - -->
 
-        <div id="options" class="fullscreen toBotTransition">
+        <div id="optionsCanvas" class="fullscreen toBotTransition">
             
             <div class="listOfOptions themeBox themeText">
                 <ul>
@@ -100,12 +100,19 @@
                 </div>
 
             </div>
+
+            <div class="backToMenuButton">
+                <ul class="themeText">
+                    <li><a class="menuButtonLink themeBox" onclick="sceneTransition('optionsCanvas','menuCanvas')" href="#menuCanvas">Back</a></li>
+                </ul>
+            </div>
+
         </div>
 
         <!-- - - - - - - - - - - - -  HALL OF FAME CANVAS - - - - - - - - - - - - -->
 
-        <div id="hallOfFame" class="fullscreen toBotTransition">
-            
+        <div id="hallOfFameCanvas" class="fullscreen toBotTransition">
+
             <div class="listOfPlayers themeBox themeText">
                 <ul>
                     <li>Alex Loghin : 5031</li>
@@ -118,6 +125,12 @@
                     <li>Alex Loghin : 1231</li>
                     <li>Alex Loghin : 542</li>
                     <li>Alex Loghin : 140</li>
+                </ul>
+            </div>
+
+            <div class="backToMenuButton">
+                <ul class="themeText">
+                    <li><a class="menuButtonLink themeBox" onclick="sceneTransition('hallOfFameCanvas','menuCanvas')" href="#menuCanvas">Back</a></li>
                 </ul>
             </div>
 
