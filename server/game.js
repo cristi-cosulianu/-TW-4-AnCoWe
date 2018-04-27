@@ -54,7 +54,7 @@ keyPressed = function(player, keycode) {
     if(util.isValidJson(data)){
         data = JSON.parse(data);
         updateKeys(keycode , "pressed" ,data);
-	    fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
+	    fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
         if (err) throw err;
 	   });   
     }
@@ -67,7 +67,7 @@ keyReleased = function(player, keycode) {
     if(util.isValidJson(data)){
         data = JSON.parse(data);
         updateKeys(keycode , "released" , data);
-        fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
+        fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
         if (err) throw err;
         //console.log('Saved!');
 	   });
@@ -92,7 +92,7 @@ getData = function(player) {
         }catch(e){
             console.log(data);
         }
-        fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
+        fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
         if (err) throw err;
 	       //console.log('Saved!');
         });

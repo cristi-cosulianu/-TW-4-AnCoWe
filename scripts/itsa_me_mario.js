@@ -1,6 +1,5 @@
 var dir;
 var player;
-var gravity;
 var context;
 var canvas;
 var ground, pipe, wall, platform, spikes, crane, goomba;
@@ -11,7 +10,6 @@ var last_player = {
 var jump_sound, background_sound, jump_land;
 var animation_stage = 0;
 var first_press;
-var oldplayer;
 var hasDropDown = true;
 var rendered = 0;
 var gp = null;
@@ -23,21 +21,11 @@ var bounce = false;
 var objects = [];
 var backgroundX = 0;
 var willColideTop = false;
-var right = false,
-    left = false,
-    space = false;
-var double_jump = 0;
-var movementSpeed = 0;
-var onPlatform = false;
 var inAir = false;
 var groundBase = 606;
-var rightCollision = false,
-    leftCollision = false,
-    topCollision = false,
-    bottomCollision = false;
-var currentPlatformIndex = 0;
 var defaultGroundX = 606;
-const speed = 2;
+var double_jump;
+var space;
 var cameraSpeed = 0;
 var xmlRequest = new XMLHttpRequest();
 var data;
@@ -52,8 +40,6 @@ window.onload = () => {
     dir = new Vector2(1, 0);
     loadAudio();
     loadTextures();
-    movementSpeed = speed;
-    gravity = new Vector2(0, 0.31);
     player = new GameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
     defaultGroundX = window.innerHeight - 64 - 40;
     groundBase = defaultGroundX;
@@ -290,20 +276,7 @@ function drawObjects() {
 
 
 function game_loop() {
-    data = makeSynchronousRequest("http://localhost:3000/game?action=get-data&player=1");
-    if (isValidJson(data)) {
-        data = JSON.parse(data);
-        try {
-            updateData(data);
-        } catch (e) {
-            console.log(data);
-        }
-    }
-    console.log(animation_stage);
-
-    //    if (backgroundX < maxLeftBound) {
-    //        maxLeftBound = backgroundX;
-    //    }
+    update();
     render();
     if (gp != null) {
         checkGamepad();
@@ -318,8 +291,17 @@ function game_loop() {
 
 
 
-function updateplayerposition() {
+function update() {
 
+    data = makeSynchronousRequest("http://localhost:3000/game?action=get-data&player=1");
+    if (isValidJson(data)) {
+        data = JSON.parse(data);
+        try {
+            updateData(data);
+        } catch (e) {
+            console.log(data);
+        }
+    }
     //    if (dir.y > 8) {
     //        movementSpeed = 1;
     //    }
@@ -344,7 +326,7 @@ function checkGamepad() {
         }
         if (gp.buttons[0].pressed) {
             makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&player=1&keycode=32");
-        } else if(space){
+        } else if (space) {
             makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=32");
         }
     } catch (e) {
@@ -355,8 +337,7 @@ function checkGamepad() {
 function keyPressed(event) {
     makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&player=1&keycode=" + event.keyCode);
 
-    if (event.keyCode === 39 && !leftCollision) {
-        // right = true;
+    if (event.keyCode === 39) {
         if (first_press === false) {
             animation_stage = 5;
             first_press = true;
@@ -368,7 +349,6 @@ function keyPressed(event) {
             jump_sound.load();
             jump_sound.play();
         }
-        //space = true;
     }
     if (event.keyCode === 40 && inAir && hasDropDown) {
         dir.y = 12;
@@ -385,17 +365,11 @@ function updateData(data) {
     left = data.left;
     space = data.space;
     animation_stage = data.animation_stage;
-    gravity = data.gravity;
-    dir = data.dir;
     player.position = data.player.position;
     inAir = data.inAir;
-    movementSpeed = data.movementSpeed;
     double_jump = data.double_jump;
-    onPlatform = data.onPlatform;
     defaultGroundX = data.defaultGroundX;
     groundBase = data.groundBase;
-    onPlatform = data.onPlatform;
-    currentPlatformIndex = data.currentPlatformIndex;
     cameraSpeed = data.cameraSpeed;
     backgroundX = data.backgroundX;
 }
