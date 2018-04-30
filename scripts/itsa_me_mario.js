@@ -21,6 +21,8 @@ var bounce = false;
 var objects = [];
 var backgroundX = 0;
 var willColideTop = false;
+var left = false;
+var right = false;
 var inAir = false;
 var groundBase = 606;
 var defaultGroundX = 606;
@@ -29,6 +31,13 @@ var space;
 var cameraSpeed = 0;
 var xmlRequest = new XMLHttpRequest();
 var data;
+
+var socket = io();
+socket.on('data', function(msg) {
+    // console.log("msg " + msg);
+    if(isValidJson(msg))
+        data = JSON.parse(msg);
+});
 
 window.onload = () => {
     canvas = document.querySelector("#gameCanvas canvas");
@@ -292,15 +301,14 @@ function game_loop() {
 
 
 function update() {
+    // console.log('update');
+    makeSynchronousRequest("http://localhost:3000/game?action=get-data&player=1");
+    if(data === undefined) return;
 
-    data = makeSynchronousRequest("http://localhost:3000/game?action=get-data&player=1");
-    if (isValidJson(data)) {
-        data = JSON.parse(data);
-        try {
-            updateData(data);
-        } catch (e) {
-            console.log(data);
-        }
+    try {
+        updateData(data);
+    } catch (e) {
+        console.log(data);
     }
     //    if (dir.y > 8) {
     //        movementSpeed = 1;
@@ -375,7 +383,5 @@ function updateData(data) {
 }
 
 function makeSynchronousRequest(url) {
-    xmlRequest.open("GET", url, false);
-    xmlRequest.send();
-    return xmlRequest.response;
+    socket.emit('game', url);
 }

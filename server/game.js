@@ -97,6 +97,7 @@ getData = function(player) {
 	       //console.log('Saved!');
         });
     }
+    // if(!isValidJson(dataFile)) console.log("file: " + dataFile);
     return { code: 200, message: dataFile };
 };
 

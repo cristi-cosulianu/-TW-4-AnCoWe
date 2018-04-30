@@ -75,7 +75,10 @@ isValidJson = function(input){
     try{
         JSON.parse(input);
     }catch(e){
+        // console.log("BEGIN");
         console.log(input);
+        console.log(e.message + " " + e.stack);
+        // console.log("END");
         return false;
     }
     return true;
