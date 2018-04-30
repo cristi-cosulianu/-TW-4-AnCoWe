@@ -24,6 +24,8 @@ module.exports = {
 			case 'get-data':
 				return getData(params['player']);
 				break;
+            case 'update-data':
+                return updateData(params['player']);
 		}
 		
 		return { code: 200, message: 'ok' };
@@ -85,6 +87,12 @@ resize = function(player, info) {
 
 getData = function(player) {
 	var dataFile = fs.readFileSync('server/data/' + player + '.txt' , 'utf8');
+    // if(!isValidJson(dataFile)) console.log("file: " + dataFile);
+    return { code: 200, message: dataFile };
+};
+
+updateData = function(player){  
+    var dataFile = fs.readFileSync('server/data/' + player + '.txt' , 'utf8');
     if(util.isValidJson(dataFile)){
         var data = JSON.parse(dataFile);
         try{
@@ -97,9 +105,8 @@ getData = function(player) {
 	       //console.log('Saved!');
         });
     }
-    // if(!isValidJson(dataFile)) console.log("file: " + dataFile);
-    return { code: 200, message: dataFile };
-};
+    return { code: 200, message: "Data updated" };
+}
 
 function updateKeys(keyCode, action , data) {
     if(action !== "pressed"){

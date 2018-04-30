@@ -33,9 +33,9 @@ var xmlRequest = new XMLHttpRequest();
 var data;
 
 var socket = io();
-socket.on('data', function(msg) {
+socket.on('data', function (msg) {
     // console.log("msg " + msg);
-    if(isValidJson(msg))
+    if (isValidJson(msg))
         data = JSON.parse(msg);
 });
 
@@ -60,7 +60,7 @@ window.onload = () => {
 // GamePad Controls
 
 window.addEventListener("gamepadconnected", function (e) {
-    gp = navigator.getGamepads()[1];
+    gp = navigator.getGamepads()[0];
     document.removeEventListener("keydown", keyPressed, false);
     document.removeEventListener("keyup", keyReleased, false);
 
@@ -214,20 +214,20 @@ function player_animation(p) {
 
         }
     }
-    if (p % 21 < 6) {
+    if (p % 22 < 6) {
         context.drawImage(walk_1, player.position.x, player.position.y, player.width, player.height);
         return;
     }
-    if (p % 21 < 11) {
+    if (p % 22 < 12) {
         context.drawImage(walk_2, player.position.x, player.position.y, player.width, player.height);
 
         return;
     }
-    if (p % 21 < 16) {
+    if (p % 22 < 17) {
         context.drawImage(walk_3, player.position.x, player.position.y, player.width, player.height);
         return;
     }
-    if (p % 21 < 21) {
+    if (p % 22 < 22) {
         context.drawImage(walk_4, player.position.x, player.position.y, player.width, player.height);
         return;
     }
@@ -290,6 +290,7 @@ function game_loop() {
     if (gp != null) {
         checkGamepad();
     }
+    prepareNextFrame();
     //    if (objects.length > 0) {
     this.requestAnimationFrame(game_loop);
     //    } else {
@@ -298,13 +299,14 @@ function game_loop() {
     //    }
 }
 
-
+function prepareNextFrame() {
+    makeSynchronousRequest("http://localhost:3000/game?action=update-data&player=1");
+}
 
 function update() {
     // console.log('update');
     makeSynchronousRequest("http://localhost:3000/game?action=get-data&player=1");
-    if(data === undefined) return;
-
+    if (data === undefined) return;
     try {
         updateData(data);
     } catch (e) {
@@ -322,11 +324,18 @@ function update() {
 
 function checkGamepad() {
     try {
-        var gp = navigator.getGamepads()[1];
+        var gp = navigator.getGamepads()[0];
         var axeLF = gp.axes[0];
+        console.log(axeLF);
         if (axeLF < -0.5) {
+            if (right) {
+                makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=39");
+            }
             makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&player=1&keycode=37");
         } else if (axeLF > 0.5) {
+            if (left) {
+                makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=37");
+            }
             makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&player=1&keycode=39");
         } else {
             makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=37");
@@ -344,7 +353,6 @@ function checkGamepad() {
 
 function keyPressed(event) {
     makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&player=1&keycode=" + event.keyCode);
-
     if (event.keyCode === 39) {
         if (first_press === false) {
             animation_stage = 5;
@@ -353,10 +361,8 @@ function keyPressed(event) {
         // background_sound.play();
     }
     if (event.keyCode === 32) {
-        if (double_jump < 3) {
-            jump_sound.load();
-            jump_sound.play();
-        }
+        jump_sound.current_time = 0;
+        jump_sound.play();
     }
     if (event.keyCode === 40 && inAir && hasDropDown) {
         dir.y = 12;
