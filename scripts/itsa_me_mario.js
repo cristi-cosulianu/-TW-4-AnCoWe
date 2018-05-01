@@ -81,38 +81,68 @@ window.onresize = () => {
     render();
 };
 
-function loadLevel() {
-    objects.push(new GameObject(pipe, canvas.width / 2, canvas.height / 2 + 264, 64, 128));
-    objects.push(new GameObject(spikes, canvas.width / 2 + 200, canvas.height / 2 + 180, 64, 64));
-    objects.push(new GameObject(spikes, canvas.width / 2 + 264, canvas.height / 2 + 180, 64, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 328, canvas.height / 2 + 0, 64, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 392, canvas.height / 2 - 40, 64, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 456, canvas.height / 2 - 40, 128, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 584, canvas.height / 2 + 0, 64, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 648, canvas.height / 2 + 40, 64, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 712, canvas.height / 2 + 80, 64, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 1200, canvas.height / 2 + 128, 128, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 1232, canvas.height / 2 - 200, 64, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 1500, canvas.height / 2, 128, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 1628, canvas.height / 2, 128, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 1700, canvas.height / 2 - 160, 128, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 1828, canvas.height / 2 - 160, 128, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 1956, canvas.height / 2 - 160, 128, 64));
 
-    objects.push(new GameObject(ground, canvas.width / 2 + 2200, canvas.height / 2 - 160, 128, 64));
-    objects.push(new GameObject(platform, canvas.width / 2 + 2400, canvas.height / 2 - 160, 256, 32));
-    objects.push(new GameObject(ground, canvas.width / 2 + 2756, canvas.height / 2, 64, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 3056, canvas.height / 2, 64, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 3056, canvas.height / 2 - 250, 64, 64));
-    objects.push(new GameObject(ground, canvas.width / 2 + 3356, canvas.height / 2, 64, 64));
-    objects.push(new GameObject(pipe, canvas.width / 2 + 3000, canvas.height / 2 + 264, 64, 128));
-    objects.push(new GameObject(wall, canvas.width / 2 + 3600, canvas.height / 2, 64, 512));
-    objects.push(new GameObject(wall, canvas.width / 2 + 3800, canvas.height / 8, 64, 512));
-    objects.push(new GameObject(wall, canvas.width / 2 + 4000, 100, 64, 512));
-    objects.push(new GameObject(platform, canvas.width / 2 + 4200, canvas.height / 2 + 150, 256, 32));
-    objects.push(new GameObject(crane, canvas.width / 2 + 4800, canvas.height / 2 + 150, 32, 64));
-    objects.push(new GameObject(crane, canvas.width / 2 + 4800, canvas.height / 2 + 90, 32, 64));
-    objects.push(new GameObject(goomba, canvas.width / 2 + 4800, 680, 32, 32));
+function getObjectFromString(type) {
+    switch (type) {
+        case "spikes":
+            return spikes;
+            break;
+        case "wall":
+            return wall;
+            break;
+        case "goomba":
+            return goomba;
+            break;
+        case "ground":
+            return ground;
+            break;
+        case "pipe":
+            return pipe;
+            break;
+        case "platform":
+            return platform;
+            break;
+        case "crane":
+            return crane;
+            break;
+
+    }
+
+}
+
+
+function loadLevel() {
+    objects.push(new GameObject("pipe", canvas.width / 2, canvas.height / 2 + 264, 64, 128));
+    objects.push(new GameObject("spikes", canvas.width / 2 + 200, canvas.height / 2 + 180, 64, 64));
+    objects.push(new GameObject("spikes", canvas.width / 2 + 264, canvas.height / 2 + 180, 64, 64));
+    objects.push(new GameObject("ground", canvas.width / 2 + 328, canvas.height / 2 + 0, 64, 64));
+    objects.push(new GameObject("ground", canvas.width / 2 + 392, canvas.height / 2 - 40, 64, 64));
+    objects.push(new GameObject("ground", canvas.width / 2 + 456, canvas.height / 2 - 40, 128, 64));
+    objects.push(new GameObject("ground", canvas.width / 2 + 584, canvas.height / 2 + 0, 64, 64));
+    objects.push(new GameObject("ground", canvas.width / 2 + 648, canvas.height / 2 + 40, 64, 64));
+    objects.push(new GameObject("ground", canvas.width / 2 + 712, canvas.height / 2 + 80, 64, 64));
+    objects.push(new GameObject("ground", canvas.width / 2 + 1200, canvas.height / 2 + 128, 128, 64));
+    objects.push(new GameObject("ground", canvas.width / 2 + 1232, canvas.height / 2 - 200, 64, 64));
+    objects.push(new GameObject("ground", canvas.width / 2 + 1500, canvas.height / 2, 128, 64));
+    objects.push(new GameObject("ground", canvas.width / 2 + 1628, canvas.height / 2, 128, 64));
+    objects.push(new GameObject("ground", canvas.width / 2 + 1700, canvas.height / 2 - 160, 128, 64));
+    objects.push(new GameObject("ground", canvas.width / 2 + 1828, canvas.height / 2 - 160, 128, 64));
+    objects.push(new GameObject("ground", canvas.width / 2 + 1956, canvas.height / 2 - 160, 128, 64));
+
+    objects.push(new GameObject("ground", canvas.width / 2 + 2200, canvas.height / 2 - 160, 128, 64));
+    objects.push(new GameObject("platform", canvas.width / 2 + 2400, canvas.height / 2 - 160, 256, 32));
+    objects.push(new GameObject("ground", canvas.width / 2 + 2756, canvas.height / 2, 64, 64));
+    objects.push(new GameObject("ground", canvas.width / 2 + 3056, canvas.height / 2, 64, 64));
+    objects.push(new GameObject("ground", canvas.width / 2 + 3056, canvas.height / 2 - 250, 64, 64));
+    objects.push(new GameObject("ground", canvas.width / 2 + 3356, canvas.height / 2, 64, 64));
+    objects.push(new GameObject("pipe", canvas.width / 2 + 3000, canvas.height / 2 + 264, 64, 128));
+    objects.push(new GameObject("wall", canvas.width / 2 + 3600, canvas.height / 2, 64, 512));
+    objects.push(new GameObject("wall", canvas.width / 2 + 3800, canvas.height / 8, 64, 512));
+    objects.push(new GameObject("wall", canvas.width / 2 + 4000, 100, 64, 512));
+    objects.push(new GameObject("platform", canvas.width / 2 + 4200, canvas.height / 2 + 150, 256, 32));
+    objects.push(new GameObject("crane", canvas.width / 2 + 4800, canvas.height / 2 + 150, 32, 64));
+    objects.push(new GameObject("crane", canvas.width / 2 + 4800, canvas.height / 2 + 90, 32, 64));
+    objects.push(new GameObject("goomba", canvas.width / 2 + 4800, 680, 32, 32));
     objects.sort((a, b) => {
         if (a.position.x > b.position.x)
             return -1;
@@ -214,20 +244,20 @@ function player_animation(p) {
 
         }
     }
-    if (p % 22 < 6) {
+    if (p % 33 < 6) {
         context.drawImage(walk_1, player.position.x, player.position.y, player.width, player.height);
         return;
     }
-    if (p % 22 < 12) {
+    if (p % 33 < 15) {
         context.drawImage(walk_2, player.position.x, player.position.y, player.width, player.height);
 
         return;
     }
-    if (p % 22 < 17) {
+    if (p % 33 < 24) {
         context.drawImage(walk_3, player.position.x, player.position.y, player.width, player.height);
         return;
     }
-    if (p % 22 < 22) {
+    if (p % 33 < 33) {
         context.drawImage(walk_4, player.position.x, player.position.y, player.width, player.height);
         return;
     }
@@ -279,7 +309,12 @@ function drawObjects() {
         if (getLeft(objects[i]) + backgroundX > canvas.width) {
             continue;
         }
-        context.drawImage(objects[i].type, objects[i].position.x + backgroundX, objects[i].position.y, objects[i].width, objects[i].height);
+        try {
+            context.drawImage(getObjectFromString(objects[i].type), objects[i].position.x + backgroundX, objects[i].position.y, objects[i].width, objects[i].height);
+        } catch (e) {
+            console.log("Object missing or undefined!");
+        }
+
     }
 }
 
@@ -386,6 +421,7 @@ function updateData(data) {
     groundBase = data.groundBase;
     cameraSpeed = data.cameraSpeed;
     backgroundX = data.backgroundX;
+    objects = data.objects;
 }
 
 function makeSynchronousRequest(url) {

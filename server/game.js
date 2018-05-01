@@ -264,7 +264,7 @@ function checkCollision(data , player, takeAction) {
         }
         if (util.getRight(player) > util.getLeft(data.objects[i]) + data.backgroundX && util.getRight(data.objects[i]) + data.backgroundX > util.getRight(player) && util.getTop(player) < util.getBottom(data.objects[i]) && util.getBottom(player) > util.getTop(data.objects[i]) + 5) {
             if (takeAction === true) {
-                if (data.inAir && data.space && !data.bottomCollision) {
+                if (data.inAir && data.space && !data.bottomCollision && data.objects[i].type === "wall") {
                     data.double_jump = 0;
                     data.bounce = true;
                     data.dir.y = 0;
@@ -279,7 +279,7 @@ function checkCollision(data , player, takeAction) {
         }
         if (util.getLeft(player) < util.getRight(data.objects[i]) + data.backgroundX && util.getLeft(data.objects[i]) + data.backgroundX < util.getLeft(player) && util.getTop(player) < util.getBottom(data.objects[i]) && util.getBottom(player) > util.getTop(data.objects[i]) + 5) {
             if (takeAction === true) {
-                if (data.inAir && data.space && !data.bottomCollision) {
+                if (data.inAir && data.space && !data.bottomCollision && data.objects[i].type === "wall") {
                     data.double_jump = 0;
                     data.bounce = true;
                     data.dir.y = 0;
