@@ -41,7 +41,7 @@ startGame = function(player, info) {
     data.defaultGroundX = JSON.parse(info[2]);
     data.canvasWidth = JSON.parse(info[3]);
     data.canvasHeight = JSON.parse(info[4]);
-    data.groundBase = data.defaultGroundX;
+    data.player.groundBase = data.defaultGroundX;
 	fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
 	  if (err) throw err;
 	  //console.log('Saved!');
@@ -98,7 +98,7 @@ updateData = function(player){
         try{
             update(data);
         }catch(e){
-            console.log(data);
+            console.log(e);
         }
         fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
         if (err) throw err;
@@ -141,41 +141,41 @@ function updateKeys(keyCode, action , data) {
 function updatePlayerPosition(data){
     let player  = data.player;
     player.position = new util.Vector2(data.player.position.x , data.player.position.y);
-    let dir = new util.Vector2(data.dir.x , data.dir.y);
+    let dir = new util.Vector2(data.player.dir.x , data.player.dir.y);
     let gravity = new util.Vector2(data.gravity.x , data.gravity.y);
     if (data.objects.length > 0) {
-    if (player.position.y < data.groundBase || !data.onPlatform) {
-            data.groundBase = data.defaultGroundX;
+    if (player.position.y < data.player.groundBase || !data.player.onPlatform) {
+            data.player.groundBase = data.defaultGroundX;
     }
-    if (util.getRight(player) < util.getLeft(data.objects[data.currentPlatformIndex]) + data.backgroundX || util.getLeft(player) > util.getRight(data.objects[data.currentPlatformIndex]) + data.backgroundX) {
-            data.onPlatform = false;
+    if (util.getRight(player) < util.getLeft(data.objects[data.player.currentPlatformIndex]) + data.backgroundX || util.getLeft(player) > util.getRight(data.objects[data.player.currentPlatformIndex]) + data.backgroundX) {
+            data.player.onPlatform = false;
         }
     }
-    if (player.position.y < data.groundBase) {
+    if (player.position.y < data.player.groundBase) {
         data.animation_stage = 25;
-        data.inAir = true;
+        data.player.inAir = true;
         if (Math.abs(dir.y) < 12) {
             dir.add(gravity);
         }
         player.position.add(dir);
-        data.currentPlatformIndex = 0;
+        data.player.currentPlatformIndex = 0;
     }
-    if (player.position.y > data.groundBase) {
+    if (player.position.y > data.player.groundBase) {
             dir.x = 0;
             dir.y = 0;
             gravity.x = 0;
             gravity.y = 0.31;
-            player.position.y = data.groundBase;
+            player.position.y = data.player.groundBase;
             data.double_jump = 0;
             data.willColideTop = false;
             data.movementSpeed = data.speed;
-            data.inAir = false;
+            data.player.inAir = false;
     }
     if (data.right === true && data.left === false && dir.y < 12) {
-        if (dir.x === 0 && !data.inAir) {
+        if (dir.x === 0 && !data.player.inAir) {
             dir.x = data.movementSpeed;
         }
-        if (!data.inAir) {
+        if (!data.player.inAir) {
             dir.x = Math.abs(dir.x);
         } else {
             if (dir.x < data.movementSpeed) {
@@ -190,10 +190,10 @@ function updatePlayerPosition(data){
         player.position.add(dir);
     }
     if (data.left === true && data.right === false && dir.y < 12) {
-        if (dir.x === 0 && !data.inAir) {
+        if (dir.x === 0 && !data.player.inAir) {
             dir.x = -data.movementSpeed;
         }
-        if (!data.inAir) {
+        if (!data.player.inAir) {
             dir.x = -Math.abs(dir.x);
         } else {
             if (dir.x > -data.movementSpeed) {
@@ -226,86 +226,125 @@ function updatePlayerPosition(data){
     if(!data.right && !data.left){
         dir.x = 0;
     }
-    data.dir = dir;
+    data.player.dir = dir;
     data.player.position = player.position;
 }
 
+function updateEnemyPosition(data){
+    let enemySpeed = 10;
+    for(let i = 0; i < data.objects.length; ++i){
+        if(data.objects[i].type === "goomba"){
+            //console.log(data.objects[i].position);
+            let previousValue = data.objects[i].position.x;
+            data.objects[i].position.x += data.backgroundX;
+            if(checkCollision(data , data.objects[i] , "enemy")){
+                if(data.objects[i].rightCollision || data.objects[i].leftCollision){    
+                    if(data.objects[i].dir.x > 0){
+                        data.objects[i].dir.x = -enemySpeed;
+                    }
+                    else{
+                        data.objects[i].dir.x = enemySpeed;
+                    }   
+                }
+            }
+            data.objects[i].position.x = previousValue
+            data.objects[i].position.x += data.objects[i].dir.x;
+        }
+    }
+    
+}
 
-function checkCollision(data , player, takeAction) {
+
+function checkCollision(data , object, takeAction) {
     let response = false;
     for (let i = 0; i < data.objects.length; ++i) {
-        if (util.getLeft(data.objects[i]) + data.backgroundX > data.canvasWidth) {
+//        if (util.getLeft(data.objects[i]) + data.backgroundX > data.canvasWidth) {
+//            continue;
+//        }
+        if(takeAction === "enemy" && data.objects[i].type === "goomba")
             continue;
-        }
-        if (util.getTop(player) + player.height * 6 / 10 < util.getTop(data.objects[i]) && util.getBottom(player) > util.getTop(data.objects[i]) && ((util.getRight(player) - 10 > util.getLeft(data.objects[i]) + data.backgroundX && util.getRight(player) < util.getRight(data.objects[i]) + data.backgroundX) || (util.getLeft(player) + 10 < util.getRight(data.objects[i]) + data.backgroundX && util.getLeft(player) > util.getLeft(data.objects[i]) + data.backgroundX))) {
-            if (takeAction === true) {
-                data.groundBase = util.getTop(data.objects[i]) - player.height;
-                data.onPlatform = true;
-                data.currentPlatformIndex = i;
+        if (util.getTop(object) + object.height * 6 / 10 < util.getTop(data.objects[i]) && util.getBottom(object) > util.getTop(data.objects[i]) && ((util.getRight(object) - 10 > util.getLeft(data.objects[i]) + data.backgroundX && util.getRight(object) < util.getRight(data.objects[i]) + data.backgroundX) || (util.getLeft(object) + 10 < util.getRight(data.objects[i]) + data.backgroundX && util.getLeft(object) > util.getLeft(data.objects[i]) + data.backgroundX))) {
+            if(takeAction === "enemy"){
+                object.topCollision = true;
+            }
+            if (takeAction === "player") {
+                data.player.groundBase = util.getTop(data.objects[i]) - object.height;
+                data.player.onPlatform = true;
+                data.player.currentPlatformIndex = i;
                 //dir.y = 1;
-                data.inAir = false;
-                data.topCollision = true;
-                console.log("top");
+                data.player.inAir = false;
+                data.player.topCollision = true;
 
             } else {
                 data.willColideTop = true;
             }
+            console.log("top");
             response = true;
         }
-        if (util.getBottom(player) > util.getBottom(data.objects[i]) && util.getTop(data.player) < util.getBottom(data.objects[i]) && util.getRight(player) > util.getLeft(data.objects[i]) + data.backgroundX + player.width * 1 / 4 && util.getLeft(player) < util.getRight(data.objects[i]) + data.backgroundX - player.width * 1 / 4) {
-            if (takeAction === true) {
-                data.dir.x = 0;
-                data.dir.y = 1;
-                data.double_jump = 1;
-                data.bottomCollision = true;
-                console.log("bottom");
+        if (util.getBottom(object) > util.getBottom(data.objects[i]) && util.getTop(object) < util.getBottom(data.objects[i]) && util.getRight(object) > util.getLeft(data.objects[i]) + data.backgroundX + object.width * 1 / 4 && util.getLeft(object) < util.getRight(data.objects[i]) + data.backgroundX - object.width * 1 / 4) {
+            if(takeAction === "enemy"){
+                 object.bottomCollision = true;
             }
+            if (takeAction === "player") {
+                data.player.dir.x = 0;
+                data.player.dir.y = 1;
+                data.double_jump = 1;
+                data.player.bottomCollision = true;
+            }
+            //console.log("bottom");
             response = true;
         }
-        if (util.getRight(player) > util.getLeft(data.objects[i]) + data.backgroundX && util.getRight(data.objects[i]) + data.backgroundX > util.getRight(player) && util.getTop(player) < util.getBottom(data.objects[i]) && util.getBottom(player) > util.getTop(data.objects[i]) + 5) {
-            if (takeAction === true) {
-                if (data.inAir && data.space && !data.bottomCollision && data.objects[i].type === "wall") {
+        if (util.getRight(object) > util.getLeft(data.objects[i]) + data.backgroundX && util.getRight(data.objects[i]) + data.backgroundX > util.getRight(object) && util.getTop(object) < util.getBottom(data.objects[i]) && util.getBottom(object) > util.getTop(data.objects[i]) + 5) {
+            if(takeAction === "enemy"){
+                object.leftCollision = true;
+            }
+            if (takeAction === "player") {
+                if (data.player.inAir && data.space && !data.player.bottomCollision && data.objects[i].type === "wall") {
                     data.double_jump = 0;
                     data.bounce = true;
-                    data.dir.y = 0;
+                    data.player.dir.y = 0;
                 } else {
-                    data.dir.x = 0;
+                    data.player.dir.x = 0;
                 }
-                console.log("left");
-                data.leftCollision = true;
+                data.player.leftCollision = true;
 
             }
+            console.log("left");
             response = true;
         }
-        if (util.getLeft(player) < util.getRight(data.objects[i]) + data.backgroundX && util.getLeft(data.objects[i]) + data.backgroundX < util.getLeft(player) && util.getTop(player) < util.getBottom(data.objects[i]) && util.getBottom(player) > util.getTop(data.objects[i]) + 5) {
-            if (takeAction === true) {
-                if (data.inAir && data.space && !data.bottomCollision && data.objects[i].type === "wall") {
+        if (util.getLeft(object) < util.getRight(data.objects[i]) + data.backgroundX && util.getLeft(data.objects[i]) + data.backgroundX < util.getLeft(object) && util.getTop(object) < util.getBottom(data.objects[i]) && util.getBottom(object) > util.getTop(data.objects[i]) + 5) {
+            if(takeAction === "enemy"){
+                object.rightCollision = true;
+            }
+            if (takeAction === "player") {
+                if (data.player.inAir && data.space && !data.player.bottomCollision && data.objects[i].type === "wall") {
                     data.double_jump = 0;
                     data.bounce = true;
-                    data.dir.y = 0;
+                    data.player.dir.y = 0;
                 } else {
-                    data.dir.x = 0;
+                    data.player.dir.x = 0;
                 }
-                console.log("right");
-                data.rightCollision = true;
+                data.player.rightCollision = true;
             }
+            console.log("right");
             response = true;
         }
     }
     return response;
 }
 
+
 function update(data){
-    if (checkCollision(data , data.player, true)) {
+    if (checkCollision(data , data.player, "player")) {
         data.cameraSpeed = 0;
         //player = oldplayer;
-        if (data.rightCollision && !data.bounce) {
+        if (data.player.rightCollision && !data.bounce) {
             //left = false
             data.movementSpeed = 0;
             if (data.right) {
                 data.movementSpeed = data.speed;
             }
-        } else if (data.leftCollision && !data.bounce) {
+        } else if (data.player.leftCollision && !data.bounce) {
             //right = false;
             data.movementSpeed = 0;
             if (data.left) {
@@ -316,21 +355,22 @@ function update(data){
             data.movementSpeed = data.speed;
         }
     } else {
-        if (Math.abs(data.cameraSpeed + data.dir.x / 10) <= 2) {
+        if (Math.abs(data.cameraSpeed + data.player.dir.x / 10) <= 2) {
             if (!data.right || !data.left)
-                data.cameraSpeed += data.dir.x / 10;
+                data.cameraSpeed += data.player.dir.x / 10;
         }
         if (data.backgroundX - data.cameraSpeed * 2.75 < 0 && (data.right || data.left)) {
             if (!data.right || !data.left)
                 data.backgroundX -= data.cameraSpeed * 2.75;
         }
-        data.rightCollision = false;
-        data.leftCollision = false;
-        data.topCollision = false;
-        data.bottomCollision = false;
+        data.player.rightCollision = false;
+        data.player.leftCollision = false;
+        data.player.topCollision = false;
+        data.player.bottomCollision = false;
         data.movementSpeed = data.speed;
     }
     updatePlayerPosition(data);
+    updateEnemyPosition(data);
     if(data.bounce){
         inertia(data);
     }
@@ -343,13 +383,13 @@ function update(data){
 }
 
 function inertia(data) {
-    if (data.leftCollision) {
-        data.dir.x -= data.movementSpeed;
-        data.dir.y = -7;
+    if (data.player.leftCollision) {
+        data.player.dir.x -= data.movementSpeed;
+        data.player.dir.y = -7;
     }
-    if (data.rightCollision) {
-        data.dir.x += data.movementSpeed;
-        data.dir.y = -7;
+    if (data.player.rightCollision) {
+        data.player.dir.x += data.movementSpeed;
+        data.player.dir.y = -7;
     }
     data.gravity.y = 0.28;
     data.bounce = false;

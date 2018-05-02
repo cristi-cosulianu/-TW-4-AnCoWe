@@ -46,6 +46,21 @@ class GameObject {
     }
 }
 
+class MovableGameObject extends GameObject{
+    constructor(type , x , y , width , height){
+        super(type , x , y , width , height);
+        this.currentPlatformIndex = 0;
+        this.dir = new Vector2(-1 , 0);
+        this.inAir = NaN;
+        this.groundBase = 0;
+        this.onPlatform = false;
+        this.leftCollision = false;
+        this.rightCollision = false;
+        this.topCollision = false;
+        this.bottomCollision = false;
+    }
+}
+
 function getBottom(object) {
     return object.position.y + object.height;
 }
@@ -85,4 +100,4 @@ isValidJson = function(input){
 }
 
 module.exports = {Vector2
- , GameObject , isValidJson , getBottom , getLeft , getTop , getRight};
+ , MovableGameObject , GameObject , isValidJson , getBottom , getLeft , getTop , getRight};

@@ -29,7 +29,6 @@ var defaultGroundX = 606;
 var double_jump;
 var space;
 var cameraSpeed = 0;
-var xmlRequest = new XMLHttpRequest();
 var data;
 
 var socket = io();
@@ -49,7 +48,7 @@ window.onload = () => {
     dir = new Vector2(1, 0);
     loadAudio();
     loadTextures();
-    player = new GameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
+    player = new MovableGameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
     defaultGroundX = window.innerHeight - 64 - 40;
     groundBase = defaultGroundX;
     loadLevel();
@@ -73,14 +72,17 @@ window.addEventListener("gamepaddisconnected", function (e) {
     gp = null;
 });
 
-
-
 window.onresize = () => {
     defaultGroundX = window.innerHeight - 64 - 40;
     groundBase = defaultGroundX;
     render();
 };
 
+window.onblur = () => {
+    makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=" + "37");
+    makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=" + "39");
+    makeSynchronousRequest("http://localhost:3000/game?action=key-released&player=1&keycode=" + "32");
+}
 
 function getObjectFromString(type) {
     switch (type) {
@@ -105,11 +107,8 @@ function getObjectFromString(type) {
         case "crane":
             return crane;
             break;
-
     }
-
 }
-
 
 function loadLevel() {
     objects.push(new GameObject("pipe", canvas.width / 2, canvas.height / 2 + 264, 64, 128));
@@ -142,7 +141,8 @@ function loadLevel() {
     objects.push(new GameObject("platform", canvas.width / 2 + 4200, canvas.height / 2 + 150, 256, 32));
     objects.push(new GameObject("crane", canvas.width / 2 + 4800, canvas.height / 2 + 150, 32, 64));
     objects.push(new GameObject("crane", canvas.width / 2 + 4800, canvas.height / 2 + 90, 32, 64));
-    objects.push(new GameObject("goomba", canvas.width / 2 + 4800, 680, 32, 32));
+    objects.push(new MovableGameObject("goomba", canvas.width / 2 + 1500, 650, 64, 64));
+        objects.push(new MovableGameObject("goomba", canvas.width / 2 + 1300, 650, 64, 64));
     objects.sort((a, b) => {
         if (a.position.x > b.position.x)
             return -1;
@@ -163,7 +163,6 @@ function loadAudio() {
     jump_sound.volume = 0.1;
     jump_land.src = "../sound/jump_land.mp3";
     jump_land.volume = 0.1;
-
 }
 
 function loadTextures() {
@@ -297,7 +296,6 @@ function render() {
     drawObjects();
     player_animation(animation_stage);
     context.restore();
-
 }
 
 function drawObjects() {
@@ -314,10 +312,8 @@ function drawObjects() {
         } catch (e) {
             console.log("Object missing or undefined!");
         }
-
     }
 }
-
 
 function game_loop() {
     update();
@@ -415,10 +411,10 @@ function updateData(data) {
     space = data.space;
     animation_stage = data.animation_stage;
     player.position = data.player.position;
-    inAir = data.inAir;
+    inAir = data.player.inAir;
     double_jump = data.double_jump;
     defaultGroundX = data.defaultGroundX;
-    groundBase = data.groundBase;
+    groundBase = data.player.groundBase;
     cameraSpeed = data.cameraSpeed;
     backgroundX = data.backgroundX;
     objects = data.objects;
