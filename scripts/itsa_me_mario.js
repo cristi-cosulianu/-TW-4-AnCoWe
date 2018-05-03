@@ -141,8 +141,14 @@ function loadLevel() {
     objects.push(new GameObject("platform", canvas.width / 2 + 4200, canvas.height / 2 + 150, 256, 32));
     objects.push(new GameObject("crane", canvas.width / 2 + 4800, canvas.height / 2 + 150, 32, 64));
     objects.push(new GameObject("crane", canvas.width / 2 + 4800, canvas.height / 2 + 90, 32, 64));
-    objects.push(new MovableGameObject("goomba", canvas.width / 2 + 1500, 650, 64, 64));
-        objects.push(new MovableGameObject("goomba", canvas.width / 2 + 1300, 650, 64, 64));
+    //objects.push(new MovableGameObject("goomba", canvas.width / 2 + 1500, 300, 64, 64));
+    objects.push(new MovableGameObject("goomba", 1200, -5000, 64, 64));
+    objects.push(new MovableGameObject("goomba", 1400, -5000, 64, 64));
+    objects.push(new MovableGameObject("goomba", 1000, -5000, 64, 64));
+    objects.push(new MovableGameObject("goomba", 1300, -5000, 64, 64));
+    objects.push(new MovableGameObject("goomba", 1500, -5000, 64, 64));
+    objects.push(new MovableGameObject("goomba", 2000, -5000, 64, 64));
+    objects.push(new MovableGameObject("goomba", 2200, -5000, 64, 64));
     objects.sort((a, b) => {
         if (a.position.x > b.position.x)
             return -1;

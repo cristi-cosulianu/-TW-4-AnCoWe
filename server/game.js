@@ -231,12 +231,34 @@ function updatePlayerPosition(data){
 }
 
 function updateEnemyPosition(data){
-    let enemySpeed = 10;
+    let enemySpeed = 2;
     for(let i = 0; i < data.objects.length; ++i){
         if(data.objects[i].type === "goomba"){
+                let previousValue = data.objects[i].position.x;
+                data.objects[i].position.x += data.backgroundX;
+                if (data.objects[i].position.y < data.objects[i].groundBase || !data.objects[i].onPlatform) {
+                data.objects[i].groundBase = data.defaultGroundX;
+                }
+                if (util.getRight(data.objects[i]) < util.getLeft(data.objects[data.objects[i].currentPlatformIndex]) + data.backgroundX || util.getLeft(data.objects[i]) > util.getRight(data.objects[data.objects[i].currentPlatformIndex]) + data.backgroundX) {
+                    data.objects[i].onPlatform = false;
+                }
             //console.log(data.objects[i].position);
-            let previousValue = data.objects[i].position.x;
-            data.objects[i].position.x += data.backgroundX;
+
+            if (data.objects[i].position.y < data.objects[i].groundBase) {
+                data.objects[i].inAir = true;
+                data.objects[i].dir.x = 0;
+                if (Math.abs(data.objects[i].dir.y) < 12) {
+                    data.objects[i].dir.y += data.gravity.y;
+                }
+            }
+            else{
+                data.objects[i].dir.y = 0;
+            }
+            if (data.objects[i].position.y > data.objects[i].groundBase) {
+                    data.objects[i].position.y = data.objects[i].groundBase;
+                    data.objects[i].inAir = false;
+                    data.objects[i].dir.x = -enemySpeed;
+            }
             if(checkCollision(data , data.objects[i] , "enemy")){
                 if(data.objects[i].rightCollision || data.objects[i].leftCollision){    
                     if(data.objects[i].dir.x > 0){
@@ -249,6 +271,7 @@ function updateEnemyPosition(data){
             }
             data.objects[i].position.x = previousValue
             data.objects[i].position.x += data.objects[i].dir.x;
+            data.objects[i].position.y += data.objects[i].dir.y;
         }
     }
     
@@ -266,6 +289,12 @@ function checkCollision(data , object, takeAction) {
         if (util.getTop(object) + object.height * 6 / 10 < util.getTop(data.objects[i]) && util.getBottom(object) > util.getTop(data.objects[i]) && ((util.getRight(object) - 10 > util.getLeft(data.objects[i]) + data.backgroundX && util.getRight(object) < util.getRight(data.objects[i]) + data.backgroundX) || (util.getLeft(object) + 10 < util.getRight(data.objects[i]) + data.backgroundX && util.getLeft(object) > util.getLeft(data.objects[i]) + data.backgroundX))) {
             if(takeAction === "enemy"){
                 object.topCollision = true;
+                object.groundBase = util.getTop(data.objects[i]) - object.height;
+                object.onPlatform = true;
+                object.inAir = false;
+                object.currentPlatformIndex = i;
+                object.dir.y = 0;
+                
             }
             if (takeAction === "player") {
                 data.player.groundBase = util.getTop(data.objects[i]) - object.height;
@@ -278,7 +307,6 @@ function checkCollision(data , object, takeAction) {
             } else {
                 data.willColideTop = true;
             }
-            console.log("top");
             response = true;
         }
         if (util.getBottom(object) > util.getBottom(data.objects[i]) && util.getTop(object) < util.getBottom(data.objects[i]) && util.getRight(object) > util.getLeft(data.objects[i]) + data.backgroundX + object.width * 1 / 4 && util.getLeft(object) < util.getRight(data.objects[i]) + data.backgroundX - object.width * 1 / 4) {
@@ -309,7 +337,6 @@ function checkCollision(data , object, takeAction) {
                 data.player.leftCollision = true;
 
             }
-            console.log("left");
             response = true;
         }
         if (util.getLeft(object) < util.getRight(data.objects[i]) + data.backgroundX && util.getLeft(data.objects[i]) + data.backgroundX < util.getLeft(object) && util.getTop(object) < util.getBottom(data.objects[i]) && util.getBottom(object) > util.getTop(data.objects[i]) + 5) {
@@ -326,7 +353,6 @@ function checkCollision(data , object, takeAction) {
                 }
                 data.player.rightCollision = true;
             }
-            console.log("right");
             response = true;
         }
     }
