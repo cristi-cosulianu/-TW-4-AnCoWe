@@ -82,10 +82,10 @@ io.on('connection', function(socket) {
 				var ret = game.processRequest(queryParams);
 				if(queryParams['action'] == 'get-data') {
 					// console.log(ret.message);
-					io.emit('data', ret.message);
+					this.emit('data', ret.message);
 				}
 				else
-					io.emit('fweef', ret.message);
+					this.emit('fweef', ret.message);
 
 				break;
 		}

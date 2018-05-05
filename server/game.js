@@ -7,6 +7,8 @@ module.exports = {
 		if(params['action'] === undefined || params['player'] === undefined) {
 			return { code: 405, message: 'invalid parameters' };
 		}
+        
+        // console.log(params['player'] + ' ' + params['action']);
 		
 		switch(params['action']) {
 			case 'start':
