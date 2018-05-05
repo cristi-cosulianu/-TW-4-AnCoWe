@@ -5,6 +5,7 @@ const path = require('path');
 var mime = require('mime-types');
 const game = require('./server/game.js');
 const marvel = require('./server/marvel.js');
+const randomUuid = require('uuid/v4');
 const hostname = '127.0.0.1';
 const port = 3000;
 
@@ -59,8 +60,16 @@ const io = socket(server);
 io.on('connection', function(socket) {
   console.log('a user connected');
   
+  var uuid = randomUuid();
+  socket.emit('uuid', uuid);
+  
   socket.on('disconnect', function() {
-    console.log('user disconnected');
+  	dataFile = 'server/data/' + uuid + '.txt';
+  	fs.exists(dataFile, function(exists) {
+  		if(exists) fs.unlinkSync(dataFile);
+  	});
+  	
+    console.log('user ' + uuid + ' disconnected');
   });
   
   socket.on('game', function(msg) {
