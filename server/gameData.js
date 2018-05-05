@@ -23,12 +23,6 @@ class gameData {
         this.double_jump = 0;
         this.canvasWidth = 1280;
         this.canvasHeight = 720;
-        
-        this.rightKeyCode = 39;
-        this.leftKeyCode = 37;
-        this.downKeyCode = 40;
-        this.jumpKeyCode = 32;
-        this.dashKeyCode = 16;
     }
 }
 

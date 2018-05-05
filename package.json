@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/cristi-cosulianu/-TW-4-AnCoWe#readme",
   "dependencies": {
-    "global": "^4.3.2",
     "mime-types": "^2.1.18",
     "socket.io": "^2.1.0",
     "sync-request": "^6.0.0",
