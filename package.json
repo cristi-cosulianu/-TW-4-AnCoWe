@@ -1,0 +1,24 @@
+{
+  "name": "tw-project",
+  "version": "1.0.0",
+  "description": "Proiect final Tehnologii Web (Anime + Comics = Web Game)",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cristi-cosulianu/-TW-4-AnCoWe.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/cristi-cosulianu/-TW-4-AnCoWe/issues"
+  },
+  "homepage": "https://github.com/cristi-cosulianu/-TW-4-AnCoWe#readme",
+  "dependencies": {
+    "mime-types": "^2.1.18",
+    "socket.io": "^2.1.0",
+    "sync-request": "^6.0.0"
+  }
+}
