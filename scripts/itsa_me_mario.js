@@ -24,6 +24,11 @@ var willColideTop = false;
 var left = false;
 var right = false;
 var inAir = false;
+var rightKeyCode = 39;
+var leftKeyCode = 37;
+var downKeyCode = 40;
+var jumpKeyCode = 32;
+var dashKeyCode = 16;
 var groundBase = 606;
 var defaultGroundX = 606;
 var double_jump;
@@ -87,9 +92,9 @@ window.onload = () => {
         };
 
         window.onblur = () => {
-            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + "37");
-            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + "39");
-            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + "32");
+            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + leftKeyCode);
+            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + rightKeyCode);
+            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + jumpKeyCode);
         }
         
         requestAnimationFrame(game_loop);
@@ -379,22 +384,22 @@ function checkGamepad() {
         console.log(axeLF);
         if (axeLF < -0.5) {
             if (right) {
-                makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=39");
+                makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + rightKeyCode);
             }
-            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=37");
+            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=" + leftKeyCode);
         } else if (axeLF > 0.5) {
             if (left) {
-                makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=37");
+                makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + leftKeyCode);
             }
-            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=39");
+            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=" + rightKeyCode);
         } else {
-            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=37");
-            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=39");
+            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + leftKeyCode);
+            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + rightKeyCode);
         }
         if (gp.buttons[0].pressed) {
-            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=32");
+            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=" + jumpKeyCode);
         } else if (space) {
-            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=32");
+            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + jumpKeyCode);
         }
     } catch (e) {
         console.log("GamePadRemoved");
@@ -403,18 +408,18 @@ function checkGamepad() {
 
 function keyPressed(event) {
     makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=" + event.keyCode);
-    if (event.keyCode === 39) {
+    if (event.keyCode === rightKeyCode) {
         if (first_press === false) {
             animation_stage = 5;
             first_press = true;
         }
         // background_sound.play();
     }
-    if (event.keyCode === 32) {
+    if (event.keyCode === jumpKeyCode) {
         jump_sound.current_time = 0;
         jump_sound.play();
     }
-    if (event.keyCode === 40 && inAir && hasDropDown) {
+    if (event.keyCode === downKeyCode && inAir && hasDropDown) {
         dir.y = 12;
         dir.x = 0;
     }
