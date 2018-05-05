@@ -4,7 +4,6 @@ const fs = require('fs');
 const path = require('path');
 var mime = require('mime-types');
 const game = require('./server/game.js');
-const options = require('./server/options.js');
 const marvel = require('./server/marvel.js');
 const randomUuid = require('uuid/v4');
 const hostname = '127.0.0.1';
@@ -28,14 +27,6 @@ const server = http.createServer((req, res) => {
 
 			break;
 		*/
-		case '/options':
-			res.setHeader('Content-Type', 'text/text');
-
-			var ret = options.processRequest(queryParams);
-			res.statusCode = ret.code;
-			res.end(ret.message);
-
-			break;
 		case '/marvel':
 			res.setHeader('Content-Type', 'text/text');
 			
@@ -62,7 +53,6 @@ const server = http.createServer((req, res) => {
 		}
 	});
 });
-
 
 const socket = require('socket.io');
 const io = socket(server);

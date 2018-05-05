@@ -214,6 +214,7 @@ nav ul li a {
 .listOfOptions > ul li p{
     display: inline-block;
     margin: 0;
+    position: relative;f
     position: relative;
     width: 50%;
 }
@@ -241,8 +242,12 @@ nav ul li a {
     margin: 3vh 0;
 }
 
-.listOfOptions ul li:hover{
+.changeKeys > ul li a:hover{
     color: aqua;
+}
+
+.soundOption{
+
 }
 
 /* ---------------------------------------------------------- HALL OF FAME CANVAS -- */
