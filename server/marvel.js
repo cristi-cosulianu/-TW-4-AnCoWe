@@ -10,12 +10,6 @@ module.exports = {
 			case 'get-icon':
 				return getIcon(params['heroname']);
 				break;
-		    case 'get-anime-icon':
-		        return getIconAnime(params['id']);
-		        break;
-		    case 'get-anime-characters':
-		        return getAnimeCharacters();
-		        break;
 		}
 		
 		return { code: 200, message: 'ok' };
@@ -33,15 +27,3 @@ getIcon = function(heroname) {
 
 	return { code: 200, message: imgUrl };
 };
-getIconAnime = function (id) {
-    var url = "https://api.jikan.moe/character/" + id + "/pictures";
-    var res = request('GET',url);
-    var imgUrl = JSON.parse(res.getBody()).image_url;
-    return { code: 200, message: imgUrl };
-
-}
-getAnimeCharacters = function () {
-    var characters = "[\r\n  {\r\n    \"image_url\": \"https:\\\/\\\/myanimelist.cdn-dena.com\\\/r\\\/46x64\\\/images\\\/characters\\\/9\\\/69275.jpg?s=1e1ccda911e91eac0afa621fcffc2621\",\r\n    \"mal_id\": 145,\r\n    \"url\": \"https:\\\/\\\/myanimelist.net\\\/character\\\/145\\\/Sakura_Haruno\",\r\n    \"name\": \"Haruno, Sakura\"\r\n  },\r\n  {\r\n    \"image_url\": \"https:\\\/\\\/myanimelist.cdn-dena.com\\\/r\\\/46x64\\\/images\\\/characters\\\/9\\\/69275.jpg?s=1e1ccda911e91eac0afa621fcffc2621\",\r\n    \"mal_id\": 145,\r\n    \"url\": \"https:\\\/\\\/myanimelist.net\\\/character\\\/145\\\/Sakura_Haruno\",\r\n    \"name\": \"Haruno, Sakura\"\r\n  }\r\n]";
-
-    return { code: 200, message: characters };
-}
