@@ -1,3 +1,4 @@
+
 function sceneTransition(firstId, secondId) {
 	if(secondId == 'gameCanvas') {
 			document.getElementById("leftDiv").classList.add('leftCurtain');
@@ -126,13 +127,15 @@ function sceneTransition(firstId, secondId) {
   }
   
   function updateKeyCodes(elementId,keyCode){
-	  
-		  var serverURL = "http://localhost:3000/options?";
-		  serverURL = serverURL + "key=" + elementId + "&code=" + keyCode;
-		  console.log(serverURL);
-		  XMLHttpRequest.open("GET", serverURL, true);
-		  XMLHttpRequest.send();
-		  return XMLHttpRequest.response;
-  
+
+	var xmlRequest = new XMLHttpRequest();
+
+	var serverURL = "http://localhost:3000/options?";
+	serverURL = serverURL + "key=" + elementId + "&code=" + keyCode + "&player=" + uuid;
+	console.log(serverURL);
+	xmlRequest.open("POST", serverURL, true);
+	xmlRequest.send();
+	return xmlRequest.response;
+
   }
   

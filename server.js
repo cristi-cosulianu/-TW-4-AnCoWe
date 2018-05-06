@@ -71,6 +71,7 @@ io.on('connection', function(socket) {
   console.log('a user connected');
   
   var uuid = randomUuid();
+  console.log(uuid);
   socket.emit('uuid', uuid);
   
   socket.on('disconnect', function() {

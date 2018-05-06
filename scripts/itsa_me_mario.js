@@ -46,6 +46,7 @@ socket.on('data', function(msg) {
 });
 
 socket.on('uuid', function(msg) {
+    console.log(msg);
     uuid = msg;
     console.log(uuid);
 });
@@ -62,9 +63,11 @@ window.onload = () => {
     defaultGroundX = window.innerHeight - 64 - 40;
     groundBase = defaultGroundX;
     loadLevel();
+
+    console.log(uuid);
+    makeSynchronousRequest("http://localhost:3000/game?action=start&info=" + JSON.stringify(player) + "&info=" + JSON.stringify(objects) + "&info=" + JSON.stringify(defaultGroundX) + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
     
     document.getElementById("startGameButton").addEventListener("click", function(e) {
-        makeSynchronousRequest("http://localhost:3000/game?action=start&info=" + JSON.stringify(player) + "&info=" + JSON.stringify(objects) + "&info=" + JSON.stringify(defaultGroundX) + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
         document.addEventListener("keydown", keyPressed, false);
         document.addEventListener("keyup", keyReleased, false);
         
