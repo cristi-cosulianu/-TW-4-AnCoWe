@@ -114,7 +114,7 @@ function updateKeys(keyCode, action , data) {
     if(action !== "pressed"){
         data.animation_stage = 0;
     }
-    if (keyCode == 37) {
+    if (keyCode == leftKeyCode) {
         if(action === "pressed"){
             data.left = true;
         }
@@ -122,7 +122,7 @@ function updateKeys(keyCode, action , data) {
             data.left = false;
         }
     }
-    if (keyCode == 39) {
+    if (keyCode == rightKeyCode) {
         if(action === "pressed"){
             data.right = true;
         }
@@ -130,7 +130,7 @@ function updateKeys(keyCode, action , data) {
             data.right = false;
         }
     }
-    if (keyCode == 32) {
+    if (keyCode == jumpKeyCode) {
         if(action === "pressed"){
             data.space = true;
         }
