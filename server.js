@@ -95,8 +95,8 @@ io.on('connection', function(socket) {
 					// console.log(ret.message);
 					this.emit('data', ret.message);
 				}
-				else
-					this.emit('fweef', ret.message);
+				// else
+				// 	this.emit('fweef', ret.message);
 
 				break;
 		}

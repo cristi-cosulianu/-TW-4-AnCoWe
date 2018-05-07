@@ -45,10 +45,11 @@ startGame = function(player, info) {
     data.canvasWidth = JSON.parse(info[3]);
     data.canvasHeight = JSON.parse(info[4]);
     data.player.groundBase = data.defaultGroundX;
-	fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
-	  if (err) throw err;
-	  //console.log('Saved!');
-	});
+    writeData(player, data);
+	// fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
+	//   if (err) throw err;
+	//   //console.log('Saved!');
+	// });
 //    fs.writeFileSync('levels/1.txt' , JSON.stringify(data.objects) , function(err){
 //      if(err) throw err;
 //    });
@@ -57,61 +58,69 @@ startGame = function(player, info) {
 };
 
 keyPressed = function(player, keycode) {
-	var data = fs.readFileSync('server/data/' + player + '.txt' , 'utf8');
+	var data = readData(player);
+    if(data === undefined) return { code: 404, message: 'file not found' };
 	// do stuff with data
-    if(util.isValidJson(data)){
-        data = JSON.parse(data);
-        updateKeys(keycode , "pressed" ,data);
-	    fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
-        if (err) throw err;
-	   });   
-    }
+    updateKeys(keycode, "pressed", data);
+    writeData(player, data);
 	
 	return { code: 200, message: 'key-pressed' };
 }
 
 keyReleased = function(player, keycode) {
-	var data = fs.readFileSync('server/data/' + player + '.txt' , 'utf8');
-    if(util.isValidJson(data)){
-        data = JSON.parse(data);
-        updateKeys(keycode , "released" , data);
-        fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
-        if (err) throw err;
-        //console.log('Saved!');
-	   });
-    } 
+    var data = readData(player);
+    if(data === undefined) return { code: 404, message: 'file not found' };
+    
+    updateKeys(keycode , "released" , data);
+    writeData(player, data);
+    
 	return { code: 200, message: 'key-released' };
 }
 
 resize = function(player, info) {
-	var data = fs.readFileSync('server/data/' + player + '.txt' , 'utf8');
-	if(util.isValidJson(data)){
-	   // do stuff with data
-    }
+    var data = readData(player);
+    if(data === undefined) return { code: 404, message: 'file not found' };
+    
 	return { code: 200, message: 'resize' };
 }
 
 getData = function(player) {
-	var dataFile = fs.readFileSync('server/data/' + player + '.txt' , 'utf8');
-    // if(!isValidJson(dataFile)) console.log("file: " + dataFile);
-    return { code: 200, message: dataFile };
+    var data = readData(player);
+    if(data === undefined) return { code: 404, message: 'file not found' };
+    
+    return { code: 200, message: JSON.stringify(data) };
 };
 
 updateData = function(player){  
-    var dataFile = fs.readFileSync('server/data/' + player + '.txt' , 'utf8');
-    if(util.isValidJson(dataFile)){
-        var data = JSON.parse(dataFile);
-        try{
-            update(data , player);
-        }catch(e){
-            console.log(e);
-        }
-        fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
-        if (err) throw err;
-	       //console.log('Saved!');
-        });
+    var data = readData(player);
+    if(data === undefined) return { code: 404, message: 'file not found' };
+    
+    try{
+        update(data, player);
+    }catch(e){
+        console.log(e);
     }
+    writeData(player, data);
+    
     return { code: 200, message: "Data updated" };
+}
+
+function readData(player) {
+    try {
+        return JSON.parse(fs.readFileSync('server/data/' + player + '.txt' , 'utf8'));
+    } catch(e) {
+        // console.log(e);
+    }
+    
+    return undefined;
+}
+
+function writeData(player, data) {
+    try {
+        fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data));
+    } catch(e) {
+        // console.log(e);
+    }
 }
 
 function updateKeys(keyCode, action , data) {
