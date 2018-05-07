@@ -48,6 +48,8 @@ socket.on('uuid', function (msg) {
     console.log(msg);
     uuid = msg;
     console.log(uuid);
+    makeSynchronousRequest("http://localhost:3000/game?action=start&info=" + JSON.stringify(player) + "&info=" + JSON.stringify(objects) + "&info=" + JSON.stringify(defaultGroundX) + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
+
 });
 
 window.onload = () => {
@@ -61,8 +63,11 @@ window.onload = () => {
 
     loadLevel();
 
+    console.log("UUID:");
+
     console.log(uuid);
-    makeSynchronousRequest("http://localhost:3000/game?action=start&info=" + JSON.stringify(player) + "&info=" + JSON.stringify(objects) + "&info=" + JSON.stringify(defaultGroundX) + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
+        console.log("ON LOAD!");
+
 
     document.getElementById("startGameButton").addEventListener("click", function (e) {
         document.addEventListener("keydown", keyPressed, false);
