@@ -35,17 +35,16 @@ var double_jump;
 var space;
 var cameraSpeed = 0;
 var data;
-
 var uuid = undefined;
 
 var socket = io();
-socket.on('data', function(msg) {
+socket.on('data', function (msg) {
     // console.log("msg " + msg);
     if (isValidJson(msg))
         data = JSON.parse(msg);
 });
 
-socket.on('uuid', function(msg) {
+socket.on('uuid', function (msg) {
     console.log(msg);
     uuid = msg;
     console.log(uuid);
@@ -59,19 +58,15 @@ window.onload = () => {
     dir = new Vector2(1, 0);
     loadAudio();
     loadTextures();
-    player = new MovableGameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
-    defaultGroundX = window.innerHeight - 64 - 40;
-    groundBase = defaultGroundX;
+
     loadLevel();
 
     console.log(uuid);
     makeSynchronousRequest("http://localhost:3000/game?action=start&info=" + JSON.stringify(player) + "&info=" + JSON.stringify(objects) + "&info=" + JSON.stringify(defaultGroundX) + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
-    
-    document.getElementById("startGameButton").addEventListener("click", function(e) {
+
+    document.getElementById("startGameButton").addEventListener("click", function (e) {
         document.addEventListener("keydown", keyPressed, false);
         document.addEventListener("keyup", keyReleased, false);
-        
-        
         // GamePad Controls
 
         window.addEventListener("gamepadconnected", function (e) {
@@ -80,8 +75,6 @@ window.onload = () => {
             document.removeEventListener("keyup", keyReleased, false);
 
         });
-
-
         window.addEventListener("gamepaddisconnected", function (e) {
             document.addEventListener("keydown", keyPressed, false);
             document.addEventListener("keyup", keyReleased, false);
@@ -99,7 +92,7 @@ window.onload = () => {
             makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + rightKeyCode);
             makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + jumpKeyCode);
         }
-        
+
         requestAnimationFrame(game_loop);
     });
 };
@@ -132,6 +125,9 @@ function getObjectFromString(type) {
 }
 
 function loadLevel() {
+    player = new MovableGameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
+    defaultGroundX = window.innerHeight - 64 - 40;
+    groundBase = defaultGroundX;
     objects.push(new GameObject("pipe", canvas.width / 2, canvas.height / 2 + 264, 64, 128));
     objects.push(new GameObject("spikes", canvas.width / 2 + 200, canvas.height / 2 + 180, 64, 64));
     objects.push(new GameObject("spikes", canvas.width / 2 + 264, canvas.height / 2 + 180, 64, 64));
@@ -290,15 +286,6 @@ function player_animation(p) {
 
 }
 
-function castRay(startPoint, direction, size) {
-    for (let i = 0; i < size; ++i) {
-        startPoint.position.add(direction);
-        if (checkCollision(startPoint, false) && willColideTop) {
-            dir.normalize();
-        }
-    }
-}
-
 function render() {
     //    if (backgroundX > canvas.width) {
     //        backgroundX %= canvas.width;
@@ -370,13 +357,6 @@ function update() {
     } catch (e) {
         console.log(data);
     }
-    //    if (dir.y > 8) {
-    //        movementSpeed = 1;
-    //    }
-
-    //    if (inAir && dir.y > 0) {
-    //        castRay(getGameObjectCopy(player), new Vector2(0, 1), 12);
-    //    }
 }
 
 
@@ -448,10 +428,9 @@ function updateData(data) {
 }
 
 function makeSynchronousRequest(url) {
-    if(uuid === undefined) {
+    if (uuid === undefined) {
         console.log("uuid undefined");
         return;
     }
-    
     socket.emit('game', url + "&player=" + uuid);
 }

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const gameData = require('./gameData.js');
 const util = require('../scripts/util.js');
+var death = false;
 
 module.exports = {
 	processRequest: function(params) {
@@ -44,11 +45,14 @@ startGame = function(player, info) {
     data.canvasWidth = JSON.parse(info[3]);
     data.canvasHeight = JSON.parse(info[4]);
     data.player.groundBase = data.defaultGroundX;
-	fs.writeFile('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
+	fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
 	  if (err) throw err;
 	  //console.log('Saved!');
 	});
-	
+//    fs.writeFileSync('levels/1.txt' , JSON.stringify(data.objects) , function(err){
+//      if(err) throw err;
+//    });
+//	
 	return { code: 200, message: 'startGame' };
 };
 
@@ -98,7 +102,7 @@ updateData = function(player){
     if(util.isValidJson(dataFile)){
         var data = JSON.parse(dataFile);
         try{
-            update(data);
+            update(data , player);
         }catch(e){
             console.log(e);
         }
@@ -261,7 +265,7 @@ function updateEnemyPosition(data){
                     data.objects[i].inAir = false;
                     data.objects[i].dir.x = -enemySpeed;
             }
-            if(checkCollision(data , data.objects[i] , "enemy")){
+            if(checkCollision(data , data.objects[i] , "enemy").length){
                 if(data.objects[i].rightCollision || data.objects[i].leftCollision){    
                     if(data.objects[i].dir.x > 0){
                         data.objects[i].dir.x = -enemySpeed;
@@ -281,7 +285,7 @@ function updateEnemyPosition(data){
 
 
 function checkCollision(data , object, takeAction) {
-    let response = false;
+    let response = [];
     for (let i = 0; i < data.objects.length; ++i) {
 //        if (util.getLeft(data.objects[i]) + data.backgroundX > data.canvasWidth) {
 //            continue;
@@ -296,7 +300,6 @@ function checkCollision(data , object, takeAction) {
                 object.inAir = false;
                 object.currentPlatformIndex = i;
                 object.dir.y = 0;
-                
             }
             if (takeAction === "player") {
                 data.player.groundBase = util.getTop(data.objects[i]) - object.height;
@@ -309,7 +312,7 @@ function checkCollision(data , object, takeAction) {
             } else {
                 data.willColideTop = true;
             }
-            response = true;
+            response.push(data.objects[i]);
         }
         if (util.getBottom(object) > util.getBottom(data.objects[i]) && util.getTop(object) < util.getBottom(data.objects[i]) && util.getRight(object) > util.getLeft(data.objects[i]) + data.backgroundX + object.width * 1 / 4 && util.getLeft(object) < util.getRight(data.objects[i]) + data.backgroundX - object.width * 1 / 4) {
             if(takeAction === "enemy"){
@@ -321,8 +324,7 @@ function checkCollision(data , object, takeAction) {
                 data.double_jump = 1;
                 data.player.bottomCollision = true;
             }
-            //console.log("bottom");
-            response = true;
+            response.push(data.objects[i]);
         }
         if (util.getRight(object) > util.getLeft(data.objects[i]) + data.backgroundX && util.getRight(data.objects[i]) + data.backgroundX > util.getRight(object) && util.getTop(object) < util.getBottom(data.objects[i]) && util.getBottom(object) > util.getTop(data.objects[i]) + 5) {
             if(takeAction === "enemy"){
@@ -339,7 +341,7 @@ function checkCollision(data , object, takeAction) {
                 data.player.leftCollision = true;
 
             }
-            response = true;
+            response.push(data.objects[i]);
         }
         if (util.getLeft(object) < util.getRight(data.objects[i]) + data.backgroundX && util.getLeft(data.objects[i]) + data.backgroundX < util.getLeft(object) && util.getTop(object) < util.getBottom(data.objects[i]) && util.getBottom(object) > util.getTop(data.objects[i]) + 5) {
             if(takeAction === "enemy"){
@@ -355,15 +357,21 @@ function checkCollision(data , object, takeAction) {
                 }
                 data.player.rightCollision = true;
             }
-            response = true;
+            response.push(data.objects[i]);
+        }
+    }
+    for(let i = 0; i < response.length; ++i){
+        if(response[i].type === "goomba" || response[i].type === "spikes" && takeAction === "player"){
+            death = true;
+            return response;
         }
     }
     return response;
 }
 
 
-function update(data){
-    if (checkCollision(data , data.player, "player")) {
+function update(data , player){
+    if (checkCollision(data , data.player, "player").length) {
         data.cameraSpeed = 0;
         //player = oldplayer;
         if (data.player.rightCollision && !data.bounce) {
@@ -407,6 +415,30 @@ function update(data){
     }
     if (data.player.position.x + data.player.width > data.canvasWidth / 2) {
         data.player.position.x = data.canvasWidth / 2 - data.player.width;
+    }
+    if(death){
+        let tempData = fs.readFileSync('levels/1.txt' , "UTF-8");
+        if(isValidJson(tempData)){
+            data.objects = JSON.parse(tempData);
+            data.player.position.x =  data.canvasWidth / 2 - 100;
+            data.player.position.y = data.defaultGroundX;
+            data.player.groundBase = data.defaultGroundX;
+            data.player.rightCollision = false;
+            data.player.leftCollision = false;
+            data.player.topCollision = false;
+            data.player.bottomCollision = false;
+            data.player.dir.x = 1;
+            data.player.dir.y = 0;
+            data.player.currentPlatformIndex = 0;
+            data.player.onPlatform = false;
+            data.backgroundX = 0;
+            data.double_jump = 0;
+            fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
+            if (err) throw err;
+	       //console.log('Saved!');
+            });
+            death = false;
+        }
     }
 }
 
