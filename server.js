@@ -88,12 +88,13 @@ io.on('connection', function(socket) {
 		var pathname = parsedURL.pathname;
 		var queryParams = parsedURL.query;
 		
+		// console.log(msg);
 		switch(pathname) {
 			case '/game':
 				var ret = game.processRequest(queryParams);
 				if(queryParams['action'] == 'get-data') {
 					// console.log(ret.message);
-					this.emit('data', ret.message);
+					this.emit('data', ret);
 				}
 				// else
 				// 	this.emit('fweef', ret.message);
