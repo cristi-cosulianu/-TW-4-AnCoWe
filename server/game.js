@@ -1,9 +1,11 @@
+//Importing modules from previous scripts and the data model from `gameData`
 const fs = require('fs');
 const gameData = require('./gameData.js');
 const util = require('../scripts/util.js');
 var death = false;
-
+//Main Class that will handle socket events and data model manipulation
 class Game {
+    //Setting up the data model for the server
     static start(player, info) {
         // console.log("player " + player);
     	// put start data here as JSON object
@@ -17,7 +19,7 @@ class Game {
         data.player.groundBase = data.defaultGroundX;
         this.writeData(player, data);
     };
-
+    //KeyPressed controller 
     static keyPressed(player, keycode) {
     	var data = this.readData(player);
         if(data === undefined) return { code: 404, message: 'file not found' };
@@ -25,7 +27,7 @@ class Game {
         this.updateKeys(keycode, "pressed", data);
         this.writeData(player, data);
     }
-
+    //KeyReleased controller
     static keyReleased(player, keycode) {
         var data = this.readData(player);
         if(data === undefined) return { code: 404, message: 'file not found' };
@@ -33,19 +35,19 @@ class Game {
         this.updateKeys(keycode , "released" , data);
         this.writeData(player, data);
     }
-
+    //WindowResize event controller
     static resize(player, info) {
         var data = this.readData(player);
         if(data === undefined) return { code: 404, message: 'file not found' };
     }
-
+    //Function for providing data to be displayed by the client
     static getData(player) {
         var data = this.readData(player);
         if(data === undefined) return { code: 404, message: 'file not found' };
         
         return JSON.stringify(data);
     };
-
+    //DataUpdate controller
     static updateData(player){  
         var data = this.readData(player);
         if(data === undefined) return { code: 404, message: 'file not found' };
@@ -57,23 +59,23 @@ class Game {
         }
         this.writeData(player, data);
     }
-
+    //Utilitary function for file reading , since data is stored in JSON format
     static readData(player) {
         try {
             return JSON.parse(fs.readFileSync('server/data/' + player + '.txt' , 'utf8'));
         } catch(e) {
-            // console.log(e);
+            console.log(e);
         }
     }
-
+    //Utilitary function for file writing , since data is stored in JSON format
     static writeData(player, data) {
         try {
             fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data));
         } catch(e) {
-            // console.log(e);
+            console.log(e);
         }
     }
-
+    //Utilitary function for key updates
     static updateKeys(keyCode, action , data) {
         if(action !== "pressed"){
             data.animation_stage = 0;
@@ -103,7 +105,7 @@ class Game {
             }     
         }
     }
-
+    //Server side game computation for player movement
     static updatePlayerPosition(data){
         let player  = data.player;
         player.position = new util.Vector2(data.player.position.x , data.player.position.y);
@@ -195,7 +197,7 @@ class Game {
         data.player.dir = dir;
         data.player.position = player.position;
     }
-
+    //Server side game computation for enemy movement
     static updateEnemyPosition(data){
         let enemySpeed = 2;
         for(let i = 0; i < data.objects.length; ++i){
@@ -208,8 +210,6 @@ class Game {
                     if (util.getRight(data.objects[i]) < util.getLeft(data.objects[data.objects[i].currentPlatformIndex]) + data.backgroundX || util.getLeft(data.objects[i]) > util.getRight(data.objects[data.objects[i].currentPlatformIndex]) + data.backgroundX) {
                         data.objects[i].onPlatform = false;
                     }
-                //console.log(data.objects[i].position);
-
                 if (data.objects[i].position.y < data.objects[i].groundBase) {
                     data.objects[i].inAir = true;
                     data.objects[i].dir.x = 0;
@@ -242,16 +242,16 @@ class Game {
         }
         
     }
-
-
+    //Collision checking for all `GameObject` contained in the level
     static checkCollision(data , object, takeAction) {
         let response = [];
         for (let i = 0; i < data.objects.length; ++i) {
-    //        if (util.getLeft(data.objects[i]) + data.backgroundX > data.canvasWidth) {
-    //            continue;
-    //        }
-            if(takeAction === "enemy" && data.objects[i].type === "goomba")
-                continue;
+    /*        if (util.getLeft(data.objects[i]) + data.backgroundX > data.canvasWidth) {
+               continue;
+            }*/
+            if(takeAction === "enemy" && data.objects[i].type === "goomba"){
+                    continue;
+            }
             if (util.getTop(object) + object.height * 6 / 10 < util.getTop(data.objects[i]) && util.getBottom(object) > util.getTop(data.objects[i]) && ((util.getRight(object) - 10 > util.getLeft(data.objects[i]) + data.backgroundX && util.getRight(object) < util.getRight(data.objects[i]) + data.backgroundX) || (util.getLeft(object) + 10 < util.getRight(data.objects[i]) + data.backgroundX && util.getLeft(object) > util.getLeft(data.objects[i]) + data.backgroundX))) {
                 if(takeAction === "enemy"){
                     object.topCollision = true;
@@ -265,7 +265,6 @@ class Game {
                     data.player.groundBase = util.getTop(data.objects[i]) - object.height;
                     data.player.onPlatform = true;
                     data.player.currentPlatformIndex = i;
-                    //dir.y = 1;
                     data.player.inAir = false;
                     data.player.topCollision = true;
 
@@ -328,20 +327,16 @@ class Game {
         }
         return response;
     }
-
-
+    //Main update function for all the game data
     static update(data , player){
         if (this.checkCollision(data , data.player, "player").length) {
             data.cameraSpeed = 0;
-            //player = oldplayer;
             if (data.player.rightCollision && !data.bounce) {
-                //left = false
                 data.movementSpeed = 0;
                 if (data.right) {
                     data.movementSpeed = data.speed;
                 }
             } else if (data.player.leftCollision && !data.bounce) {
-                //right = false;
                 data.movementSpeed = 0;
                 if (data.left) {
                     data.movementSpeed = data.speed;
@@ -395,13 +390,11 @@ class Game {
                 data.double_jump = 0;
                 fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
                 if (err) throw err;
-    	       //console.log('Saved!');
                 });
                 death = false;
             }
         }
     }
-
     static inertia(data) {
         if (data.player.leftCollision) {
             data.player.dir.x -= data.movementSpeed;
@@ -415,17 +408,12 @@ class Game {
         data.bounce = false;
     }
 }
-
-
-
+//Exporting `processRequest` for `server.js` in order to procces `socket.io`events
 module.exports = {
     processRequest: function(params) {
         if(params['action'] === undefined || params['player'] === undefined) {
             return { code: 405, message: 'invalid parameters' };
         }
-        
-        // console.log(params['player'] + ' ' + params['action']);
-        
         switch(params['action']) {
             case 'start':
                 Game.start(params['player'], params['info']);
