@@ -5,7 +5,7 @@ var death = false;
 
 class Game {
     static start(player, info) {
-        console.log(player);
+        // console.log("player " + player);
     	// put start data here as JSON object
     	// var data = queryParams['info'];
     	var data = new gameData();

@@ -71,8 +71,7 @@ io.on('connection', function(socket) {
   console.log('a user connected');
   
   var uuid = randomUuid();
-  console.log(uuid);
-  socket.emit('uuid', uuid);
+  // console.log(uuid);
   
   socket.on('disconnect', function() {
   	dataFile = 'server/data/' + uuid + '.txt';
@@ -81,6 +80,10 @@ io.on('connection', function(socket) {
   	});
   	
     console.log('user ' + uuid + ' disconnected');
+  });
+  
+  socket.on('get-uuid', function(msg) {
+		socket.emit('uuid', uuid);
   });
   
   socket.on('game', function(msg) {

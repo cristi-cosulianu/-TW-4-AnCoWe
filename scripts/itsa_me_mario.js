@@ -45,10 +45,10 @@ socket.on('data', function (msg) {
 });
 
 socket.on('uuid', function (msg) {
-    console.log(msg);
+    // console.log(msg);
     uuid = msg;
-    console.log("bryfweu" + uuid);
-
+    // console.log("bryfweu" + uuid);
+    makeSynchronousRequest("http://localhost:3000/game?action=start&info=" + JSON.stringify(player) + "&info=" + JSON.stringify(objects) + "&info=" + JSON.stringify(defaultGroundX) + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
 });
 
 window.onload = () => {
@@ -62,14 +62,14 @@ window.onload = () => {
 
     loadLevel();
 
-    console.log("UUID:");
+    // console.log("UUID:");
 
-    console.log(uuid);
-        console.log("ON LOAD!");
-
+    // console.log(uuid);
+    // console.log("ON LOAD!");
+    
+    socket.emit('get-uuid', 'efbweyfu');
 
     document.getElementById("startGameButton").addEventListener("click", function (e) {
-        makeSynchronousRequest("http://localhost:3000/game?action=start&info=" + JSON.stringify(player) + "&info=" + JSON.stringify(objects) + "&info=" + JSON.stringify(defaultGroundX) + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
         document.addEventListener("keydown", keyPressed, false);
         document.addEventListener("keyup", keyReleased, false);
         // GamePad Controls
