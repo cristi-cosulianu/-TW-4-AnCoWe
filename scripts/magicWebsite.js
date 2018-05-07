@@ -75,7 +75,7 @@ function sceneTransition(firstId, secondId) {
   
   function changeVolume(elementId)
   {
-	  var inputVolume = document.querySelector(elementId).value;
+	  var inputVolume = elementId.value;
 	  if(elementId == "musicVolume"){
 		  background_sound.volume = inputVolume;
 	  } else {
