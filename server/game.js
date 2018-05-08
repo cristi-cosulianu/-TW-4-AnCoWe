@@ -15,6 +15,9 @@ class GameController {
         data.canvasHeight = JSON.parse(info[4]);
         data.player.groundBase = data.defaultGroundX;
         this.writeData(player, data);
+        fs.writeFileSync('levels/1.txt' , JSON.stringify(data.objects) , function(err){
+        if(err) throw err;
+        });
     };
     //KeyPressed controller 
     static keyPressed(player, keycode) {
@@ -381,6 +384,7 @@ class GameController {
                 data.player.bottomCollision = false;
                 data.player.dir.x = 1;
                 data.player.dir.y = 0;
+                data.player.inAir = 0;
                 data.player.currentPlatformIndex = 0;
                 data.player.onPlatform = false;
                 data.backgroundX = 0;
