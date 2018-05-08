@@ -9,12 +9,15 @@ var last_player = {
 };
 var jump_sound, background_sound, jump_land;
 var animation_stage = 0;
+var idle_animation_stage = 0;
 var first_press;
 var hasDropDown = true;
 var rendered = 0;
 var gp = null;
 var maxLeftBound = 0;
 var walk_1, walk_2, walk_3, walk_4;
+var idle_1, idle_2, idle_3, idle_4;
+var jump_1;
 var smoke_1, smoke_2, smoke_3, smoke_4;
 var background_layer1, background_layer2, background_layer3, background_layer4, background_layer5, background_layer6, background_layer7;
 var bounce = false;
@@ -36,18 +39,18 @@ var space;
 var cameraSpeed = 0;
 var data;
 var uuid = undefined;
-
+//Socket connection client side
 var socket = io();
 socket.on('data', function (msg) {
     if (isValidJson(msg))
         data = JSON.parse(msg);
 });
-
+//Function for acquiring token
 socket.on('uuid', function (msg) {
     uuid = msg;
     makeSynchronousRequest("http://localhost:3000/game?action=start&info=" + JSON.stringify(player) + "&info=" + JSON.stringify(objects) + "&info=" + JSON.stringify(defaultGroundX) + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
 });
-
+//Main client side loader for keys events and inital setup
 window.onload = () => {
     canvas = document.querySelector("#gameCanvas canvas");
     context = canvas.getContext("2d");
@@ -58,7 +61,7 @@ window.onload = () => {
     loadTextures();
 
     loadLevel();
-    
+
     socket.emit('get-uuid', 'efbweyfu');
 
     document.getElementById("startGameButton").addEventListener("click", function (e) {
@@ -93,8 +96,7 @@ window.onload = () => {
         requestAnimationFrame(game_loop);
     });
 };
-
-
+//Utilitary function used for screen rendering
 function getObjectFromString(type) {
     switch (type) {
         case "spikes":
@@ -120,7 +122,7 @@ function getObjectFromString(type) {
             break;
     }
 }
-
+//Function for level loading , we will use a JSON file for this later
 function loadLevel() {
     player = new MovableGameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
     defaultGroundX = window.innerHeight - 64 - 40;
@@ -155,7 +157,6 @@ function loadLevel() {
     objects.push(new GameObject("platform", canvas.width / 2 + 4200, canvas.height / 2 + 150, 256, 32));
     objects.push(new GameObject("crane", canvas.width / 2 + 4800, canvas.height / 2 + 150, 32, 64));
     objects.push(new GameObject("crane", canvas.width / 2 + 4800, canvas.height / 2 + 90, 32, 64));
-    //objects.push(new MovableGameObject("goomba", canvas.width / 2 + 1500, 300, 64, 64));
     objects.push(new MovableGameObject("goomba", 1200, -5000, 64, 64));
     objects.push(new MovableGameObject("goomba", 1400, -5000, 64, 64));
     objects.push(new MovableGameObject("goomba", 1000, -5000, 64, 64));
@@ -171,7 +172,7 @@ function loadLevel() {
         return 0;
     });
 }
-
+//Audio loading
 function loadAudio() {
     jump_sound = new Audio();
     jump_land = new Audio();
@@ -184,12 +185,17 @@ function loadAudio() {
     jump_land.src = "../sound/jump_land.mp3";
     jump_land.volume = 0.1;
 }
-
+//Texture loading
 function loadTextures() {
     walk_1 = new Image();
     walk_2 = new Image();
     walk_3 = new Image();
     walk_4 = new Image();
+    idle_1 = new Image();
+    idle_2 = new Image();
+    idle_3 = new Image();
+    idle_4 = new Image();
+    jump_1 = new Image();
     smoke_1 = new Image();
     smoke_2 = new Image();
     smoke_3 = new Image();
@@ -213,6 +219,11 @@ function loadTextures() {
     walk_2.src = "../textures/Hat_man/Walk/Hat_man2.png";
     walk_3.src = "../textures/Hat_man/Walk/Hat_man3.png";
     walk_4.src = "../textures/Hat_man/Walk/Hat_man4.png";
+    idle_1.src = "../textures/Hat_man/Idle/Hat_man_idle1.png";
+    idle_2.src = "../textures/Hat_man/Idle/Hat_man_idle2.png";
+    idle_3.src = "../textures/Hat_man/Idle/Hat_man_idle3.png";
+    idle_4.src = "../textures/Hat_man/Idle/Hat_man_idle4.png";
+    jump_1.src = "../textures/Hat_man/Jump/Hat_man_jump1.png"
     smoke_1.src = "../textures/Smoke/smoke_1.png";
     smoke_2.src = "../textures/Smoke/smoke_2.png";
     smoke_3.src = "../textures/Smoke/smoke_3.png";
@@ -231,7 +242,7 @@ function loadTextures() {
     crane.src = "../textures/smallwall.png";
     goomba.src = "../textures/goomba.png";
 }
-
+//Main animation function for the player
 function player_animation(p) {
     context.save();
     context.shadowOffsetX = -3;
@@ -263,6 +274,33 @@ function player_animation(p) {
 
         }
     }
+    if (!left && !right && !space && !inAir) {
+        if (idle_animation_stage % 54 < 6) {
+            context.drawImage(idle_1, player.position.x, player.position.y, player.width, player.height);
+            ++idle_animation_stage;
+            return;
+        }
+        if (idle_animation_stage % 54 < 22) {
+            context.drawImage(idle_2, player.position.x, player.position.y, player.width, player.height);
+            ++idle_animation_stage;
+            return;
+        }
+        if (idle_animation_stage % 54 < 38) {
+            context.drawImage(idle_3, player.position.x, player.position.y, player.width, player.height);
+            ++idle_animation_stage;
+            return;
+        }
+        if (idle_animation_stage % 54 < 54) {
+            context.drawImage(idle_4, player.position.x, player.position.y, player.width, player.height);
+            ++idle_animation_stage;
+            return;
+        }
+    }
+    idle_animation_stage = 0;
+    if(inAir){
+        context.drawImage(jump_1 , player.position.x , player.position.y , player.width , player.height);
+        return;
+    }
     if (p % 33 < 6) {
         context.drawImage(walk_1, player.position.x, player.position.y, player.width, player.height);
         return;
@@ -282,19 +320,17 @@ function player_animation(p) {
     }
 
 }
-
+//Rendering function for all the objects in the game
 function render() {
-    //    if (backgroundX > canvas.width) {
-    //        backgroundX %= canvas.width;
-    //    }
+    /*    if (backgroundX > canvas.width) {
+            backgroundX %= canvas.width;
+        } */
     context.drawImage(background_layer1, backgroundX % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer1, canvas.width + backgroundX % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer2, backgroundX / 5 % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer2, canvas.width + backgroundX / 5 % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer3, backgroundX / 4 % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer3, canvas.width + backgroundX / 4 % canvas.width, 0, canvas.width, canvas.height);
-    //    context.drawImage(background_layer4, backgroundX % canvas.width, 0, canvas.width, canvas.height);
-    //    context.drawImage(background_layer4, canvas.width + backgroundX % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer5, backgroundX / 2 % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer5, canvas.width + backgroundX / 2 % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer6, backgroundX / 1.5 % canvas.width, 0, canvas.width, canvas.height);
@@ -308,7 +344,7 @@ function render() {
     player_animation(animation_stage);
     context.restore();
 }
-
+//Rendering objects used in `render` function
 function drawObjects() {
     for (let i = 0; i < objects.length; ++i) {
         if (getRight(objects[i]) + backgroundX < 0) {
@@ -325,20 +361,19 @@ function drawObjects() {
         }
     }
 }
-
+//Main game loop
 function game_loop() {
+    //Updating data after receiving it from the server
     update();
+    //Displaying the data with the `render` function
     render();
     if (gp != null) {
         checkGamepad();
     }
+    //Tell the server to prepare the next frame
     prepareNextFrame();
-    //    if (objects.length > 0) {
     this.requestAnimationFrame(game_loop);
-    //    } else {
-    //        alert("I think you won");
-    //
-    //    }
+
 }
 
 function prepareNextFrame() {
@@ -355,7 +390,7 @@ function update() {
     }
 }
 
-
+//Controller Integration for Firefox
 function checkGamepad() {
     try {
         var gp = navigator.getGamepads()[0];
@@ -384,7 +419,7 @@ function checkGamepad() {
         console.log("GamePadRemoved");
     }
 }
-
+//Utilitary event function that sends key pressed data
 function keyPressed(event) {
     makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=" + event.keyCode);
     if (event.keyCode === rightKeyCode) {
@@ -392,7 +427,7 @@ function keyPressed(event) {
             animation_stage = 5;
             first_press = true;
         }
-        // background_sound.play();
+        background_sound.play();
     }
     if (event.keyCode === jumpKeyCode) {
         jump_sound.current_time = 0;
@@ -403,11 +438,11 @@ function keyPressed(event) {
         dir.x = 0;
     }
 }
-
+//Utilitary event function that sends key released data
 function keyReleased(event) {
     makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + event.keyCode);
 }
-
+//Function for data update received from the server
 function updateData(data) {
     right = data.right;
     left = data.left;
@@ -422,7 +457,7 @@ function updateData(data) {
     backgroundX = data.backgroundX;
     objects = data.objects;
 }
-
+//Utilitary function for server requests
 function makeSynchronousRequest(url) {
     if (uuid === undefined) {
         console.log("uuid undefined");
