@@ -21,16 +21,6 @@ const server = http.createServer((req, res) => {
 	var queryParams = parsedURL.query;
 	
 	switch(pathname) {
-		/*case '/game':
-      console.log(queryParams['action']);
-			res.setHeader('Content-Type', 'text/text');
-			
-			var ret = game.processRequest(queryParams);
-			res.statusCode = ret.code;
-			res.end(ret.message);
-
-			break;
-		*/
 		case '/options':
 			res.setHeader('Content-Type', 'text/text');
 
@@ -39,14 +29,15 @@ const server = http.createServer((req, res) => {
 			res.end(ret.message);
 
 			break;
-		case '/marvel':
+			// maybe we will use it later
+		/*case '/marvel':
 			res.setHeader('Content-Type', 'text/text');
 			
 			var ret = marvel.processRequest(queryParams);
 			res.statusCode = ret.code;
 			res.end(ret.message);
 			
-			break;
+			break;*/
 	}
 	
 	var filename = '.' + pathname;
@@ -95,11 +86,8 @@ io.on('connection', function(socket) {
 			case '/game':
 				var ret = game.processRequest(queryParams);
 				if(queryParams['action'] == 'get-data') {
-					// console.log(ret.message);
 					this.emit('data', ret);
 				}
-				/* else
-				 	this.emit('fweef', ret.message);*/
 
 				break;
 		}

@@ -4,12 +4,9 @@ const gameData = require('./gameData.js');
 const util = require('../scripts/util.js');
 var death = false;
 //Main Class that will handle socket events and data model manipulation
-class Game {
+class GameController {
     //Setting up the data model for the server
     static start(player, info) {
-        // console.log("player " + player);
-    	// put start data here as JSON object
-    	// var data = queryParams['info'];
     	var data = new gameData();
         data.player = JSON.parse(info[0]);
         data.objects = JSON.parse(info[1]);
@@ -416,22 +413,22 @@ module.exports = {
         }
         switch(params['action']) {
             case 'start':
-                Game.start(params['player'], params['info']);
+                GameController.start(params['player'], params['info']);
                 break;
             case 'key-pressed':
-                Game.keyPressed(params['player'], params['keycode']);
+                GameController.keyPressed(params['player'], params['keycode']);
                 break;
             case 'key-released':
-                Game.keyReleased(params['player'], params['keycode']);
+                GameController.keyReleased(params['player'], params['keycode']);
                 break;
             case 'resize':
-                Game.resize(params['player'], params['info']);
+                GameController.resize(params['player'], params['info']);
                 break;
             case 'get-data':
-                return Game.getData(params['player']);
+                return GameController.getData(params['player']);
                 break;
             case 'update-data':
-                Game.updateData(params['player']);
+                GameController.updateData(params['player']);
         }
     }
 };

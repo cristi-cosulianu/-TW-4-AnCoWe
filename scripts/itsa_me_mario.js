@@ -39,15 +39,12 @@ var uuid = undefined;
 
 var socket = io();
 socket.on('data', function (msg) {
-    // console.log("msg " + msg);
     if (isValidJson(msg))
         data = JSON.parse(msg);
 });
 
 socket.on('uuid', function (msg) {
-    // console.log(msg);
     uuid = msg;
-    // console.log("bryfweu" + uuid);
     makeSynchronousRequest("http://localhost:3000/game?action=start&info=" + JSON.stringify(player) + "&info=" + JSON.stringify(objects) + "&info=" + JSON.stringify(defaultGroundX) + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
 });
 
@@ -61,11 +58,6 @@ window.onload = () => {
     loadTextures();
 
     loadLevel();
-
-    // console.log("UUID:");
-
-    // console.log(uuid);
-    // console.log("ON LOAD!");
     
     socket.emit('get-uuid', 'efbweyfu');
 
@@ -354,7 +346,6 @@ function prepareNextFrame() {
 }
 
 function update() {
-    // console.log('update');
     makeSynchronousRequest("http://localhost:3000/game?action=get-data");
     if (data === undefined) return;
     try {
