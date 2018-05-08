@@ -6,7 +6,7 @@ const path = require('path');
 var mime = require('mime-types');
 const game = require('./server/game.js');
 const options = require('./server/options.js');
-const marvel = require('./server/marvel.js');
+// const marvel = require('./server/marvel.js'); // don't delete this comment
 const randomUuid = require('uuid/v4');
 //Running on localhost
 const hostname = '127.0.0.1';
