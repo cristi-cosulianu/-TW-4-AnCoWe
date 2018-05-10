@@ -16,20 +16,57 @@
         <meta charset="UTF-8">
     </head>
     <body>
+        <!-- - - - - - - - - - - - - - - - - LOGIN CANVAS - - - - - - - - - - - - - - - - -->
+
+        <div id="leftDiv" class="fullscreen"></div>
+        <div id="rightDiv" class="fullscreen"></div>
+        
+        <div id="loginCanvas" class="fullscreen toTopTransition">
+            <header id="gameTitle"></header>
+
+            <nav class="menu themeText"> 
+                <form>
+                    <div id="loginBox" class="themeBox">
+                        <label class="loginLabel">Username</label>  
+                        <input class="themeText" type="text" name="username">
+                        <label class="loginLabel">Password</label>
+                        <input class="themeText" type="text" name="password">
+                        <label class="loginLabel">Re-Password</label>
+                        <input class="themeText" type="text" name="re-password">
+                    </div>
+                    
+                    <a id="loginSubmitButton" 
+                    class="menuButtonLink themeBox" 
+                    onclick="sceneTransition('loginCanvas','menuCanvas')" 
+                    href="#menuCanvas" 
+                    type="submit" >Submit</a>
+                </form> 
+            </nav>
+        </div>
+
         <!-- - - - - - - - - - - - - - - - - MENU CANVAS - - - - - - - - - - - - - - - - -->
         
         <div id="leftDiv" class="fullscreen"></div>
         <div id="rightDiv" class="fullscreen"></div>
         
-        <div id="menuCanvas" class="fullscreen toTopTransition">
+        <div id="menuCanvas" class="fullscreen toBotTransition">
             <header id="gameTitle"></header>
 
             <nav class="menu themeText"> 
                 <ul>
-                    <li><a id="startGameButton" class="menuButtonLink themeBox" onclick="sceneTransition('menuCanvas','chooseCharacterCanvas')" href="#chooseCharacterCanvas">Start game</a></li>
-                    <li><a class="menuButtonLink themeBox" onclick="sceneTransition('menuCanvas','optionsCanvas')" href="#options">Options</a></li>
-                    <li><a class="menuButtonLink themeBox" onclick="sceneTransition('menuCanvas','hallOfFameCanvas')" href="#hallOfFame">Hall Of Fame</a></li>
-                    <li><a class="menuButtonLink themeBox" onclick="sceneTransition('menuCanvas','creditsCanvas');addSlider('slider')" href="#credits">Credits</a></li>
+                    <li><a id="startGameButton" 
+                        class="menuButtonLink themeBox" 
+                        onclick="sceneTransition('menuCanvas','chooseCharacterCanvas')" 
+                        href="#chooseCharacterCanvas">Start game</a></li>
+                    <li><a class="menuButtonLink themeBox" 
+                        onclick="sceneTransition('menuCanvas','optionsCanvas')" 
+                        href="#options">Options</a></li>
+                    <li><a class="menuButtonLink themeBox" 
+                        onclick="sceneTransition('menuCanvas','hallOfFameCanvas')" 
+                        href="#hallOfFame">Hall Of Fame</a></li>
+                    <li><a class="menuButtonLink themeBox" 
+                        onclick="sceneTransition('menuCanvas','creditsCanvas');addSlider('slider')" 
+                        href="#credits">Credits</a></li>
                 </ul>
             </nav>
         </div>

@@ -91,6 +91,89 @@ body {
     margin-top: 5vh;
 }
 
+/* --------------------------------------------------------------------- LOGIN CANVAS -- */
+
+#loginCanvas{
+    background-image: url('../textures/mario.gif');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center; 
+}
+
+#loginCanvas > header{
+    width: 100%;
+    height: 20vh;
+    padding-top: 5vh;
+}
+
+#loginCanvas.fade{
+    opacity: 0;
+}
+
+#loginBox{
+    height: 30vh;
+
+    margin-top: 5%;
+    margin-bottom: 5%;
+    text-shadow: 1px 1px 6px;
+    padding: 2vh 1vw;
+}
+
+#loginBox > input{
+    padding-top: 3vh;
+}
+
+
+.loginLabel{
+    text-decoration: none;
+    color: white;
+}
+
+#loginCanvas > form {
+    text-align: center;
+}
+
+nav {
+    text-align: center;
+}
+
+form {
+    list-style-type: none;
+    padding: 0%;
+}
+/* 
+nav form li {
+    margin-top: 5%;
+    margin-bottom: 5%;
+    height: 7vh;
+    text-shadow: 1px 1px 6px;
+} */
+
+nav form > a {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 5%;
+    margin-bottom: 5%;
+    height: 7vh;
+    text-shadow: 1px 1px 6px;
+}
+
+#loginCanvas input[type=text], select {
+    width: 80%;
+    padding: 0.2vh 0.2vw;
+    margin: 1.7vh 0vh;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 2vh;
+}
+
+
+
 /* --------------------------------------------------------------------- MENU CANVAS -- */
 
 #menuCanvas{
@@ -142,6 +225,8 @@ nav ul li a {
     align-items: center;
     justify-content: center;
 }
+
+
 
 .menuButtonLink{
     text-decoration: none;
