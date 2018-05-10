@@ -25,21 +25,27 @@
             <header id="gameTitle"></header>
 
             <nav class="menu themeText"> 
-                <form>
+                <form id="loginForm">
                     <div id="loginBox" class="themeBox">
-                        <label class="loginLabel">Username</label>  
-                        <input class="themeText" type="text" name="username">
-                        <label class="loginLabel">Password</label>
-                        <input class="themeText" type="text" name="password">
-                        <label class="loginLabel">Re-Password</label>
-                        <input class="themeText" type="text" name="re-password">
+                        <ul id="loginBoxList">
+                            <input class="themeText" type="text" name="username" placeholder="Username">
+
+                            <input class="themeText" type="text" name="password" placeholder="Password">
+                        </ul>
                     </div>
                     
-                    <a id="loginSubmitButton" 
+                    <a id="loginButton" 
                     class="menuButtonLink themeBox" 
                     onclick="sceneTransition('loginCanvas','menuCanvas')" 
                     href="#menuCanvas" 
-                    type="submit" >Submit</a>
+                    type="submit" >Login</a>
+
+                    <a id="signUpButton" 
+                    class="menuButtonLink themeBox" 
+                    onclick="buildSignUpMenu()" 
+                    href="#menuCanvas" 
+                    type="submit" >Sign Up</a>
+
                 </form> 
             </nav>
         </div>
