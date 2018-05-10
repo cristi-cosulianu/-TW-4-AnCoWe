@@ -8,16 +8,19 @@ class GameController {
     //Setting up the data model for the server
     static start(player, info) {
     	var data = new gameData();
-        data.player = JSON.parse(info[0]);
-        data.objects = JSON.parse(info[1]);
-        data.defaultGroundX = JSON.parse(info[2]);
-        data.canvasWidth = JSON.parse(info[3]);
-        data.canvasHeight = JSON.parse(info[4]);
+        data.canvasWidth = JSON.parse(info[0]);
+        data.canvasHeight = JSON.parse(info[1]);
+        // Value at which the level was created initially scaling base out of that
+        data.offsetHeight = 750;
+        data.player = new util.MovableGameObject(undefined, data.canvasWidth / 2 - 100, data.defaultGroundX, 64, 64);
+        data.defaultGroundX = ((data.offsetHeight - 50 - data.player.height) * data.canvasHeight) / data.offsetHeight;
         data.player.groundBase = data.defaultGroundX;
+        data.objects = GameController.readLevel(1);
+        data.objects.forEach((item) => {item.position.y = (item.position.y * data.canvasHeight) / data.offsetHeight});
         this.writeData(player, data);
-        fs.writeFileSync('levels/1.txt' , JSON.stringify(data.objects) , function(err){
-        if(err) throw err;
-        });
+//        fs.writeFileSync('levels/1.txt' , JSON.stringify(data.objects) , function(err){
+//        if(err) throw err;
+//        });
     };
     //KeyPressed controller 
     static keyPressed(player, keycode) {
@@ -71,6 +74,14 @@ class GameController {
     static writeData(player, data) {
         try {
             fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data));
+        } catch(e) {
+            console.log(e);
+        }
+    }
+    
+    static readLevel(level){
+        try {
+            return JSON.parse(fs.readFileSync('levels/' + level + '.txt' , 'utf8'));
         } catch(e) {
             console.log(e);
         }
@@ -389,6 +400,7 @@ class GameController {
                 data.player.onPlatform = false;
                 data.backgroundX = 0;
                 data.double_jump = 0;
+                data.objects.forEach((item) => {item.position.y = (item.position.y * data.canvasHeight) / data.offsetHeight});
                 fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
                 if (err) throw err;
                 });

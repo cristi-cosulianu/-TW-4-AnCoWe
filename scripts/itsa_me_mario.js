@@ -32,12 +32,13 @@ var leftKeyCode = 37;
 var downKeyCode = 40;
 var jumpKeyCode = 32;
 var dashKeyCode = 16;
-var groundBase = 606;
-var defaultGroundX = 606;
+var groundBase = 580;
+var defaultGroundX = 580;
 var double_jump;
 var space;
 var cameraSpeed = 0;
 var data;
+var offsetHeight;
 var uuid = undefined;
 //Socket connection client side
 var socket = io();
@@ -48,7 +49,7 @@ socket.on('data', function (msg) {
 //Function for acquiring token
 socket.on('uuid', function (msg) {
     uuid = msg;
-    makeSynchronousRequest("http://localhost:3000/game?action=start&info=" + JSON.stringify(player) + "&info=" + JSON.stringify(objects) + "&info=" + JSON.stringify(defaultGroundX) + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
+    makeSynchronousRequest("http://localhost:3000/game?action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
 });
 //Main client side loader for keys events and inital setup
 window.onload = () => {
@@ -59,11 +60,8 @@ window.onload = () => {
     dir = new Vector2(1, 0);
     loadAudio();
     loadTextures();
-
-    loadLevel();
-
+    //loadLevel(); Only for creating new levels
     socket.emit('get-uuid', 'efbweyfu');
-
     document.getElementById("startGameButton").addEventListener("click", function (e) {
         document.addEventListener("keydown", keyPressed, false);
         document.addEventListener("keyup", keyReleased, false);
@@ -82,11 +80,10 @@ window.onload = () => {
         });
 
         window.onresize = () => {
-            defaultGroundX = window.innerHeight - 64 - 40;
+            defaultGroundX = window.innerHeight - 80 - 40;
             groundBase = defaultGroundX;
             render();
         };
-
         window.onblur = () => {
             makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + leftKeyCode);
             makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + rightKeyCode);
@@ -124,9 +121,6 @@ function getObjectFromString(type) {
 }
 //Function for level loading , we will use a JSON file for this later
 function loadLevel() {
-    player = new MovableGameObject(null, canvas.width / 2 - 100, defaultGroundX, 64, 64);
-    defaultGroundX = window.innerHeight - 64 - 40;
-    groundBase = defaultGroundX;
     objects.push(new GameObject("pipe", canvas.width / 2, canvas.height / 2 + 264, 64, 128));
     objects.push(new GameObject("spikes", canvas.width / 2 + 200, canvas.height / 2 + 180, 64, 64));
     objects.push(new GameObject("spikes", canvas.width / 2 + 264, canvas.height / 2 + 180, 64, 64));
@@ -267,7 +261,6 @@ function player_animation(p) {
         }
         if (p < 24) {
             context.drawImage(smoke_4, player.position.x - 30, player.position.y + player.height - 24);
-
         }
     }
     if (!left && !right && !space && !inAir) {
@@ -362,7 +355,9 @@ function game_loop() {
     //Updating data after receiving it from the server
     update();
     //Displaying the data with the `render` function
-    render();
+    if(player != undefined && objects != undefined){
+            render();
+    }
     if (gp != null) {
         checkGamepad();
     }
@@ -378,11 +373,14 @@ function prepareNextFrame() {
 
 function update() {
     makeSynchronousRequest("http://localhost:3000/game?action=get-data");
-    if (data === undefined) return;
+    if (data === undefined) {
+        console.log("NO DATA");
+        return;
+    }
     try {
         updateData(data);
     } catch (e) {
-        console.log(data);
+        console.log(e);
     }
 }
 
@@ -423,7 +421,7 @@ function keyPressed(event) {
             animation_stage = 5;
             first_press = true;
         }
-        background_sound.play();
+        //background_sound.play();
     }
     if (event.keyCode === jumpKeyCode) {
         jump_sound.current_time = 0;
@@ -444,6 +442,7 @@ function updateData(data) {
     left = data.left;
     space = data.space;
     animation_stage = data.animation_stage;
+    player = data.player;
     player.position = data.player.position;
     inAir = data.player.inAir;
     double_jump = data.double_jump;
@@ -452,6 +451,7 @@ function updateData(data) {
     cameraSpeed = data.cameraSpeed;
     backgroundX = data.backgroundX;
     objects = data.objects;
+    offsetHeight = data.offsetHeight;
 }
 //Utilitary function for server requests
 function makeSynchronousRequest(url) {
