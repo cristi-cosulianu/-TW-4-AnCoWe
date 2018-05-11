@@ -5,7 +5,8 @@ module.exports = {
 			return { code: 405, message: 'invalid parameters' };
         }
         
-		console.log(params);
+        console.log("Login parameter: ");
+        console.log(params);
 		
 		return { code: 200, message: 'ok' };
 	}

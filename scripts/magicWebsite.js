@@ -169,7 +169,7 @@ function buildLoginMenu(){
 		var loginButton = document.createElement("a");
 		loginButton.setAttribute("id","loginButton");
 		loginButton.setAttribute("class","menuButtonLink themeBox");
-		loginButton.setAttribute("onclick","sceneTransition('loginCanvas','menuCanvas')");
+		loginButton.setAttribute("onclick","loginRequest()");
 		loginButton.setAttribute("href","#menuCanvas");
 		loginButton.setAttribute("type","submit");
 		loginButton.innerHTML = "Login";
@@ -195,12 +195,14 @@ function signUpRequest(){
 		serverURL = serverURL + "username=" + username.value + "&password=" + password.value;
 		xmlRequest.open("POST", serverURL, true);
 		xmlRequest.send();
-		
+
+		console.log("Signup request!");
 		setTimeout(function(){
 			if(xmlRequest.status == 200){
 				buildLoginMenu();
 			}
-		}, 1000);	
+		}, 1000);
+		console.log("Got the response!");
 	} else {
 		alert("Passwords are not identical! Try again!");
 	}
@@ -217,10 +219,12 @@ function loginRequest(){
 		xmlRequest.open("GET", serverURL, true);
 		xmlRequest.send();
 
+		console.log("Login request!");
 		setTimeout(function(){
 			if(xmlRequest.status == 200){
 				sceneTransition('loginCanvas','menuCanvas');
 			}
 		}, 1000);	
+		console.log("Got the response!");
 	}
 }
