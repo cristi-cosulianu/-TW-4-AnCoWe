@@ -128,7 +128,7 @@ function updateKeyCodes(elementId,keyCode){
 	var xmlRequest = new XMLHttpRequest();
 	var serverURL = "http://localhost:3000/options?";
 	serverURL = serverURL + "key=" + elementId + "&code=" + keyCode + "&player=" + uuid;
-	console.log(serverURL);
+	//console.log(serverURL);
 	xmlRequest.open("POST", serverURL, true);
 	xmlRequest.send();
 	return xmlRequest.response;
@@ -157,46 +157,70 @@ function buildSignUpMenu(){
 
 	var signUpButton = document.getElementById("signUpButton");
 	signUpButton.removeAttribute("onclick","buildSignUpMenu()");
-	signUpButton.setAttribute("onclick","buildLoginMenu()");
+	signUpButton.setAttribute("onclick","signUpRequest();");
 }
 
 function buildLoginMenu(){
-	// var repasswordLabel = document.getElementById("repasswordLabel");
-	var repasswordRow = document.getElementById("repasswordRow");
-	var loginBoxList = document.getElementById("loginBoxList");
-	// loginBoxList.removeChild(repasswordLabel);
-	loginBoxList.removeChild(repasswordRow);
 
-	var loginButton = document.createElement("a");
-	loginButton.setAttribute("id","loginButton");
-	loginButton.setAttribute("class","menuButtonLink themeBox");
-	loginButton.setAttribute("onclick","sceneTransition('loginCanvas','menuCanvas')");
-	loginButton.setAttribute("href","#menuCanvas");
-	loginButton.setAttribute("type","submit");
-	loginButton.innerHTML = "Login";
+		var repasswordRow = document.getElementById("repasswordRow");
+		var loginBoxList = document.getElementById("loginBoxList");
+		loginBoxList.removeChild(repasswordRow);
 
-	var signUpButton = document.getElementById("signUpButton");
-	signUpButton.removeAttribute("onclick","buildLoginMenu()");
-	signUpButton.setAttribute("onclick","buildSignUpMenu()");
+		var loginButton = document.createElement("a");
+		loginButton.setAttribute("id","loginButton");
+		loginButton.setAttribute("class","menuButtonLink themeBox");
+		loginButton.setAttribute("onclick","sceneTransition('loginCanvas','menuCanvas')");
+		loginButton.setAttribute("href","#menuCanvas");
+		loginButton.setAttribute("type","submit");
+		loginButton.innerHTML = "Login";
 
-	var loginForm = document.getElementById("loginForm");
-	loginForm.insertBefore(loginButton,signUpButton);
+		var signUpButton = document.getElementById("signUpButton");
+		signUpButton.removeAttribute("onclick","signUpRequest()");
+		signUpButton.setAttribute("onclick","buildSignUpMenu()");
+
+		var loginForm = document.getElementById("loginForm");
+		loginForm.insertBefore(loginButton,signUpButton);
 }
 
+function signUpRequest(){
+	var username = document.getElementById("usernameInput");
+	var password = document.getElementById("passwordInput");
+	var repassword = document.getElementById("repasswordInput");
 
+	console.log(username.value + " " + password.value + " " + repassword.value);
 
-// <li class="loginLabel">Re-password</li>
-// <input class="themeText" type="text" name="password">
+	if(password.value == repassword.value && username != null && password != null){
+		var xmlRequest = new XMLHttpRequest();
+		var serverURL = "http://localhost:3000/signup?";
+		serverURL = serverURL + "username=" + username.value + "&password=" + password.value;
+		xmlRequest.open("POST", serverURL, true);
+		xmlRequest.send();
+		
+		setTimeout(function(){
+			if(xmlRequest.status == 200){
+				buildLoginMenu();
+			}
+		}, 1000);	
+	} else {
+		alert("Passwords are not identical! Try again!");
+	}
+}
 
-	// <a id="loginButton" 
-	// 	class="menuButtonLink themeBox" 
-	// 	onclick="sceneTransition('loginCanvas','menuCanvas')" 
-	// 	href="#menuCanvas" 
-	// 	type="submit" >Login</a>
+function loginRequest(){
+	var username = document.getElementById("usernameInput");
+	var password = document.getElementById("passwordInput");
 
-	// <a id="signUpButton" 
-	// 	class="menuButtonLink themeBox" 
-	// 	onclick="sceneTransition('loginCanvas','menuCanvas');
-	// 			buildSignUpMenu();" 
-	// 	href="#menuCanvas" 
-	// 	type="submit" >Sign Up</a>
+	if(username!=null && password!=null){
+		var xmlRequest = new XMLHttpRequest();
+		var serverURL = "http://localhost:3000/login?";
+		serverURL = serverURL + "username=" + username.value + "&password=" + password.value;
+		xmlRequest.open("GET", serverURL, true);
+		xmlRequest.send();
+
+		setTimeout(function(){
+			if(xmlRequest.status == 200){
+				sceneTransition('loginCanvas','menuCanvas');
+			}
+		}, 1000);	
+	}
+}

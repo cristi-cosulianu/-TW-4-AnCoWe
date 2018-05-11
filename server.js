@@ -6,6 +6,9 @@ const path = require('path');
 var mime = require('mime-types');
 const game = require('./server/game.js');
 const options = require('./server/options.js');
+const login = require('./server/login.js');
+const signup = require('./server/signup.js');
+
 // const marvel = require('./server/marvel.js'); // don't delete this comment
 const randomUuid = require('uuid/v4');
 //Running on localhost
@@ -29,6 +32,26 @@ const server = http.createServer((req, res) => {
 			res.end(ret.message);
 
 			break;
+		case '/login':
+			res.setHeader('Content-Type', 'text/text');
+
+			var ret = login.processRequest(queryParams);
+			res.statusCode = ret.code;
+			console.log("Login status code: " + res.statusCode);
+			res.end(ret.message);
+
+			break;
+		case '/signup':
+			res.setHeader('Content-Type', 'text/text');
+
+			var ret = signup.processRequest(queryParams);
+			res.statusCode = ret.code;
+			console.log("SignUp status code: " + res.statusCode);
+			res.end(ret.message);
+
+			break;
+		
+		
 			// maybe we will use it later
 		/*case '/marvel':
 			res.setHeader('Content-Type', 'text/text');
