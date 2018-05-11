@@ -143,7 +143,7 @@ function buildSignUpMenu(){
 	var repasswordInput = document.createElement("input");
 	repasswordInput.setAttribute("id","repasswordInput");
 	repasswordInput.setAttribute("class","themeText");
-	repasswordInput.setAttribute("type","text");
+	repasswordInput.setAttribute("type","password");
 	repasswordInput.setAttribute("name","repassword");
 	repasswordInput.setAttribute("placeholder","Re-password");
 	var keyIcon = document.createElement("img");

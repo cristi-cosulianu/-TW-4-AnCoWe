@@ -149,13 +149,6 @@ form {
     list-style-type: none;
     padding: 0%;
 }
-/* 
-nav form li {
-    margin-top: 5%;
-    margin-bottom: 5%;
-    height: 7vh;
-    text-shadow: 1px 1px 6px;
-} */
 
 nav form > a {
     display: flex;
@@ -181,8 +174,8 @@ nav form > a {
     margin: -1vh 1.5vh;
 }
 
-#loginCanvas input[type=text], select {
-    width: 70%;
+#loginCanvas input, select {
+    width: 15vw;
     padding: 0.2vh 0.2vw;
     margin: 1.7vh 0vh;
     display: inline-block;
@@ -190,7 +183,6 @@ nav form > a {
     border-radius: 4px;
     box-sizing: border-box;
     font-size: 2vh;
-    /* opacity: 0.5; */
     color: white;
     background-color: rgba(0,0,0,0.5); 
     text-align: center;
@@ -309,6 +301,7 @@ nav form > a {
 }
 
 .listOfOptions > ul {
+    list-style-type: none;
     position: relative;
     width: 50%;
     height: 20%;
@@ -324,7 +317,7 @@ nav form > a {
     display: inline-block;
     margin: 0;
     position: relative;
-    width: 50%;
+    width: 30%;
 }
 
 .changeKeys{
