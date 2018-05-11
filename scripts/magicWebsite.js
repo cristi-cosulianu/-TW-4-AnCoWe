@@ -138,21 +138,21 @@ function buildSignUpMenu(){
 	var loginButton = document.getElementById('loginButton');
 	document.getElementById('loginForm').removeChild(loginButton);
 
-	// var repasswordLabel = document.createElement("li");
-	// repasswordLabel.setAttribute("id","repasswordLabel");
-	// repasswordLabel.setAttribute("class","loginLabel");
-	// repasswordLabel.innerHTML = "Re-Password";
+	var repasswordRow = document.createElement("li");
+	repasswordRow.setAttribute("id","repasswordRow");
 	var repasswordInput = document.createElement("input");
 	repasswordInput.setAttribute("id","repasswordInput");
 	repasswordInput.setAttribute("class","themeText");
 	repasswordInput.setAttribute("type","text");
 	repasswordInput.setAttribute("name","repassword");
 	repasswordInput.setAttribute("placeholder","Re-password");
+	var keyIcon = document.createElement("img");
+	keyIcon.setAttribute("class","key");
+	keyIcon.setAttribute("src","../textures/GreenKey.png");
 
-
-
-	// document.getElementById('loginBoxList').appendChild(repasswordLabel);
-	document.getElementById('loginBoxList').appendChild(repasswordInput);
+	repasswordRow.appendChild(keyIcon);
+	repasswordRow.appendChild(repasswordInput);
+	document.getElementById('loginBoxList').appendChild(repasswordRow);
 
 
 	var signUpButton = document.getElementById("signUpButton");
@@ -162,10 +162,10 @@ function buildSignUpMenu(){
 
 function buildLoginMenu(){
 	// var repasswordLabel = document.getElementById("repasswordLabel");
-	var repasswordInput = document.getElementById("repasswordInput");
+	var repasswordRow = document.getElementById("repasswordRow");
 	var loginBoxList = document.getElementById("loginBoxList");
 	// loginBoxList.removeChild(repasswordLabel);
-	loginBoxList.removeChild(repasswordInput);
+	loginBoxList.removeChild(repasswordRow);
 
 	var loginButton = document.createElement("a");
 	loginButton.setAttribute("id","loginButton");

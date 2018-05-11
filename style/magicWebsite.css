@@ -123,6 +123,10 @@ body {
     margin: 0%;
 }
 
+#loginBox > ul li{
+    display: inline-block;
+}
+
 #loginBox > input{
     padding-top: 3vh;
 }
@@ -165,8 +169,20 @@ nav form > a {
     text-shadow: 1px 1px 6px;
 }
 
+.key{
+    height: 3vh;
+    width: 4vh;
+    margin: -1vh 1vh;
+}
+
+.locker{
+    height: 3vh;
+    width: 3vh;
+    margin: -1vh 1.5vh;
+}
+
 #loginCanvas input[type=text], select {
-    width: 80%;
+    width: 70%;
     padding: 0.2vh 0.2vw;
     margin: 1.7vh 0vh;
     display: inline-block;
