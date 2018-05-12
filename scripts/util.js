@@ -77,6 +77,15 @@ function getLeft(object) {
     return object.position.x;
 }
 
+function getAspectRatio(initialValue , referenceScale , newScale , round){
+    if(!round){
+        return initialValue  * newScale / referenceScale
+    }
+    else{
+        return Math.floor(initialValue  * newScale / referenceScale);
+    }
+}
+
 function getGameObjectCopy(object) {
     var copy = new GameObject(null, null, null, null, null);
     copy.type = object.type;
@@ -100,4 +109,4 @@ isValidJson = function(input){
 }
 
 module.exports = {Vector2
- , MovableGameObject , GameObject , isValidJson , getBottom , getLeft , getTop , getRight};
+ , MovableGameObject , GameObject , isValidJson , getBottom , getLeft , getTop , getRight , getAspectRatio};

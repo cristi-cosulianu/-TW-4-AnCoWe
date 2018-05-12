@@ -38,7 +38,7 @@ var double_jump;
 var space;
 var cameraSpeed = 0;
 var data;
-var offsetHeight;
+var referenceScale;
 var uuid = undefined;
 //Socket connection client side
 var socket = io();
@@ -326,8 +326,8 @@ function render() {
     context.drawImage(background_layer6, canvas.width + backgroundX / 1.5 % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer7, backgroundX % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer7, canvas.width + backgroundX % canvas.width, 0, canvas.width, canvas.height);
-    for (let i = 0; i < canvas.width - backgroundX; i += 64) {
-        context.drawImage(ground, i + backgroundX, defaultGroundX + 64, 64, 64);
+    for (let i = 0; i < canvas.width - backgroundX; i += getAspectRatio(64 ,referenceScale , window.innerHeight , true)) {
+        context.drawImage(ground, i + backgroundX, defaultGroundX + getAspectRatio(64 ,referenceScale , window.innerHeight , true) , getAspectRatio(64 ,referenceScale , window.innerHeight , true), getAspectRatio(64 ,referenceScale , window.innerHeight , true));
     }
     drawObjects();
     player_animation(animation_stage);
@@ -451,7 +451,7 @@ function updateData(data) {
     cameraSpeed = data.cameraSpeed;
     backgroundX = data.backgroundX;
     objects = data.objects;
-    offsetHeight = data.offsetHeight;
+    referenceScale = data.referenceScale;
 }
 //Utilitary function for server requests
 function makeSynchronousRequest(url) {

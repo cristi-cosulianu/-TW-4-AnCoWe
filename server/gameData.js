@@ -23,7 +23,7 @@ class gameData {
         this.downKeyCode = 40;
         this.jumpKeyCode = 32;
         this.dashKeyCode = 16;
-        this.offsetHeight = 0;
+        this.referenceScale = 0;
     }
 }
 

@@ -11,12 +11,14 @@ class GameController {
         data.canvasWidth = JSON.parse(info[0]);
         data.canvasHeight = JSON.parse(info[1]);
         // Value at which the level was created initially scaling base out of that
-        data.offsetHeight = 750;
-        data.player = new util.MovableGameObject(undefined, data.canvasWidth / 2 - 100, data.defaultGroundX, 64, 64);
-        data.defaultGroundX = ((data.offsetHeight - 50 - data.player.height) * data.canvasHeight) / data.offsetHeight;
+        data.referenceScale = 750;
+        data.player = new util.MovableGameObject(undefined, data.canvasWidth / 2 - 100, data.defaultGroundX, Math.floor(64 * data.canvasHeight / data.referenceScale), Math.floor(64 * data.canvasHeight / data.referenceScale));
+        data.defaultGroundX = ((data.referenceScale - util.getAspectRatio(50 , data.canvasHeight , data.referenceScale , true) - data.player.height) * data.canvasHeight) / data.referenceScale;
         data.player.groundBase = data.defaultGroundX;
-        data.objects = GameController.readLevel(1);
-        data.objects.forEach((item) => {item.position.y = (item.position.y * data.canvasHeight) / data.offsetHeight});
+        data.objects = GameController.readLevel("1");
+        data.objects.forEach((item) => {item.position.y = util.getAspectRatio(item.position.y , data.referenceScale , data.canvasHeight , true);item.position.x = util.getAspectRatio(item.position.x , data.referenceScale , data.canvasHeight , true); item.width = util.getAspectRatio(item.width , data.referenceScale , data.canvasHeight , true); item.height = util.getAspectRatio(item.height , data.referenceScale , data.canvasHeight , true);});
+        data.gravity.y = util.getAspectRatio(data.gravity.y , data.referenceScale , data.canvasHeight , false);
+        data.speed = util.getAspectRatio(data.speed , data.referenceScale , data.canvasHeight , false);
         this.writeData(player, data);
 //        fs.writeFileSync('levels/1.txt' , JSON.stringify(data.objects) , function(err){
 //        if(err) throw err;
@@ -133,7 +135,7 @@ class GameController {
         if (player.position.y < data.player.groundBase) {
             data.animation_stage = 25;
             data.player.inAir = true;
-            if (Math.abs(dir.y) < 12) {
+            if (Math.abs(dir.y) < util.getAspectRatio(12 , data.referenceScale , data.canvasHeight)) {
                 dir.add(gravity);
             }
             player.position.add(dir);
@@ -143,7 +145,7 @@ class GameController {
                 dir.x = 0;
                 dir.y = 0;
                 gravity.x = 0;
-                gravity.y = 0.31;
+                gravity.y = util.getAspectRatio(0.31 , data.referenceScale , data.canvasHeight);
                 player.position.y = data.player.groundBase;
                 data.double_jump = 0;
                 data.willColideTop = false;
@@ -186,19 +188,19 @@ class GameController {
             ++data.animation_stage;
             player.position.add(dir);
         }
-        if (data.double_jump < 1 && Math.abs(dir.y) <= 6) {
+        if (data.double_jump < 1 && Math.abs(dir.y) <= dir.y < 6) {
             if (data.space && data.left === false && data.right === false) {
                 ++data.double_jump;
                 dir.y = -1;
                 dir.x = 0;
-                dir.mul(7);
+                dir.mul(util.getAspectRatio(7 , data.referenceScale , data.canvasHeight , false));
                 player.position.add(dir);
             }
             if (data.space && (data.left === true || data.right === true)) {
                 ++data.double_jump;
                 dir.y = -1;
                 dir.x = 0;
-                dir.mul(7);
+                dir.mul(util.getAspectRatio(7 , data.referenceScale , data.canvasHeight , false));
                 player.position.add(dir);
             }
         }
@@ -210,7 +212,7 @@ class GameController {
     }
     //Server side game computation for enemy movement
     static updateEnemyPosition(data){
-        let enemySpeed = 2;
+        let enemySpeed = util.getAspectRatio(2 , data.referenceScale , data.canvasHeight , false);
         for(let i = 0; i < data.objects.length; ++i){
             if(data.objects[i].type === "goomba"){
                     let previousValue = data.objects[i].position.x;
@@ -224,7 +226,7 @@ class GameController {
                 if (data.objects[i].position.y < data.objects[i].groundBase) {
                     data.objects[i].inAir = true;
                     data.objects[i].dir.x = 0;
-                    if (Math.abs(data.objects[i].dir.y) < 12) {
+                    if (Math.abs(data.objects[i].dir.y) < util.getAspectRatio(12 , data.referenceScale , data.canvasHeight , false)) {
                         data.objects[i].dir.y += data.gravity.y;
                     }
                 }
@@ -357,7 +359,7 @@ class GameController {
                 data.movementSpeed = data.speed;
             }
         } else {
-            if (Math.abs(data.cameraSpeed + data.player.dir.x / 10) <= 2) {
+            if (Math.abs(data.cameraSpeed + data.player.dir.x / 10) <= data.movementSpeed) {
                 if (!data.right || !data.left)
                     data.cameraSpeed += data.player.dir.x / 10;
             }
@@ -387,7 +389,7 @@ class GameController {
             if(isValidJson(tempData)){
                 data.objects = JSON.parse(tempData);
                 data.player.position.x =  data.canvasWidth / 2 - 100;
-                data.player.position.y = data.defaultGroundX;
+                data.player.position.y = data.defaultGroundX; 
                 data.player.groundBase = data.defaultGroundX;
                 data.player.rightCollision = false;
                 data.player.leftCollision = false;
@@ -400,7 +402,7 @@ class GameController {
                 data.player.onPlatform = false;
                 data.backgroundX = 0;
                 data.double_jump = 0;
-                data.objects.forEach((item) => {item.position.y = (item.position.y * data.canvasHeight) / data.offsetHeight});
+                data.objects.forEach((item) => {item.position.y = util.getAspectRatio(item.position.y , data.referenceScale , data.canvasHeight , true);item.position.x = util.getAspectRatio(item.position.x , data.referenceScale , data.canvasHeight , true); item.width = util.getAspectRatio(item.width , data.referenceScale , data.canvasHeight , true); item.height = util.getAspectRatio(item.height , data.referenceScale , data.canvasHeight , true);});
                 fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
                 if (err) throw err;
                 });
@@ -411,13 +413,13 @@ class GameController {
     static inertia(data) {
         if (data.player.leftCollision) {
             data.player.dir.x -= data.movementSpeed;
-            data.player.dir.y = -7;
+            data.player.dir.y = -util.getAspectRatio(7 , data.referenceScale , data.canvasHeight , false);
         }
         if (data.player.rightCollision) {
             data.player.dir.x += data.movementSpeed;
-            data.player.dir.y = -7;
+            data.player.dir.y = -util.getAspectRatio(7 , data.referenceScale , data.canvasHeight , false);
         }
-        data.gravity.y = 0.28;
+        data.gravity.y = util.getAspectRatio(0.28 , data.referenceScale , data.canvasHeight , false);
         data.bounce = false;
     }
 }
