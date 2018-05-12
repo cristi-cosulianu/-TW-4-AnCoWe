@@ -25,29 +25,96 @@ function removeSlider(elementId){
 
 function addCharacter(container, name) {
 	var url = "https://gateway.marvel.com/v1/public/characters?apikey=15b0df9dd78ed4c3d58e10b0c3d36a57&hash=758e48b905e396fca02324d24f1f7b06&ts=432&name=" + name;
-	var xhttp = new XMLHttpRequest();
+	var xmlRequest = new XMLHttpRequest();
 
-	xhttp.onreadystatechange = function () {
-			if (this.readyState == 4 && this.status == 200) {
-					var thumbnail = JSON.parse(this.responseText).data.results[0].thumbnail;
-					var imgUrl = thumbnail.path + '/portrait_xlarge.' + thumbnail.extension;
+	xmlRequest.onreadystatechange = function () {
 
-					var anchor = document.createElement("a");
-					anchor.setAttribute("class", "buttonGame");
-					anchor.setAttribute("href", "#gameCanvas");
-					anchor.setAttribute("onclick", "sceneTransition(\'chooseCharacterCanvas\',\'gameCanvas\')");
+		// if (this.readyState == 4 && this.status == 200) {
+			// var thumbnail = JSON.parse(this.responseText).data.results[0].thumbnail;
+			// var imgUrl = thumbnail.path + '/portrait_xlarge.' + thumbnail.extension;
+			var imgUrl = "../icons/1.jpg";
 
-					var image = document.createElement("img");
-					image.setAttribute("src", imgUrl);
-					image.setAttribute("class", "icon");
-					image.setAttribute("alt", name);
+			var anchor = document.createElement("a");
+			anchor.setAttribute("id",name);
+			anchor.setAttribute("class", "buttonGame characterIcon");
+			var goOnClick = "buildStoryPage('" + name + "')";
+			console.log(typeof(name));
+			console.log("Add caracter:" + goOnClick);
+			anchor.setAttribute("onclick",goOnClick);
 
-					anchor.appendChild(image);
-					container.appendChild(anchor);
-			}
+			var image = document.createElement("img");
+			image.setAttribute("src", imgUrl);
+			image.setAttribute("class", "icon");
+			image.setAttribute("alt", name);
+
+			anchor.appendChild(image);
+			container.appendChild(anchor);
+		// }
 	};
-	xhttp.open("GET", url, true);
-	xhttp.send();
+	xmlRequest.open("GET", url, true);
+	xmlRequest.send();
+}
+
+function buildStoryPage(characterName){
+	console.log("Build story:" + characterName);
+
+	// <a class="creditsBackButton" onclick="sceneTransition('creditsCanvas','menuCanvas');removeSlider('slider')" href="#menuCanvas"><img src="../textures/backButton.png"></a>
+	var container = document.getElementById("chooseCharacterCanvas");
+
+	var titles = document.getElementById("charactersTitle");
+	var heroesTable = document.getElementById("heroes");
+	var villainsTable = document.getElementById("villains");
+
+	var imgUrl = "../icons/1.jpg";
+
+	titles.setAttribute("style","display: none;");
+	heroesTable.setAttribute("style","display: none;");
+	villainsTable.setAttribute("style","display: none;");
+
+	var anchor = document.createElement("a");
+	anchor.setAttribute("id",characterName + "StoryIcon");
+	anchor.setAttribute("class", "buttonGame storyIcon");
+	anchor.setAttribute("href", "#gameCanvas");
+	anchor.setAttribute("onclick", "sceneTransition('chooseCharacterCanvas','gameCanvas')");
+
+	var image = document.createElement("img");
+	image.setAttribute("src", imgUrl);
+	image.setAttribute("class", "icon");
+	image.setAttribute("alt", characterName);
+
+	anchor.appendChild(image);
+	container.appendChild(anchor);
+
+	// Create back button.
+	var backButton = document.createElement("a");
+	backButton.setAttribute("id","storyBackButton");
+	backButton.setAttribute("class","creditsBackButton");
+	backButton.setAttribute("href","#chooseCharacterCanvas");
+	backButton.setAttribute("onclick","removeStoryPage('" + characterName + "')");
+
+	var backImg = document.createElement("img");
+	backImg.setAttribute("src","../textures/backButton.png");
+
+	backButton.appendChild(backImg);
+	container.appendChild(backButton);
+}
+
+function removeStoryPage(characterName){
+	console.log("removeStoryPage");
+	var characterStoryIcon = document.getElementById(characterName + "StoryIcon");
+	var storyBackButton = document.getElementById("storyBackButton");
+	var chooseCharacterCanvas = document.getElementById("chooseCharacterCanvas");
+
+	chooseCharacterCanvas.removeChild(storyBackButton);
+	chooseCharacterCanvas.removeChild(characterStoryIcon);
+
+	var titles = document.getElementById("charactersTitle");
+	var heroesTable = document.getElementById("heroes");
+	var villainsTable = document.getElementById("villains");
+
+	titles.removeAttribute("style","display: none;");
+	heroesTable.removeAttribute("style","display: none;");
+	villainsTable.removeAttribute("style","display: none;");
 }
 
 window.addEventListener("load", () => {
@@ -65,11 +132,11 @@ window.addEventListener("load", () => {
 	var villainsDiv = document.getElementById("villains");
 
 	for (var i = 0; i < heroes.length; ++i) {
-			addCharacter(heroesDiv, heroes[i]);
+		addCharacter(heroesDiv, heroes[i]);
 	}
 
 	for (var i = 0; i < villains.length; ++i) {
-			addCharacter(villainsDiv, villains[i]);
+		addCharacter(villainsDiv, villains[i]);
 	}
 });
 
@@ -147,8 +214,8 @@ function buildSignUpMenu(){
 	repasswordInput.setAttribute("name","repassword");
 	repasswordInput.setAttribute("placeholder","Re-password");
 	var keyIcon = document.createElement("img");
-	keyIcon.setAttribute("class","key");
-	keyIcon.setAttribute("src","../textures/GreenKey.png");
+	keyIcon.setAttribute("class","menuIcon");
+	keyIcon.setAttribute("src","../textures/Locker.png");
 
 	repasswordRow.appendChild(keyIcon);
 	repasswordRow.appendChild(repasswordInput);

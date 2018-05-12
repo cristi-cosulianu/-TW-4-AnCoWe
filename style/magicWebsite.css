@@ -46,6 +46,10 @@ body {
     font-family: Courier New, Courier, monospace;
 }
 
+.displayNone{
+    display: none;
+}
+
 @keyframes leftCurtain {
     0% { right: 100%; }
     50% { right: 50%; }
@@ -162,16 +166,10 @@ nav form > a {
     text-shadow: 1px 1px 6px;
 }
 
-.key{
-    height: 3vh;
-    width: 4vh;
-    margin: -1vh 1vh;
-}
-
-.locker{
+.menuIcon{
     height: 3vh;
     width: 3vh;
-    margin: -1vh 1.5vh;
+    margin: -1vh 1vh;
 }
 
 #loginCanvas input, select {
@@ -434,7 +432,7 @@ nav form > a {
 }
 
 .creditsBackButton{
-    position: relative;
+    position: absolute;
     left: 2vw;
     top: 2vh;
 }
@@ -446,7 +444,7 @@ nav form > a {
 
 
 
-/* ---------------------------------------------------------- CHOOSE CARACTER CANVAS -- */
+/* ---------------------------------------------------------- CHOOSE CHARACTER CANVAS -- */
 
 #chooseCharacterCanvas {
     height: 90vh;
@@ -475,7 +473,7 @@ nav form > a {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-.caractersTable {
+.charactersTable {
     position: relative;
     width: 46%;
     height: 90%;
@@ -489,16 +487,28 @@ nav form > a {
     justify-content: space-around;
 }
 
-.caractersTable a {
-    display: block;
+.characterIcon{
     height: 22.5vh;
     width: 15vh;
     margin: 2vh;
     float: left;
-    box-shadow: 5px 5px 10px #000000;
+    box-shadow: 5px 5px 10px #000000;   
 }
 
-.caractersTable a:hover {
+.characterIcon:hover{
+    border: 2px outset lightgray;
+}
+
+.storyIcon{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 42vh;
+    width: 28vh;
+    box-shadow: 5px 5px 10px #000000; 
+}
+
+.storyIcon:hover{
     border: 2px outset lightgray;
 }
 
