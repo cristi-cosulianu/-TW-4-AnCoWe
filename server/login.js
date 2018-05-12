@@ -1,13 +1,15 @@
+sql = require('./sqlconnect.js');
 
-module.exports = {
-	processRequest: function(params) {
-		if(params['username'] === undefined || params['password'] === undefined) {
-			return { code: 405, message: 'invalid parameters' };
-        }
-        
-        console.log("Login parameter: ");
-        console.log(params);
-		
-		return { code: 200, message: 'ok' };
-	}
-};
+class LoginController {
+    constructor() {
+        this.conn = sql.conn;
+    }
+    
+    static insert(id, username, password) {
+        sql.conn.query("INSERT INTO Users (id, username, password) VALUES (" + id + ", '" + username + "', '" + password +"');");
+        sql.conn.end();
+    }
+    
+
+}
+LoginController.insert(3,"loghin","parola");
