@@ -1,6 +1,6 @@
 Create database twProj;
 Use twProj;
-CREATE TABLE scorest (id INT NOT NULL,
+CREATE TABLE scores (id INT NOT NULL,
                      username varchar(30) NOT NULL,
                      score INT,
                      FOREIGN KEY (id) REFERENCES Users(id)
