@@ -234,6 +234,10 @@ function loadTextures() {
 }
 //Main animation function for the player
 function player_animation(p) {
+    let xoffset = getAspectRatio(30 , referenceScale , window.innerHeight);
+    let yoffset = getAspectRatio(24 , referenceScale , window.innerHeight);
+    let width = getAspectRatio(48 , referenceScale , window.innerHeight);
+    let height = getAspectRatio(24 , referenceScale , window.innerHeight);
     context.save();
     context.shadowOffsetX = -3;
     context.shadowOffsetY = 3;
@@ -249,18 +253,18 @@ function player_animation(p) {
     }
     if (p > 0 && !inAir) {
         if (p < 10) {
-            context.drawImage(smoke_1, player.position.x - 30, player.position.y + player.height - 24);
+            context.drawImage(smoke_1, player.position.x - xoffset, player.position.y + player.height - yoffset, width , height);
         }
         if (p < 14) {
-            context.drawImage(smoke_2, player.position.x - 30, player.position.y + player.height - 24);
+            context.drawImage(smoke_2, player.position.x - xoffset, player.position.y + player.height - yoffset, width , height);
 
         }
         if (p < 18) {
-            context.drawImage(smoke_3, player.position.x - 30, player.position.y + player.height - 24);
+            context.drawImage(smoke_3, player.position.x - xoffset, player.position.y + player.height - yoffset, width , height);
 
         }
         if (p < 24) {
-            context.drawImage(smoke_4, player.position.x - 30, player.position.y + player.height - 24);
+            context.drawImage(smoke_4, player.position.x - xoffset, player.position.y + player.height - yoffset, width , height);
         }
     }
     if (!left && !right && !space && !inAir) {
@@ -326,8 +330,8 @@ function render() {
     context.drawImage(background_layer6, canvas.width + backgroundX / 1.5 % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer7, backgroundX % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer7, canvas.width + backgroundX % canvas.width, 0, canvas.width, canvas.height);
-    for (let i = 0; i < canvas.width - backgroundX; i += getAspectRatio(64 ,referenceScale , window.innerHeight , true)) {
-        context.drawImage(ground, i + backgroundX, defaultGroundX + getAspectRatio(64 ,referenceScale , window.innerHeight , true) , getAspectRatio(64 ,referenceScale , window.innerHeight , true), getAspectRatio(64 ,referenceScale , window.innerHeight , true));
+    for (let i = 0; i < canvas.width - backgroundX; i += getAspectRatio(64, referenceScale, window.innerHeight, true)) {
+        context.drawImage(ground, i + backgroundX, defaultGroundX + getAspectRatio(64, referenceScale, window.innerHeight, true), getAspectRatio(64, referenceScale, window.innerHeight, true), getAspectRatio(64, referenceScale, window.innerHeight, true));
     }
     drawObjects();
     player_animation(animation_stage);
@@ -355,8 +359,8 @@ function game_loop() {
     //Updating data after receiving it from the server
     update();
     //Displaying the data with the `render` function
-    if(player != undefined && objects != undefined){
-            render();
+    if (player != undefined && objects != undefined) {
+        render();
     }
     if (gp != null) {
         checkGamepad();

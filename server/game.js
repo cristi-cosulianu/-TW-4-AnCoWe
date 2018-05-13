@@ -13,7 +13,7 @@ class GameController {
         // Value at which the level was created initially scaling base out of that
         data.referenceScale = 750;
         data.player = new util.MovableGameObject(undefined, data.canvasWidth / 2 - 100, data.defaultGroundX, Math.floor(64 * data.canvasHeight / data.referenceScale), Math.floor(64 * data.canvasHeight / data.referenceScale));
-        data.defaultGroundX = ((data.referenceScale - util.getAspectRatio(50 , data.canvasHeight , data.referenceScale , true) - data.player.height) * data.canvasHeight) / data.referenceScale;
+        data.defaultGroundX = ((data.referenceScale - 50 - 64) * data.canvasHeight) / data.referenceScale;
         data.player.groundBase = data.defaultGroundX;
         data.objects = GameController.readLevel("1");
         data.objects.forEach((item) => {item.position.y = util.getAspectRatio(item.position.y , data.referenceScale , data.canvasHeight , true);item.position.x = util.getAspectRatio(item.position.x , data.referenceScale , data.canvasHeight , true); item.width = util.getAspectRatio(item.width , data.referenceScale , data.canvasHeight , true); item.height = util.getAspectRatio(item.height , data.referenceScale , data.canvasHeight , true);});
