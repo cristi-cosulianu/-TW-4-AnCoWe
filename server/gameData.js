@@ -24,6 +24,8 @@ class gameData {
         this.jumpKeyCode = 32;
         this.dashKeyCode = 16;
         this.deaths = 0;
+        this.startTime = undefined;
+        this.currentTime = undefined;
         this.referenceScale = 0;
     }
 }
