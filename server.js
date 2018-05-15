@@ -10,7 +10,7 @@ const login = require('./server/login.js');
 const signup = require('./server/signup.js');
 
 // const marvel = require('./server/marvel.js'); // don't delete this comment
-const randomUuid = require('uuid/v4');
+const sessionIdGenerator = require('./server/session-id-generator.js');
 //Running on localhost
 const hostname = '127.0.0.1';
 //Server port 
@@ -86,7 +86,7 @@ const io = socket(server);
 io.on('connection', function(socket) {
   console.log('a user connected');
   //Generating unique `uuid` token that will be passed between server and client
-  var uuid = randomUuid();
+  var uuid = sessionIdGenerator.getSessionId();
   socket.on('disconnect', function() {
   	dataFile = 'server/data/' + uuid + '.txt';
   	fs.exists(dataFile, function(exists) {
