@@ -2,7 +2,7 @@
 const fs = require('fs');
 const gameData = require('./gameData.js');
 const util = require('../scripts/util.js');
-var death = false;
+var isDead = false;
 //Main Class that will handle socket events and data model manipulation
 class GameController {
     //Setting up the data model for the server
@@ -334,7 +334,7 @@ class GameController {
         }
         for(let i = 0; i < response.length; ++i){
             if(response[i].type === "goomba" || response[i].type === "spikes" && takeAction === "player"){
-                death = true;
+                isDead = true;
                 return response;
             }
         }
@@ -384,7 +384,7 @@ class GameController {
         if (data.player.position.x + data.player.width > data.canvasWidth / 2) {
             data.player.position.x = data.canvasWidth / 2 - data.player.width;
         }
-        if(death){
+        if(isDead){
             let tempData = fs.readFileSync('levels/1.txt' , "UTF-8");
             if(isValidJson(tempData)){
                 data.objects = JSON.parse(tempData);
@@ -406,7 +406,8 @@ class GameController {
                 fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
                 if (err) throw err;
                 });
-                death = false;
+                isDead = false;
+                ++data.deaths;
             }
         }
     }

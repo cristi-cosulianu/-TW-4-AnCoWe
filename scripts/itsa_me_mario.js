@@ -38,6 +38,7 @@ var double_jump;
 var space;
 var cameraSpeed = 0;
 var data;
+var deaths;
 var referenceScale;
 var uuid = undefined;
 //Socket connection client side
@@ -330,9 +331,14 @@ function render() {
     context.drawImage(background_layer6, canvas.width + backgroundX / 1.5 % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer7, backgroundX % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer7, canvas.width + backgroundX % canvas.width, 0, canvas.width, canvas.height);
+    //Rendering Ground
     for (let i = 0; i < canvas.width - backgroundX; i += getAspectRatio(64, referenceScale, window.innerHeight, true)) {
         context.drawImage(ground, i + backgroundX, defaultGroundX + getAspectRatio(64, referenceScale, window.innerHeight, true), getAspectRatio(64, referenceScale, window.innerHeight, true), getAspectRatio(64, referenceScale, window.innerHeight, true));
     }
+    //Rendering Deaths
+    context.font = getAspectRatio(30 , referenceScale , window.innerHeight) + "px Comic Sans MS";
+    context.fillStyle = "dark";
+    context.fillText("Deaths : " + deaths , getAspectRatio(20 , referenceScale , window.innerHeight) , getAspectRatio(40 , referenceScale , window.innerHeight));
     drawObjects();
     player_animation(animation_stage);
     context.restore();
@@ -456,6 +462,7 @@ function updateData(data) {
     backgroundX = data.backgroundX;
     objects = data.objects;
     referenceScale = data.referenceScale;
+    deaths = data.deaths;
 }
 //Utilitary function for server requests
 function makeSynchronousRequest(url) {

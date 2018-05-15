@@ -23,6 +23,7 @@ class gameData {
         this.downKeyCode = 40;
         this.jumpKeyCode = 32;
         this.dashKeyCode = 16;
+        this.deaths = 0;
         this.referenceScale = 0;
     }
 }
