@@ -23,4 +23,4 @@ CREATE TABLE options (user_id INT NOT NULL,
 CREATE TABLE sessions (user_id INT NOT NULL,
                        session_id varchar(50) NOT NULL,
                        FOREIGN KEY (user_id) REFERENCES users(id)
-                    );                    
+                    );
