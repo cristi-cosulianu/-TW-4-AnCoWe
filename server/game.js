@@ -8,6 +8,11 @@ class GameController {
     //Setting up the data model for the server
     static start(player, info) {
     	var data = new gameData();
+        if(data.startTime === undefined){
+            let timer = new Date();
+            data.startTime = timer.getTime();
+            data.currentTime = data.startTime;
+        }
         data.canvasWidth = JSON.parse(info[0]);
         data.canvasHeight = JSON.parse(info[1]);
         // Value at which the level was created initially scaling base out of that
@@ -342,6 +347,8 @@ class GameController {
     }
     //Main update function for all the game data
     static update(data , player){
+        let timer = new Date();
+        data.currentTime = timer.getTime();
         if (this.checkCollision(data , data.player, "player").length) {
             data.cameraSpeed = 0;
             if (data.player.rightCollision && !data.bounce) {

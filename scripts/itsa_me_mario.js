@@ -38,7 +38,6 @@ var double_jump;
 var space;
 var cameraSpeed = 0;
 var data;
-var deaths;
 var referenceScale;
 var uuid = undefined;
 //Socket connection client side
@@ -235,10 +234,10 @@ function loadTextures() {
 }
 //Main animation function for the player
 function player_animation(p) {
-    let xoffset = getAspectRatio(30 , referenceScale , window.innerHeight);
-    let yoffset = getAspectRatio(24 , referenceScale , window.innerHeight);
-    let width = getAspectRatio(48 , referenceScale , window.innerHeight);
-    let height = getAspectRatio(24 , referenceScale , window.innerHeight);
+    let xoffset = getAspectRatio(30, referenceScale, window.innerHeight);
+    let yoffset = getAspectRatio(24, referenceScale, window.innerHeight);
+    let width = getAspectRatio(48, referenceScale, window.innerHeight);
+    let height = getAspectRatio(24, referenceScale, window.innerHeight);
     context.save();
     context.shadowOffsetX = -3;
     context.shadowOffsetY = 3;
@@ -254,18 +253,18 @@ function player_animation(p) {
     }
     if (p > 0 && !inAir) {
         if (p < 10) {
-            context.drawImage(smoke_1, player.position.x - xoffset, player.position.y + player.height - yoffset, width , height);
+            context.drawImage(smoke_1, player.position.x - xoffset, player.position.y + player.height - yoffset, width, height);
         }
         if (p < 14) {
-            context.drawImage(smoke_2, player.position.x - xoffset, player.position.y + player.height - yoffset, width , height);
+            context.drawImage(smoke_2, player.position.x - xoffset, player.position.y + player.height - yoffset, width, height);
 
         }
         if (p < 18) {
-            context.drawImage(smoke_3, player.position.x - xoffset, player.position.y + player.height - yoffset, width , height);
+            context.drawImage(smoke_3, player.position.x - xoffset, player.position.y + player.height - yoffset, width, height);
 
         }
         if (p < 24) {
-            context.drawImage(smoke_4, player.position.x - xoffset, player.position.y + player.height - yoffset, width , height);
+            context.drawImage(smoke_4, player.position.x - xoffset, player.position.y + player.height - yoffset, width, height);
         }
     }
     if (!left && !right && !space && !inAir) {
@@ -336,9 +335,10 @@ function render() {
         context.drawImage(ground, i + backgroundX, defaultGroundX + getAspectRatio(64, referenceScale, window.innerHeight, true), getAspectRatio(64, referenceScale, window.innerHeight, true), getAspectRatio(64, referenceScale, window.innerHeight, true));
     }
     //Rendering Deaths
-    context.font = getAspectRatio(30 , referenceScale , window.innerHeight) + "px Comic Sans MS";
+    context.font = getAspectRatio(30, referenceScale, window.innerHeight) + "px Comic Sans MS";
     context.fillStyle = "dark";
-    context.fillText("Deaths : " + deaths , getAspectRatio(20 , referenceScale , window.innerHeight) , getAspectRatio(40 , referenceScale , window.innerHeight));
+    context.fillText("Deaths : " + data.deaths, getAspectRatio(20, referenceScale, window.innerHeight), getAspectRatio(40, referenceScale, window.innerHeight));
+    context.fillText("Time : " + millisToMinutesAndSeconds(data.currentTime - data.startTime), getAspectRatio(20, referenceScale, window.innerHeight), getAspectRatio(80, referenceScale, window.innerHeight));
     drawObjects();
     player_animation(animation_stage);
     context.restore();
@@ -376,6 +376,13 @@ function game_loop() {
     this.requestAnimationFrame(game_loop);
 
 }
+
+function millisToMinutesAndSeconds(millis) {
+    var minutes = Math.floor(millis / 60000);
+    var seconds = ((millis % 60000) / 1000).toFixed(0);
+    return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+}
+
 
 function prepareNextFrame() {
     makeSynchronousRequest("http://localhost:3000/game?action=update-data");
