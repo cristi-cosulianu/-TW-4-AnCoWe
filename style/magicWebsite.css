@@ -479,9 +479,7 @@ nav form > a {
     height: 90%;
     padding: 0% 2%;
     text-align: center;
-    /* overflow-y: scroll; */
     overflow: hidden;
-
     float: left;
 }
 

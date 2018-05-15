@@ -1,3 +1,8 @@
+
+	/*
+	*	EUGEN FILE 
+ 	*/
+
 const fs = require('fs');
 const gameData = require('./gameData.js');
 const util = require('../scripts/util.js');
@@ -8,9 +13,7 @@ module.exports = {
 		if(params['key'] === undefined || params['code'] === undefined) {
 			return { code: 405, message: 'invalid parameters' };
         }
-        
-		console.log(params);
-		
+        		
 		var dataFile = fs.readFileSync('server/data/' + params['player'] + '.txt', 'utf8');
 		if(util.isValidJson(dataFile)){
 			var data = JSON.parse(dataFile);

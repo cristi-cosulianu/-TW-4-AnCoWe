@@ -38,8 +38,6 @@ function addCharacter(container, name) {
 			anchor.setAttribute("id",name);
 			anchor.setAttribute("class", "buttonGame characterIcon");
 			var goOnClick = "buildStoryPage('" + name + "')";
-			console.log(typeof(name));
-			console.log("Add caracter:" + goOnClick);
 			anchor.setAttribute("onclick",goOnClick);
 
 			var image = document.createElement("img");
@@ -56,20 +54,17 @@ function addCharacter(container, name) {
 }
 
 function buildStoryPage(characterName){
-	console.log("Build story:" + characterName);
 
-	// <a class="creditsBackButton" onclick="sceneTransition('creditsCanvas','menuCanvas');removeSlider('slider')" href="#menuCanvas"><img src="../textures/backButton.png"></a>
 	var container = document.getElementById("chooseCharacterCanvas");
 
 	var titles = document.getElementById("charactersTitle");
-	var heroesTable = document.getElementById("heroes");
-	var villainsTable = document.getElementById("villains");
+	var charactersTables = document.getElementsByClassName("charactersTable");
 
 	var imgUrl = "../icons/1.jpg";
 
 	titles.setAttribute("style","display: none;");
-	heroesTable.setAttribute("style","display: none;");
-	villainsTable.setAttribute("style","display: none;");
+	charactersTables[0].setAttribute("style","display: none;");
+	charactersTables[1].setAttribute("style","display: none;");
 
 	var anchor = document.createElement("a");
 	anchor.setAttribute("id",characterName + "StoryIcon");
@@ -100,7 +95,6 @@ function buildStoryPage(characterName){
 }
 
 function removeStoryPage(characterName){
-	console.log("removeStoryPage");
 	var characterStoryIcon = document.getElementById(characterName + "StoryIcon");
 	var storyBackButton = document.getElementById("storyBackButton");
 	var chooseCharacterCanvas = document.getElementById("chooseCharacterCanvas");
@@ -109,12 +103,11 @@ function removeStoryPage(characterName){
 	chooseCharacterCanvas.removeChild(characterStoryIcon);
 
 	var titles = document.getElementById("charactersTitle");
-	var heroesTable = document.getElementById("heroes");
-	var villainsTable = document.getElementById("villains");
+	var charactersTables = document.getElementsByClassName("charactersTable");
 
 	titles.removeAttribute("style","display: none;");
-	heroesTable.removeAttribute("style","display: none;");
-	villainsTable.removeAttribute("style","display: none;");
+	charactersTables[0].removeAttribute("style","display: none;");
+	charactersTables[1].removeAttribute("style","display: none;");
 }
 
 window.addEventListener("load", () => {
@@ -157,8 +150,6 @@ function changeKey(elementId){
 		if(pressed == false){
 			const key = event.key;
 			const keyCode = event.keyCode;
-	
-			console.log(event);
 	
 			if(key == ' '){
 				document.getElementById(elementId).textContent = "Space";
@@ -254,8 +245,6 @@ function signUpRequest(){
 	var password = document.getElementById("passwordInput");
 	var repassword = document.getElementById("repasswordInput");
 
-	console.log(username.value + " " + password.value + " " + repassword.value);
-
 	if(password.value == repassword.value && username != null && password != null){
 		var xmlRequest = new XMLHttpRequest();
 		var serverURL = "http://localhost:3000/signup?";
@@ -263,13 +252,11 @@ function signUpRequest(){
 		xmlRequest.open("POST", serverURL, true);
 		xmlRequest.send();
 
-		console.log("Signup request!");
 		setTimeout(function(){
 			if(xmlRequest.status == 200){
 				buildLoginMenu();
 			}
-		}, 1000);
-		console.log("Got the response!");
+		}, 500);
 	} else {
 		alert("Passwords are not identical! Try again!");
 	}
@@ -286,12 +273,10 @@ function loginRequest(){
 		xmlRequest.open("GET", serverURL, true);
 		xmlRequest.send();
 
-		console.log("Login request!");
 		setTimeout(function(){
 			if(xmlRequest.status == 200){
 				sceneTransition('loginCanvas','menuCanvas');
 			}
-		}, 1000);	
-		console.log("Got the response!");
+		}, 500);	
 	}
 }

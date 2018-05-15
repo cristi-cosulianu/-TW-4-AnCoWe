@@ -1,5 +1,11 @@
 sql = require('./sqlconnect.js');
 
+
+	/*
+	*	Redenumeste fisierul asta in scoresController.js (#Eugen) 
+ 	*/
+
+
 //console.log(sql.conn.query);
 //sql.conn.query("Select * from scores;",function (err, result, fields) {
 //    
