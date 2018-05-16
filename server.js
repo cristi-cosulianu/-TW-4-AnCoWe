@@ -9,6 +9,8 @@ const options = require('./server/options.js');
 const login = require('./server/login.js');
 const signup = require('./server/signup.js');
 
+const sessionController = require('./server/sessionController.js');
+
 // const marvel = require('./server/marvel.js'); // don't delete this comment
 const sessionIdGenerator = require('./server/session-id-generator.js');
 //Running on localhost
@@ -84,7 +86,7 @@ const socket = require('socket.io');
 const io = socket(server);
 
 io.on('connection', function(socket) {
-  console.log('a user connected');
+	console.log('a user connected');
   //Generating unique `uuid` token that will be passed between server and client
   var uuid = sessionIdGenerator.getSessionId();
   socket.on('disconnect', function() {
