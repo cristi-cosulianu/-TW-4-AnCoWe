@@ -1,27 +1,14 @@
 sql = require('./sqlconnect.js');
 
-
-	/*
-	*	Redenumeste fisierul asta in scoresController.js (#Eugen) 
- 	*/
-
-
-//console.log(sql.conn.query);
-//sql.conn.query("Select * from scores;",function (err, result, fields) {
-//    
-//    console.log(JSON.stringify(result));
-//    
-//});
-//console.log("after query");
 class SessionController {
     constructor() {
         this.conn = sql.conn;
     }
     
-    static exists(sessionId) {
+    exists(sessionId) {
         var queryString = "SELECT COUNT(*) AS nr FROM sessions WHERE session_id = '" + sessionId + "';";
         
-        sql.conn.query(queryString, function (err, result, fields) {
+        this.conn.query(queryString, function (err, result, fields) {
             if(err) {
                 console.log(err);
                 return -1;
@@ -31,10 +18,10 @@ class SessionController {
         });
     }
     
-    static add(userId, sessionId) {
+    add(userId, sessionId) {
         var queryString = "INSERT INTO sessions VALUES ('" + userId + "', '" + sessionId + "');";
         
-        sql.conn.query(queryString, function(err, result) {
+        this.conn.query(queryString, function(err, result) {
             if(err) {
                 console.log("my err: " + err);
             } else {
@@ -44,6 +31,8 @@ class SessionController {
     }
 }
 
+sessionController = new SessionController();
+
 module.exports = {
-    SessionController
+    sessionController
 }

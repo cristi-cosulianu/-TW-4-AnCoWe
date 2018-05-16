@@ -1,5 +1,5 @@
 const randomUuid = require('uuid/v4');
-const sessionController = require('./sessionController').SessionController;
+const sessionController = require('./sessionController').sessionController;
 
 function getSessionId() {
 	// should return from the first iteration
