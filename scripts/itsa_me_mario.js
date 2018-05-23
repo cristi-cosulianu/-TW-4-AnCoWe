@@ -1,44 +1,20 @@
-var dir;
-var player;
 var context;
 var canvas;
 var ground, pipe, wall, platform, spikes, crane, goomba;
-var last_player = {
-    x: -100,
-    y: -100
-};
 var jump_sound, background_sound, jump_land;
-var animation_stage = 0;
-var idle_animation_stage = 0;
 var first_press;
 var hasDropDown = true;
-var rendered = 0;
 var gp = null;
-var maxLeftBound = 0;
 var walk_1, walk_2, walk_3, walk_4;
 var idle_1, idle_2, idle_3, idle_4;
+var idle_animation_stage;
 var jump_1;
 var smoke_1, smoke_2, smoke_3, smoke_4;
 var background_layer1, background_layer2, background_layer3, background_layer4, background_layer5, background_layer6, background_layer7;
-var bounce = false;
-var objects = [];
-var backgroundX = 0;
-var willColideTop = false;
-var left = false;
-var right = false;
-var inAir = false;
-var rightKeyCode = 39;
-var leftKeyCode = 37;
 var downKeyCode = 40;
 var jumpKeyCode = 32;
 var dashKeyCode = 16;
-var groundBase = 580;
-var defaultGroundX = 580;
-var double_jump;
-var space;
-var cameraSpeed = 0;
 var data;
-var referenceScale;
 var uuid = undefined;
 //Socket connection client side
 var socket = io();
@@ -80,13 +56,13 @@ window.onload = () => {
         });
 
         window.onresize = () => {
-            defaultGroundX = window.innerHeight - 80 - 40;
-            groundBase = defaultGroundX;
+            data.defaultGroundX = window.innerHeight - 80 - 40;
+            data.groundBase = data.defaultGroundX;
             render();
         };
         window.onblur = () => {
-            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + leftKeyCode);
-            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + rightKeyCode);
+            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + data.leftKeyCode);
+            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + data.rightKeyCode);
             makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + jumpKeyCode);
         }
 
@@ -121,40 +97,40 @@ function getObjectFromString(type) {
 }
 //Function for level loading , we will use a JSON file for this later
 function loadLevel() {
-    objects.push(new GameObject("pipe", canvas.width / 2, canvas.height / 2 + 264, 64, 128));
-    objects.push(new GameObject("spikes", canvas.width / 2 + 200, canvas.height / 2 + 180, 64, 64));
-    objects.push(new GameObject("spikes", canvas.width / 2 + 264, canvas.height / 2 + 180, 64, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 328, canvas.height / 2 + 0, 64, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 392, canvas.height / 2 - 40, 64, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 456, canvas.height / 2 - 40, 128, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 900, canvas.height / 2 + 200, 128, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 584, canvas.height / 2 + 0, 64, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 648, canvas.height / 2 + 40, 64, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 712, canvas.height / 2 + 80, 64, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 1200, canvas.height / 2 + 128, 128, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 1232, canvas.height / 2 - 200, 64, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 1500, canvas.height / 2, 128, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 1628, canvas.height / 2, 128, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 1700, canvas.height / 2 - 160, 128, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 1828, canvas.height / 2 - 160, 128, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 1956, canvas.height / 2 - 160, 128, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 2200, canvas.height / 2 - 160, 128, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 2756, canvas.height / 2, 64, 64));
-    objects.push(new GameObject("spikes", canvas.width / 2 + 3056, canvas.height / 2, 64, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 3056, canvas.height / 2 - 250, 64, 64));
-    objects.push(new GameObject("ground", canvas.width / 2 + 3356, canvas.height / 2, 64, 64));
-    objects.push(new GameObject("pipe", canvas.width / 2 + 3000, canvas.height / 2 + 264, 64, 128));
-    objects.push(new GameObject("wall", canvas.width / 2 + 3600, canvas.height / 2, 64, 512));
-    objects.push(new GameObject("wall", canvas.width / 2 + 3800, canvas.height / 8, 64, 512));
-    objects.push(new GameObject("wall", canvas.width / 2 + 4000, 100, 64, 512));
-    objects.push(new GameObject("platform", canvas.width / 2 + 4200, canvas.height / 2 + 150, 256, 32));
-    objects.push(new MovableGameObject("goomba", 2000, -5000, 64, 64));
-    objects.push(new MovableGameObject("goomba", 2200, -5000, 64, 64));
-    objects.push(new MovableGameObject("goomba", canvas.width / 2 + 4200, -5000, 64, 64));
-    objects.push(new GameObject("pipe", canvas.width / 2 + 6000, canvas.height / 2 + 264, 64, 128));
-    objects.push(new GameObject("wall", canvas.width / 2 + 7000, canvas.height / 2, 64, 512));
-    objects.push(new GameObject("spikes", canvas.width / 2 + 3900, canvas.height / 2 + 180, 64, 64));
-    objects.sort((a, b) => {
+    data.objects.push(new GameObject("pipe", canvas.width / 2, canvas.height / 2 + 264, 64, 128));
+    data.objects.push(new GameObject("spikes", canvas.width / 2 + 200, canvas.height / 2 + 180, 64, 64));
+    data.objects.push(new GameObject("spikes", canvas.width / 2 + 264, canvas.height / 2 + 180, 64, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 328, canvas.height / 2 + 0, 64, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 392, canvas.height / 2 - 40, 64, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 456, canvas.height / 2 - 40, 128, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 900, canvas.height / 2 + 200, 128, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 584, canvas.height / 2 + 0, 64, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 648, canvas.height / 2 + 40, 64, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 712, canvas.height / 2 + 80, 64, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 1200, canvas.height / 2 + 128, 128, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 1232, canvas.height / 2 - 200, 64, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 1500, canvas.height / 2, 128, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 1628, canvas.height / 2, 128, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 1700, canvas.height / 2 - 160, 128, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 1828, canvas.height / 2 - 160, 128, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 1956, canvas.height / 2 - 160, 128, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 2200, canvas.height / 2 - 160, 128, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 2756, canvas.height / 2, 64, 64));
+    data.objects.push(new GameObject("spikes", canvas.width / 2 + 3056, canvas.height / 2, 64, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 3056, canvas.height / 2 - 250, 64, 64));
+    data.objects.push(new GameObject("ground", canvas.width / 2 + 3356, canvas.height / 2, 64, 64));
+    data.objects.push(new GameObject("pipe", canvas.width / 2 + 3000, canvas.height / 2 + 264, 64, 128));
+    data.objects.push(new GameObject("wall", canvas.width / 2 + 3600, canvas.height / 2, 64, 512));
+    data.objects.push(new GameObject("wall", canvas.width / 2 + 3800, canvas.height / 8, 64, 512));
+    data.objects.push(new GameObject("wall", canvas.width / 2 + 4000, 100, 64, 512));
+    data.objects.push(new GameObject("platform", canvas.width / 2 + 4200, canvas.height / 2 + 150, 256, 32));
+    data.objects.push(new MovableGameObject("goomba", 2000, -5000, 64, 64));
+    data.objects.push(new MovableGameObject("goomba", 2200, -5000, 64, 64));
+    data.objects.push(new MovableGameObject("goomba", canvas.width / 2 + 4200, -5000, 64, 64));
+    data.objects.push(new GameObject("pipe", canvas.width / 2 + 6000, canvas.height / 2 + 264, 64, 128));
+    data.objects.push(new GameObject("wall", canvas.width / 2 + 7000, canvas.height / 2, 64, 512));
+    data.objects.push(new GameObject("spikes", canvas.width / 2 + 3900, canvas.height / 2 + 180, 64, 64));
+    data.objects.sort((a, b) => {
         if (a.position.x > b.position.x)
             return -1;
         if (a.position.x < b.position.x)
@@ -234,127 +210,127 @@ function loadTextures() {
 }
 //Main animation function for the player
 function player_animation(p) {
-    let xoffset = getAspectRatio(30, referenceScale, window.innerHeight);
-    let yoffset = getAspectRatio(24, referenceScale, window.innerHeight);
-    let width = getAspectRatio(48, referenceScale, window.innerHeight);
-    let height = getAspectRatio(24, referenceScale, window.innerHeight);
+    let xoffset = getAspectRatio(30, data.referenceScale, window.innerHeight);
+    let yoffset = getAspectRatio(24, data.referenceScale, window.innerHeight);
+    let width = getAspectRatio(48, data.referenceScale, window.innerHeight);
+    let height = getAspectRatio(24, data.referenceScale, window.innerHeight);
     context.save();
     context.shadowOffsetX = -3;
     context.shadowOffsetY = 3;
     context.shadowColor = "black";
     context.shadowBlur = 10;
-    if (left) {
-        context.translate(2 * player.position.x + player.width, 0);
+    if (data.left) {
+        context.translate(2 * data.player.position.x + data.player.width, 0);
         context.scale(-1, 1);
         context.shadowOffsetX = 3;
         context.shadowOffsetY = 3;
         context.shadowColor = "black";
         context.shadowBlur = 10;
     }
-    if (p > 0 && !inAir) {
+    if (p > 0 && !data.player.inAir) {
         if (p < 10) {
-            context.drawImage(smoke_1, player.position.x - xoffset, player.position.y + player.height - yoffset, width, height);
+            context.drawImage(smoke_1, data.player.position.x - xoffset, data.player.position.y + data.player.height - yoffset, width, height);
         }
         if (p < 14) {
-            context.drawImage(smoke_2, player.position.x - xoffset, player.position.y + player.height - yoffset, width, height);
+            context.drawImage(smoke_2, data.player.position.x - xoffset, data.player.position.y + data.player.height - yoffset, width, height);
 
         }
         if (p < 18) {
-            context.drawImage(smoke_3, player.position.x - xoffset, player.position.y + player.height - yoffset, width, height);
+            context.drawImage(smoke_3, data.player.position.x - xoffset, data.player.position.y + data.player.height - yoffset, width, height);
 
         }
         if (p < 24) {
-            context.drawImage(smoke_4, player.position.x - xoffset, player.position.y + player.height - yoffset, width, height);
+            context.drawImage(smoke_4, data.player.position.x - xoffset, data.player.position.y + data.player.height - yoffset, width, height);
         }
     }
-    if (!left && !right && !space && !inAir) {
+    if (!data.left && !data.right && !data.space && !data.player.inAir) {
         if (idle_animation_stage % 54 < 6) {
-            context.drawImage(idle_1, player.position.x, player.position.y, player.width, player.height);
+            context.drawImage(idle_1, data.player.position.x, data.player.position.y, data.player.width, data.player.height);
             ++idle_animation_stage;
             return;
         }
         if (idle_animation_stage % 54 < 22) {
-            context.drawImage(idle_2, player.position.x, player.position.y, player.width, player.height);
+            context.drawImage(idle_2, data.player.position.x, data.player.position.y, data.player.width, data.player.height);
             ++idle_animation_stage;
             return;
         }
         if (idle_animation_stage % 54 < 38) {
-            context.drawImage(idle_3, player.position.x, player.position.y, player.width, player.height);
+            context.drawImage(idle_3, data.player.position.x, data.player.position.y, data.player.width, data.player.height);
             ++idle_animation_stage;
             return;
         }
         if (idle_animation_stage % 54 < 54) {
-            context.drawImage(idle_4, player.position.x, player.position.y, player.width, player.height);
+            context.drawImage(idle_4, data.player.position.x, data.player.position.y, data.player.width, data.player.height);
             ++idle_animation_stage;
             return;
         }
     }
     idle_animation_stage = 0;
-    if (inAir) {
-        context.drawImage(jump_1, player.position.x, player.position.y, player.width, player.height);
+    if (data.player.inAir) {
+        context.drawImage(jump_1, data.player.position.x, data.player.position.y, data.player.width, data.player.height);
         return;
     }
     if (p % 33 < 6) {
-        context.drawImage(walk_1, player.position.x, player.position.y, player.width, player.height);
+        context.drawImage(walk_1, data.player.position.x, data.player.position.y, data.player.width, data.player.height);
         return;
     }
     if (p % 33 < 15) {
-        context.drawImage(walk_2, player.position.x, player.position.y, player.width, player.height);
+        context.drawImage(walk_2, data.player.position.x, data.player.position.y, data.player.width, data.player.height);
 
         return;
     }
     if (p % 33 < 24) {
-        context.drawImage(walk_3, player.position.x, player.position.y, player.width, player.height);
+        context.drawImage(walk_3, data.player.position.x, data.player.position.y, data.player.width, data.player.height);
         return;
     }
     if (p % 33 < 33) {
-        context.drawImage(walk_4, player.position.x, player.position.y, player.width, player.height);
+        context.drawImage(walk_4, data.player.position.x, data.player.position.y, data.player.width, data.player.height);
         return;
     }
 
 }
-//Rendering function for all the objects in the game
+//Rendering function for all the data.objects in the game
 function render() {
-    /*    if (backgroundX > canvas.width) {
-            backgroundX %= canvas.width;
+    /*    if (data.backgroundX > canvas.width) {
+            data.backgroundX %= canvas.width;
         } */
-    context.drawImage(background_layer1, backgroundX % canvas.width, 0, canvas.width, canvas.height);
-    context.drawImage(background_layer1, canvas.width + backgroundX % canvas.width, 0, canvas.width, canvas.height);
-    context.drawImage(background_layer2, backgroundX / 5 % canvas.width, 0, canvas.width, canvas.height);
-    context.drawImage(background_layer2, canvas.width + backgroundX / 5 % canvas.width, 0, canvas.width, canvas.height);
-    context.drawImage(background_layer3, backgroundX / 4 % canvas.width, 0, canvas.width, canvas.height);
-    context.drawImage(background_layer3, canvas.width + backgroundX / 4 % canvas.width, 0, canvas.width, canvas.height);
-    context.drawImage(background_layer5, backgroundX / 2 % canvas.width, 0, canvas.width, canvas.height);
-    context.drawImage(background_layer5, canvas.width + backgroundX / 2 % canvas.width, 0, canvas.width, canvas.height);
-    context.drawImage(background_layer6, backgroundX / 1.5 % canvas.width, 0, canvas.width, canvas.height);
-    context.drawImage(background_layer6, canvas.width + backgroundX / 1.5 % canvas.width, 0, canvas.width, canvas.height);
-    context.drawImage(background_layer7, backgroundX % canvas.width, 0, canvas.width, canvas.height);
-    context.drawImage(background_layer7, canvas.width + backgroundX % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer1, data.backgroundX % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer1, canvas.width + data.backgroundX % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer2, data.backgroundX / 5 % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer2, canvas.width + data.backgroundX / 5 % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer3, data.backgroundX / 4 % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer3, canvas.width + data.backgroundX / 4 % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer5, data.backgroundX / 2 % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer5, canvas.width + data.backgroundX / 2 % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer6, data.backgroundX / 1.5 % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer6, canvas.width + data.backgroundX / 1.5 % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer7, data.backgroundX % canvas.width, 0, canvas.width, canvas.height);
+    context.drawImage(background_layer7, canvas.width + data.backgroundX % canvas.width, 0, canvas.width, canvas.height);
     //Rendering Ground
-    for (let i = 0; i < canvas.width - backgroundX; i += getAspectRatio(64, referenceScale, window.innerHeight, true)) {
-        context.drawImage(ground, i + backgroundX, defaultGroundX + getAspectRatio(64, referenceScale, window.innerHeight, true), getAspectRatio(64, referenceScale, window.innerHeight, true), getAspectRatio(64, referenceScale, window.innerHeight, true));
+    for (let i = 0; i < canvas.width - data.backgroundX; i += getAspectRatio(64, data.referenceScale, window.innerHeight, true)) {
+        context.drawImage(ground, i + data.backgroundX, data.defaultGroundX + getAspectRatio(64, data.referenceScale, window.innerHeight, true), getAspectRatio(64, data.referenceScale, window.innerHeight, true), getAspectRatio(64, data.referenceScale, window.innerHeight, true));
     }
-    //Rendering Deaths
-    context.font = getAspectRatio(30, referenceScale, window.innerHeight) + "px Comic Sans MS";
+    //Rendering data.deaths
+    context.font = getAspectRatio(30, data.referenceScale, window.innerHeight) + "px Comic Sans MS";
     context.fillStyle = "dark";
-    context.fillText("Deaths : " + data.deaths, getAspectRatio(20, referenceScale, window.innerHeight), getAspectRatio(40, referenceScale, window.innerHeight));
-    context.fillText("Time : " + millisToMinutesAndSeconds(data.currentTime - data.startTime), getAspectRatio(20, referenceScale, window.innerHeight), getAspectRatio(80, referenceScale, window.innerHeight));
+    context.fillText("Deaths : " + data.deaths, getAspectRatio(20, data.referenceScale, window.innerHeight), getAspectRatio(40, data.referenceScale, window.innerHeight));
+    context.fillText("Time : " + millisToMinutesAndSeconds(data.currentTime - data.startTime), getAspectRatio(20, data.referenceScale, window.innerHeight), getAspectRatio(80, data.referenceScale, window.innerHeight));
     drawObjects();
-    player_animation(animation_stage);
+    player_animation(data.animation_stage);
     context.restore();
 }
-//Rendering objects used in `render` function
+//Rendering data.objects used in `render` function
 function drawObjects() {
-    for (let i = 0; i < objects.length; ++i) {
-        if (getRight(objects[i]) + backgroundX < 0) {
-            //objects.pop();
+    for (let i = 0; i < data.objects.length; ++i) {
+        if (getRight(data.objects[i]) + data.backgroundX < 0) {
+            //data.objects.pop();
             continue;
         }
-        if (getLeft(objects[i]) + backgroundX > canvas.width) {
+        if (getLeft(data.objects[i]) + data.backgroundX > canvas.width) {
             continue;
         }
         try {
-            context.drawImage(getObjectFromString(objects[i].type), objects[i].position.x + backgroundX, objects[i].position.y, objects[i].width, objects[i].height);
+            context.drawImage(getObjectFromString(data.objects[i].type), data.objects[i].position.x + data.backgroundX, data.objects[i].position.y, data.objects[i].width, data.objects[i].height);
         } catch (e) {
             console.log("Object missing or undefined!");
         }
@@ -365,9 +341,7 @@ function game_loop() {
     //Updating data after receiving it from the server
     update();
     //Displaying the data with the `render` function
-    if (player != undefined && objects != undefined) {
-        render();
-    }
+
     if (gp != null) {
         checkGamepad();
     }
@@ -393,11 +367,8 @@ function update() {
     if (data === undefined) {
         console.log("NO DATA");
         return;
-    }
-    try {
-        updateData(data);
-    } catch (e) {
-        console.log(e);
+    } else {
+        render();
     }
 }
 
@@ -408,22 +379,22 @@ function checkGamepad() {
         var axeLF = gp.axes[0];
         console.log(axeLF);
         if (axeLF < -0.5) {
-            if (right) {
-                makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + rightKeyCode);
+            if (data.right) {
+                makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + data.rightKeyCode);
             }
-            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=" + leftKeyCode);
+            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=" + data.leftKeyCode);
         } else if (axeLF > 0.5) {
-            if (left) {
-                makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + leftKeyCode);
+            if (data.left) {
+                makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + data.leftKeyCode);
             }
-            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=" + rightKeyCode);
+            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=" + data.rightKeyCode);
         } else {
-            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + leftKeyCode);
-            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + rightKeyCode);
+            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + data.leftKeyCode);
+            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + data.rightKeyCode);
         }
         if (gp.buttons[0].pressed) {
             makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=" + jumpKeyCode);
-        } else if (space) {
+        } else if (data.space) {
             makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + jumpKeyCode);
         }
     } catch (e) {
@@ -433,9 +404,9 @@ function checkGamepad() {
 //Utilitary event function that sends key pressed data
 function keyPressed(event) {
     makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=" + event.keyCode);
-    if (event.keyCode === rightKeyCode) {
+    if (event.keyCode === data.rightKeyCode) {
         if (first_press === false) {
-            animation_stage = 5;
+            data.animation_stage = 5;
             first_press = true;
         }
         //background_sound.play();
@@ -444,7 +415,7 @@ function keyPressed(event) {
         jump_sound.current_time = 0;
         jump_sound.play();
     }
-    if (event.keyCode === downKeyCode && inAir && hasDropDown) {
+    if (event.keyCode === downKeyCode && data.player.inAir && hasDropDown) {
         dir.y = 12;
         dir.x = 0;
     }
@@ -453,24 +424,7 @@ function keyPressed(event) {
 function keyReleased(event) {
     makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + event.keyCode);
 }
-//Function for data update received from the server
-function updateData(data) {
-    right = data.right;
-    left = data.left;
-    space = data.space;
-    animation_stage = data.animation_stage;
-    player = data.player;
-    player.position = data.player.position;
-    inAir = data.player.inAir;
-    double_jump = data.double_jump;
-    defaultGroundX = data.defaultGroundX;
-    groundBase = data.player.groundBase;
-    cameraSpeed = data.cameraSpeed;
-    backgroundX = data.backgroundX;
-    objects = data.objects;
-    referenceScale = data.referenceScale;
-    deaths = data.deaths;
-}
+
 //Utilitary function for server requests
 function makeSynchronousRequest(url) {
     if (uuid === undefined) {
