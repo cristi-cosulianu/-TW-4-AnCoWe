@@ -2,7 +2,7 @@
 const fs = require('fs');
 const gameData = require('./gameData.js');
 const util = require('../scripts/util.js');
-var isDead = false;
+var deathTime;
 //Main Class that will handle socket events and data model manipulation
 class GameController {
     //Setting up the data model for the server
@@ -131,7 +131,9 @@ class GameController {
         let gravity = new util.Vector2(data.gravity.x , data.gravity.y);
         if (data.objects.length > 0) {
         if (player.position.y < data.player.groundBase || !data.player.onPlatform) {
+            if(!data.isDead){
                 data.player.groundBase = data.defaultGroundX;
+            }
         }
         if (util.getRight(player) < util.getLeft(data.objects[data.player.currentPlatformIndex]) + data.backgroundX || util.getLeft(player) > util.getRight(data.objects[data.player.currentPlatformIndex]) + data.backgroundX) {
                 data.player.onPlatform = false;
@@ -339,7 +341,9 @@ class GameController {
         }
         for(let i = 0; i < response.length; ++i){
             if(response[i].type === "goomba" || response[i].type === "spikes" && takeAction === "player"){
-                isDead = true;
+                data.isDead = true;
+                let timer = new Date();
+                deathTime = timer.getTime();
                 return response;
             }
         }
@@ -349,6 +353,19 @@ class GameController {
     static update(data , player){
         let timer = new Date();
         data.currentTime = timer.getTime();
+        if(data.isDead){
+            if(data.currentTime - deathTime < 3000){
+                data.space = true;
+                data.inAir = true;
+                data.player.groundBase = Number.POSITIVE_INFINITY;
+                this.updatePlayerPosition(data);
+                this.updateEnemyPosition(data);
+            }
+            else{
+                this.resetLevel(data , "1");
+            }
+            return;
+        }
         if (this.checkCollision(data , data.player, "player").length) {
             data.cameraSpeed = 0;
             if (data.player.rightCollision && !data.bounce) {
@@ -391,32 +408,6 @@ class GameController {
         if (data.player.position.x + data.player.width > data.canvasWidth / 2) {
             data.player.position.x = data.canvasWidth / 2 - data.player.width;
         }
-        if(isDead){
-            let tempData = fs.readFileSync('levels/1.txt' , "UTF-8");
-            if(isValidJson(tempData)){
-                data.objects = JSON.parse(tempData);
-                data.player.position.x =  data.canvasWidth / 2 - 100;
-                data.player.position.y = data.defaultGroundX; 
-                data.player.groundBase = data.defaultGroundX;
-                data.player.rightCollision = false;
-                data.player.leftCollision = false;
-                data.player.topCollision = false;
-                data.player.bottomCollision = false;
-                data.player.dir.x = 1;
-                data.player.dir.y = 0;
-                data.player.inAir = 0;
-                data.player.currentPlatformIndex = 0;
-                data.player.onPlatform = false;
-                data.backgroundX = 0;
-                data.double_jump = 0;
-                data.objects.forEach((item) => {item.position.y = util.getAspectRatio(item.position.y , data.referenceScale , data.canvasHeight , true);item.position.x = util.getAspectRatio(item.position.x , data.referenceScale , data.canvasHeight , true); item.width = util.getAspectRatio(item.width , data.referenceScale , data.canvasHeight , true); item.height = util.getAspectRatio(item.height , data.referenceScale , data.canvasHeight , true);});
-                fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data), function (err) {
-                if (err) throw err;
-                });
-                isDead = false;
-                ++data.deaths;
-            }
-        }
     }
     static inertia(data) {
         if (data.player.leftCollision) {
@@ -429,6 +420,31 @@ class GameController {
         }
         data.gravity.y = util.getAspectRatio(0.28 , data.referenceScale , data.canvasHeight , false);
         data.bounce = false;
+    }
+    
+    static resetLevel(data , level){
+        let tempData = fs.readFileSync("levels/" + level + ".txt" , "UTF-8");
+            if(isValidJson(tempData)){
+                data.objects = JSON.parse(tempData);
+                data.player.position.x =  data.canvasWidth / 2 - 100;
+                data.player.position.y = data.defaultGroundX; 
+                data.player.groundBase = data.defaultGroundX;
+                data.player.rightCollision = false;
+                data.player.leftCollision = false;
+                data.player.topCollision = false;
+                data.player.bottomCollision = false;
+                data.player.dir.x = 1;
+                data.player.dir.y = 0;
+                data.player.inAir = false;
+                data.space = false;
+                data.player.currentPlatformIndex = 0;
+                data.player.onPlatform = false;
+                data.backgroundX = 0;
+                data.double_jump = 0;
+                data.objects.forEach((item) => {item.position.y = util.getAspectRatio(item.position.y , data.referenceScale , data.canvasHeight , true);item.position.x = util.getAspectRatio(item.position.x , data.referenceScale , data.canvasHeight , true); item.width = util.getAspectRatio(item.width , data.referenceScale , data.canvasHeight , true); item.height = util.getAspectRatio(item.height , data.referenceScale , data.canvasHeight , true);});
+                data.isDead = false;
+                ++data.deaths;
+            }
     }
 }
 //Exporting `processRequest` for `server.js` in order to procces `socket.io`events

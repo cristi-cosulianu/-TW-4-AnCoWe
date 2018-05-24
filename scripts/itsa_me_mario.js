@@ -7,6 +7,7 @@ var hasDropDown = true;
 var gp = null;
 var walk_1, walk_2, walk_3, walk_4;
 var idle_1, idle_2, idle_3, idle_4;
+var death_1;
 var idle_animation_stage;
 var jump_1;
 var smoke_1, smoke_2, smoke_3, smoke_4;
@@ -162,6 +163,7 @@ function loadTextures() {
     idle_3 = new Image();
     idle_4 = new Image();
     jump_1 = new Image();
+    death_1 = new Image();
     smoke_1 = new Image();
     smoke_2 = new Image();
     smoke_3 = new Image();
@@ -190,6 +192,7 @@ function loadTextures() {
     idle_3.src = "../textures/Hat_man/Idle/Hat_man_idle3.png";
     idle_4.src = "../textures/Hat_man/Idle/Hat_man_idle4.png";
     jump_1.src = "../textures/Hat_man/Jump/Hat_man_jump1.png"
+    death_1.src = "../textures/Hat_man/Death/Hat_man_death1.png";
     smoke_1.src = "../textures/Smoke/smoke_1.png";
     smoke_2.src = "../textures/Smoke/smoke_2.png";
     smoke_3.src = "../textures/Smoke/smoke_3.png";
@@ -209,7 +212,7 @@ function loadTextures() {
     goomba.src = "../textures/goomba.png";
 }
 //Main animation function for the player
-function player_animation(p) {
+function playerAnimation(p) {
     let xoffset = getAspectRatio(30, data.referenceScale, window.innerHeight);
     let yoffset = getAspectRatio(24, data.referenceScale, window.innerHeight);
     let width = getAspectRatio(48, data.referenceScale, window.innerHeight);
@@ -226,6 +229,10 @@ function player_animation(p) {
         context.shadowOffsetY = 3;
         context.shadowColor = "black";
         context.shadowBlur = 10;
+    }
+    if (data.isDead) {
+        context.drawImage(death_1, data.player.position.x, data.player.position.y, data.player.width, data.player.height);
+        return;
     }
     if (p > 0 && !data.player.inAir) {
         if (p < 10) {
@@ -316,7 +323,7 @@ function render() {
     context.fillText("Deaths : " + data.deaths, getAspectRatio(20, data.referenceScale, window.innerHeight), getAspectRatio(40, data.referenceScale, window.innerHeight));
     context.fillText("Time : " + millisToMinutesAndSeconds(data.currentTime - data.startTime), getAspectRatio(20, data.referenceScale, window.innerHeight), getAspectRatio(80, data.referenceScale, window.innerHeight));
     drawObjects();
-    player_animation(data.animation_stage);
+    playerAnimation(data.animation_stage);
     context.restore();
 }
 //Rendering data.objects used in `render` function
@@ -339,7 +346,7 @@ function drawObjects() {
 //Main game loop
 function game_loop() {
     //Updating data after receiving it from the server
-    update();
+    updateAndRender();
     //Displaying the data with the `render` function
 
     if (gp != null) {
@@ -362,7 +369,7 @@ function prepareNextFrame() {
     makeSynchronousRequest("http://localhost:3000/game?action=update-data");
 }
 
-function update() {
+function updateAndRender() {
     makeSynchronousRequest("http://localhost:3000/game?action=get-data");
     if (data === undefined) {
         console.log("NO DATA");
