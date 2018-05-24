@@ -1,7 +1,7 @@
 var context;
 var canvas;
 var ground, pipe, wall, platform, spikes, crane, goomba;
-var jump_sound, background_sound, jump_land , death_sound;
+var jump_sound, background_sound, jump_land, death_sound;
 var first_press;
 var hasDropDown = true;
 var gp = null;
@@ -353,7 +353,6 @@ function game_loop() {
     //Updating data after receiving it from the server
     updateAndRender();
     //Displaying the data with the `render` function
-
     if (gp != null) {
         checkGamepad();
     }
