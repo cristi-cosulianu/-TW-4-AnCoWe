@@ -46,11 +46,11 @@ class GameObject {
     }
 }
 
-class MovableGameObject extends GameObject{
-    constructor(type , x , y , width , height){
-        super(type , x , y , width , height);
+class MovableGameObject extends GameObject {
+    constructor(type, x, y, width, height) {
+        super(type, x, y, width, height);
         this.currentPlatformIndex = 0;
-        this.dir = new Vector2(-1 , 0);
+        this.dir = new Vector2(-1, 0);
         this.inAir = NaN;
         this.groundBase = 0;
         this.onPlatform = false;
@@ -77,13 +77,21 @@ function getLeft(object) {
     return object.position.x;
 }
 
-function getAspectRatio(initialValue , referenceScale , newScale , round){
-    if(!round){
-        return initialValue  * newScale / referenceScale
+function getAspectRatio(initialValue, referenceScale, newScale, round) {
+    if (!round) {
+        return initialValue * newScale / referenceScale
+    } else {
+        return Math.floor(initialValue * newScale / referenceScale);
     }
-    else{
-        return Math.floor(initialValue  * newScale / referenceScale);
-    }
+}
+
+function scaleWorldObjects(data) {
+    data.objects.forEach((item) => {
+        item.position.y = getAspectRatio(item.position.y, data.referenceScale, data.canvasHeight, true);
+        item.position.x = getAspectRatio(item.position.x, data.referenceScale, data.canvasHeight, true);
+        item.width = getAspectRatio(item.width, data.referenceScale, data.canvasHeight, true);
+        item.height = getAspectRatio(item.height, data.referenceScale, data.canvasHeight, true);
+    });
 }
 
 function getGameObjectCopy(object) {
@@ -95,10 +103,10 @@ function getGameObjectCopy(object) {
     return copy;
 }
 
-isValidJson = function(input){
-    try{
+isValidJson = function (input) {
+    try {
         JSON.parse(input);
-    }catch(e){
+    } catch (e) {
         // console.log("BEGIN");
         console.log(input);
         console.log(e.message + " " + e.stack);
@@ -108,5 +116,15 @@ isValidJson = function(input){
     return true;
 }
 
-module.exports = {Vector2
- , MovableGameObject , GameObject , isValidJson , getBottom , getLeft , getTop , getRight , getAspectRatio};
+module.exports = {
+    Vector2,
+    MovableGameObject,
+    GameObject,
+    isValidJson,
+    getBottom,
+    getLeft,
+    getTop,
+    getRight,
+    getAspectRatio,
+    scaleWorldObjects
+};

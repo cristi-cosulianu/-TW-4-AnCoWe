@@ -21,12 +21,7 @@ class GameController {
         data.defaultGroundX = ((data.referenceScale - 50 - 64) * data.canvasHeight) / data.referenceScale;
         data.player.groundBase = data.defaultGroundX;
         data.objects = GameController.readLevel("1");
-        data.objects.forEach((item) => {
-            item.position.y = util.getAspectRatio(item.position.y, data.referenceScale, data.canvasHeight, true);
-            item.position.x = util.getAspectRatio(item.position.x, data.referenceScale, data.canvasHeight, true);
-            item.width = util.getAspectRatio(item.width, data.referenceScale, data.canvasHeight, true);
-            item.height = util.getAspectRatio(item.height, data.referenceScale, data.canvasHeight, true);
-        });
+        util.scaleWorldObjects(data);
         data.gravity.y = util.getAspectRatio(data.gravity.y, data.referenceScale, data.canvasHeight, false);
         data.speed = util.getAspectRatio(data.speed, data.referenceScale, data.canvasHeight, false);
         this.writeData(player, data);
@@ -454,12 +449,7 @@ class GameController {
             data.player.onPlatform = false;
             data.backgroundX = 0;
             data.double_jump = 0;
-            data.objects.forEach((item) => {
-                item.position.y = util.getAspectRatio(item.position.y, data.referenceScale, data.canvasHeight, true);
-                item.position.x = util.getAspectRatio(item.position.x, data.referenceScale, data.canvasHeight, true);
-                item.width = util.getAspectRatio(item.width, data.referenceScale, data.canvasHeight, true);
-                item.height = util.getAspectRatio(item.height, data.referenceScale, data.canvasHeight, true);
-            });
+            util.scaleWorldObjects(data);
             data.isDead = false;
             ++data.deaths;
         }
