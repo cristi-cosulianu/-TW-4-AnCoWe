@@ -1,7 +1,7 @@
 var context;
 var canvas;
 var ground, pipe, wall, platform, spikes, crane, goomba;
-var jump_sound, background_sound, jump_land;
+var jump_sound, background_sound, jump_land , death_sound;
 var first_press;
 var hasDropDown = true;
 var gp = null;
@@ -143,6 +143,7 @@ function loadLevel() {
 function loadAudio() {
     jump_sound = new Audio();
     jump_land = new Audio();
+    death_sound = new Audio();
     background_sound = new Audio();
     background_sound.src = "../sound/background_sound.mp3";
     background_sound.loop = true;
@@ -151,6 +152,7 @@ function loadAudio() {
     jump_sound.volume = 0.1;
     jump_land.src = "../sound/jump_land.mp3";
     jump_land.volume = 0.1;
+    death_sound.src = "../sound/death.mp3";
 }
 //Texture loading
 function loadTextures() {
@@ -232,6 +234,9 @@ function playerAnimation(p) {
     }
     if (data.isDead) {
         context.drawImage(death_1, data.player.position.x, data.player.position.y, data.player.width, data.player.height);
+        death_sound.play();
+        background_sound.pause();
+        background_sound.currentTime = 0;
         return;
     }
     if (p > 0 && !data.player.inAir) {
@@ -416,7 +421,7 @@ function keyPressed(event) {
             data.animation_stage = 5;
             first_press = true;
         }
-        //background_sound.play();
+        background_sound.play();
     }
     if (event.keyCode === jumpKeyCode) {
         jump_sound.current_time = 0;
