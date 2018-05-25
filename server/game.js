@@ -24,7 +24,7 @@ class GameController {
         util.scaleWorldObjects(data);
         data.gravity.y = util.getAspectRatio(data.gravity.y, data.referenceScale, data.canvasHeight, false);
         data.speed = util.getAspectRatio(data.speed, data.referenceScale, data.canvasHeight, false);
-        this.writeData(player, data);
+        this.writeData(data, player);
         //        fs.writeFileSync('levels/1.txt' , JSON.stringify(data.objects) , function(err){
         //        if(err) throw err;
         //        });
@@ -38,7 +38,7 @@ class GameController {
         };
 
         this.updateKeys(keycode, "pressed", data);
-        this.writeData(player, data);
+        this.writeData(data, player);
     }
     //KeyReleased controller
     static keyReleased(player, keycode) {
@@ -49,7 +49,7 @@ class GameController {
         };
 
         this.updateKeys(keycode, "released", data);
-        this.writeData(player, data);
+        this.writeData(data, player);
     }
     //WindowResize event controller
     static resize(player, info) {
@@ -82,7 +82,7 @@ class GameController {
         } catch (e) {
             console.log(e);
         }
-        this.writeData(player, data);
+        this.writeData(data, player);
     }
     //Utilitary function for file reading , since data is stored in JSON format
     static readData(player) {
@@ -93,7 +93,7 @@ class GameController {
         }
     }
     //Utilitary function for file writing , since data is stored in JSON format
-    static writeData(player, data) {
+    static writeData(data, player) {
         try {
             fs.writeFileSync('server/data/' + player + '.txt', JSON.stringify(data));
         } catch (e) {
@@ -363,15 +363,15 @@ class GameController {
     static update(data, player) {
         let timer = new Date();
         data.currentTime = timer.getTime();
-        this.updatePlayerPosition(data);
-        this.updateEnemyPosition(data);
-
-        if (data.currentTime - deathTime >= 3000 && data.isDead) {
-            this.resetLevel(data, "1");
+        if (data.isDead) {
+            if (data.currentTime - deathTime < 3000) {
+                this.updatePlayerPosition(data);
+                this.updateEnemyPosition(data);
+            } else {
+                this.resetLevel(data, "1");
+            }
+            return;
         }
-
-        if (data.isDead) return;
-
         if (this.checkCollision(data, data.player, "player").length) {
             data.cameraSpeed = 0;
             if (data.player.rightCollision && !data.bounce) {
@@ -403,6 +403,8 @@ class GameController {
             data.player.bottomCollision = false;
             data.movementSpeed = data.speed;
         }
+        this.updatePlayerPosition(data);
+        this.updateEnemyPosition(data);
         if (data.bounce) {
             this.inertia(data);
         }
