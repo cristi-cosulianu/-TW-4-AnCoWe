@@ -167,7 +167,6 @@ class GameController {
             gravity.y = util.getAspectRatio(0.31, data.referenceScale, data.canvasHeight);
             player.position.y = data.player.groundBase;
             data.double_jump = 0;
-            data.willColideTop = false;
             data.movementSpeed = data.speed;
             data.player.inAir = false;
         }
@@ -279,9 +278,8 @@ class GameController {
             /*        if (util.getLeft(data.objects[i]) + data.backgroundX > data.canvasWidth) {
                        continue;
                     }*/
-            if (takeAction === "enemy" && data.objects[i].type === "goomba") {
-                continue;
-            }
+            if (takeAction === "enemy" && data.objects[i].hasOwnProperty("dir")) continue;
+
             if (util.getTop(object) + object.height * 6 / 10 < util.getTop(data.objects[i]) && util.getBottom(object) > util.getTop(data.objects[i]) && ((util.getRight(object) - 10 > util.getLeft(data.objects[i]) + data.backgroundX && util.getRight(object) < util.getRight(data.objects[i]) + data.backgroundX) || (util.getLeft(object) + 10 < util.getRight(data.objects[i]) + data.backgroundX && util.getLeft(object) > util.getLeft(data.objects[i]) + data.backgroundX))) {
                 if (takeAction === "enemy") {
                     object.topCollision = true;
@@ -298,8 +296,6 @@ class GameController {
                     data.player.inAir = false;
                     data.player.topCollision = true;
 
-                } else {
-                    data.willColideTop = true;
                 }
                 response.push(data.objects[i]);
             }
