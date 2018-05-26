@@ -1,9 +1,5 @@
 
 function sceneTransition(firstId, secondId) {
-    if(firstId === 'menuCanvas'){		
-        makeSynchronousRequest("http://localhost:3000/game?action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
-        console.log(uuid);
-    }
 	if(secondId == 'gameCanvas' || firstId == 'gameCanvas') {
 		document.getElementById("leftDiv").classList.add('leftCurtain');
 		document.getElementById("rightDiv").classList.add('rightCurtain');
@@ -302,7 +298,9 @@ function loginRequest() {
 							sceneTransition('loginCanvas','menuCanvas');
 						}
 					}, 500);
-
+					
+					makeSynchronousRequest("http://localhost:3000/game?action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
+					console.log(uuid);
 				}
 			}
 		}
