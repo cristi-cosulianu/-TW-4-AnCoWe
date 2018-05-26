@@ -381,6 +381,9 @@ function game_loop() {
             render();
             context.restore();
             context.drawImage(level_done , canvas.width / 2 - 200 , canvas.height / 2);
+            setTimeout(function() {
+                sceneTransition('gameCanvas', 'menuCanvas');
+            }, 3000);
             return; //Cristi adauga aici tranzitia la meniu dupa 3-4 secunde pls
         }
     }
