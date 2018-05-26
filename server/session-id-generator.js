@@ -5,14 +5,14 @@ function getSessionId() {
 	// should return from the first iteration
 	for(var i = 1; i <= 10; ++i) {
 		var uuid = randomUuid();
-		console.log(i);
+		// console.log(i);
 		
 		if(!sessionController.exists(uuid)) {
 			return uuid;
 		}
 	}
 	
-	return undefined;
+	return "";
 }
 
 module.exports = {

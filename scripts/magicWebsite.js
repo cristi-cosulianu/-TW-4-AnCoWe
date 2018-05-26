@@ -15,11 +15,11 @@ function sceneTransition(firstId, secondId) {
 	}
 }
 
-function addSlider(elementId){
+function addSlider(elementId) {
 	document.getElementById(elementId).classList.add('sliderAnimation');
 }
 
-function removeSlider(elementId){
+function removeSlider(elementId) {
 	document.getElementById(elementId).classList.remove('sliderAnimation');
 }
 
@@ -53,7 +53,7 @@ function addCharacter(container, name) {
 	xmlRequest.send();
 }
 
-function buildStoryPage(characterName){
+function buildStoryPage(characterName) {
 
 	var container = document.getElementById("chooseCharacterCanvas");
 
@@ -94,7 +94,7 @@ function buildStoryPage(characterName){
 	container.appendChild(backButton);
 }
 
-function removeStoryPage(characterName){
+function removeStoryPage(characterName) {
 	var characterStoryIcon = document.getElementById(characterName + "StoryIcon");
 	var storyBackButton = document.getElementById("storyBackButton");
 	var chooseCharacterCanvas = document.getElementById("chooseCharacterCanvas");
@@ -133,7 +133,7 @@ window.addEventListener("load", () => {
 	}
 });
 
-function changeVolume(elementId){
+function changeVolume(elementId) {
 	var inputVolume = elementId.value;
 	if(elementId == "musicVolume"){
 		background_sound.volume = inputVolume;
@@ -143,15 +143,15 @@ function changeVolume(elementId){
 	}
 }
 
-function changeKey(elementId){ 
-	var keybordFunction = function (event){
+function changeKey(elementId) { 
+	var keybordFunction = function (event) {
 		var pressed = false;
 	
 		if(pressed == false){
 			const key = event.key;
 			const keyCode = event.keyCode;
 	
-			if(key == ' '){
+			if(key == ' ') {
 				document.getElementById(elementId).textContent = "Space";
 			} else {
 				document.getElementById(elementId).textContent = key;
@@ -182,7 +182,7 @@ function changeKey(elementId){
 	// document.removeEventListener('keydown', updateKeys, true);
 }
 
-function updateKeyCodes(elementId,keyCode){
+function updateKeyCodes(elementId,keyCode) {
 	var xmlRequest = new XMLHttpRequest();
 	var serverURL = "http://localhost:3000/options?";
 	serverURL = serverURL + "key=" + elementId + "&code=" + keyCode + "&player=" + uuid;
@@ -192,7 +192,7 @@ function updateKeyCodes(elementId,keyCode){
 	return xmlRequest.response;
 }
   
-function buildSignUpMenu(){
+function buildSignUpMenu() {
 	var loginButton = document.getElementById('loginButton');
 	document.getElementById('loginForm').removeChild(loginButton);
 
@@ -218,7 +218,7 @@ function buildSignUpMenu(){
 	signUpButton.setAttribute("onclick","signUpRequest();");
 }
 
-function buildLoginMenu(){
+function buildLoginMenu() {
 
 		var repasswordRow = document.getElementById("repasswordRow");
 		var loginBoxList = document.getElementById("loginBoxList");
@@ -240,43 +240,68 @@ function buildLoginMenu(){
 		loginForm.insertBefore(loginButton,signUpButton);
 }
 
-function signUpRequest(){
+function signUpRequest() {
 	var username = document.getElementById("usernameInput");
 	var password = document.getElementById("passwordInput");
 	var repassword = document.getElementById("repasswordInput");
 
-	if(password.value == repassword.value && username != null && password != null){
-		var xmlRequest = new XMLHttpRequest();
-		var serverURL = "http://localhost:3000/signup?";
-		serverURL = serverURL + "username=" + username.value + "&password=" + password.value;
-		xmlRequest.open("POST", serverURL, true);
-		xmlRequest.send();
+	if(username != null && password != null && repassword != null) {
+		if(password.value == repassword.value) {
+			var xmlRequest = new XMLHttpRequest();
+			var serverURL = "http://localhost:3000/signup?";
+			serverURL = serverURL + "username=" + username.value + "&password=" + password.value;
+			xmlRequest.open("POST", serverURL, true);
+			xmlRequest.send();
 
-		setTimeout(function(){
-			if(xmlRequest.status == 200){
-				buildLoginMenu();
-			}
-		}, 500);
-	} else {
-		alert("Passwords are not identical! Try again!");
+			setTimeout(function() {
+				if(xmlRequest.status == 200) {
+					buildLoginMenu();
+				}
+			}, 500);
+		} else {
+			alert("Passwords are not identical! Try again!");
+		}
 	}
 }
 
-function loginRequest(){
+//Utilitary function for server requests
+function makeSynchronousRequest(url) {
+    if (uuid === undefined) {
+        console.log("uuid undefined");
+        return;
+    }
+    socket.emit('game', url + "&player=" + uuid);
+}
+
+function loginRequest() {
 	var username = document.getElementById("usernameInput");
 	var password = document.getElementById("passwordInput");
 
-	if(username!=null && password!=null){
+	if(username != null && password != null) {
 		var xmlRequest = new XMLHttpRequest();
 		var serverURL = "http://localhost:3000/login?";
 		serverURL = serverURL + "username=" + username.value + "&password=" + password.value;
+		
+		xmlRequest.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				uuid = this.responseText;
+				
+				if(uuid === "") {
+					alert('uuid not generated');
+				} else {
+					setTimeout(function() {
+						if(xmlRequest.status == 200) {
+							sceneTransition('loginCanvas','menuCanvas');
+						}
+					}, 500);
+					
+					makeSynchronousRequest("http://localhost:3000/game?action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
+					console.log(uuid);
+				}
+			}
+		}
+		
 		xmlRequest.open("GET", serverURL, true);
 		xmlRequest.send();
-
-		setTimeout(function(){
-			if(xmlRequest.status == 200){
-				sceneTransition('loginCanvas','menuCanvas');
-			}
-		}, 500);	
 	}
 }

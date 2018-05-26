@@ -24,10 +24,10 @@ socket.on('data', function (msg) {
         data = JSON.parse(msg);
 });
 //Function for acquiring token
-socket.on('uuid', function (msg) {
-    uuid = msg;
-    makeSynchronousRequest("http://localhost:3000/game?action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
-});
+// socket.on('uuid', function (msg) {
+//     uuid = msg;
+//     makeSynchronousRequest("http://localhost:3000/game?action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
+// });
 //Main client side loader for keys events and inital setup
 window.onload = () => {
     canvas = document.querySelector("#gameCanvas canvas");

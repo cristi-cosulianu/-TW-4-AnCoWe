@@ -23,9 +23,9 @@ class SessionController {
         
         this.conn.query(queryString, function(err, result) {
             if(err) {
-                console.log("my err: " + err);
+                console.log(err);
             } else {
-                console.log(result.affectedRows);
+                // console.log(result.affectedRows);
             }
         });
     }
