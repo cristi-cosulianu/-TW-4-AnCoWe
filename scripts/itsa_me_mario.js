@@ -9,7 +9,7 @@ var walk_1, walk_2, walk_3, walk_4;
 var idle_1, idle_2, idle_3, idle_4;
 var death_1;
 var idle_animation_stage;
-var level_done, level_done_sound;
+var level_done , level_done_sound;
 var jump_1;
 var smoke_1, smoke_2, smoke_3, smoke_4;
 var background_layer1, background_layer2, background_layer3, background_layer4, background_layer5, background_layer6, background_layer7;
@@ -18,17 +18,12 @@ var downKeyCode = 40;
 var jumpKeyCode = 32;
 var dashKeyCode = 16;
 var data;
-var isPlaying = true;
 var uuid = undefined;
-
 //Socket connection client side
 var socket = io();
 socket.on('data', function (msg) {
     if (isValidJson(msg))
         data = JSON.parse(msg);
-});
-socket.on('finish', function (msg) {
-    isPlaying = false;
 });
 //Function for acquiring token
 // socket.on('uuid', function (msg) {
@@ -369,25 +364,26 @@ function game_loop() {
     //Updating data after receiving it from the server
     updateAndRender();
     //Displaying the data with the `render` function
-    if (!isPlaying) {
-        isPlaying = true;
-        background_sound.pause();
-        level_done_sound.play();
-        context.save();
-        context.filter = 'blur(5px)';
-        render();
-        context.restore();
-        context.drawImage(level_done, canvas.width / 2 - 200, canvas.height / 2);
-        setTimeout(function () {
-            sceneTransition('gameCanvas', 'menuCanvas');
-        }, 4000);
-        return;
-    }
     if (gp != null) {
         checkGamepad();
     }
     //Tell the server to prepare the next frame
     prepareNextFrame();
+    if (data != undefined) {
+        if (data.levelFinished) {
+            background_sound.pause();
+            level_done_sound.play();
+            context.save();
+            context.filter = 'blur(5px)';
+            render();
+            context.restore();
+            context.drawImage(level_done , canvas.width / 2 - 200 , canvas.height / 2);
+            setTimeout(function() {
+                sceneTransition('gameCanvas', 'menuCanvas');
+            }, 3000);
+            return;
+        }
+    }
     this.requestAnimationFrame(game_loop);
 
 }
