@@ -21,7 +21,7 @@ class GameController {
         data.defaultGroundX = ((data.referenceScale - 50 - 64) * data.canvasHeight) / data.referenceScale;
         data.player.groundBase = data.defaultGroundX;
         data.objects = GameController.readLevel("1");
-        //data.objects.push(new util.GameObject("flag" , 10000, data.defaultGroundX - 64 - 32 - 78 , 32 , 256));
+        //data.objects.push(new util.GameObject("flag" , 500, data.defaultGroundX - 64 - 32 - 78 , 32 , 256));
         //fs.writeFileSync('levels/1.txt', JSON.stringify(data.objects));
         util.scaleWorldObjects(data);
         data.gravity.y = util.getAspectRatio(data.gravity.y, data.referenceScale, data.canvasHeight, false);

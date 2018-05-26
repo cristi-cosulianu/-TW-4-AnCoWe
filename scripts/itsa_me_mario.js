@@ -9,6 +9,7 @@ var walk_1, walk_2, walk_3, walk_4;
 var idle_1, idle_2, idle_3, idle_4;
 var death_1;
 var idle_animation_stage;
+var level_done , level_done_sound;
 var jump_1;
 var smoke_1, smoke_2, smoke_3, smoke_4;
 var background_layer1, background_layer2, background_layer3, background_layer4, background_layer5, background_layer6, background_layer7;
@@ -146,6 +147,7 @@ function loadLevel() {
 //Audio loading
 function loadAudio() {
     jump_sound = new Audio();
+    level_done_sound = new Audio();
     jump_land = new Audio();
     death_sound = new Audio();
     background_sound = new Audio();
@@ -156,6 +158,7 @@ function loadAudio() {
     jump_sound.volume = 0.1;
     jump_land.src = "../sound/jump_land.mp3";
     jump_land.volume = 0.1;
+    level_done_sound.src = "../sound/level_win.mp3";
     death_sound.src = "../sound/death.mp3";
 }
 //Texture loading
@@ -168,6 +171,7 @@ function loadTextures() {
     idle_2 = new Image();
     idle_3 = new Image();
     idle_4 = new Image();
+    level_done = new Image();
     jump_1 = new Image();
     death_1 = new Image();
     smoke_1 = new Image();
@@ -214,6 +218,7 @@ function loadTextures() {
     flag.src = "../textures/flag.png";
     pipe.src = "../textures/pipe.png";
     wall.src = "../textures/wall.png";
+    level_done.src = "../textures/level_done_popup.png";
     platform.src = "../textures/platform.png";
     spikes.src = "../textures/spikes.png";
     crane.src = "../textures/smallwall.png";
@@ -312,6 +317,9 @@ function render() {
     /*    if (data.backgroundX > canvas.width) {
             data.backgroundX %= canvas.width;
         } */
+    if (data.levelFinished) {
+
+    }
     context.drawImage(background_layer1, data.backgroundX % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer1, canvas.width + data.backgroundX % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer2, data.backgroundX / 5 % canvas.width, 0, canvas.width, canvas.height);
@@ -365,16 +373,18 @@ function game_loop() {
     //Tell the server to prepare the next frame
     prepareNextFrame();
     if (data != undefined) {
-        if (!data.levelFinished) {
-            this.requestAnimationFrame(game_loop);
-        } else {
-            alert("Level DONE");
-            //Need to make a popup
+        if (data.levelFinished) {
+            background_sound.pause();
+            level_done_sound.play();
+            context.save();
+            context.filter = 'blur(5px)';
+            render();
+            context.restore();
+            context.drawImage(level_done , canvas.width / 2 - 200 , canvas.height / 2);
+            return; //Cristi adauga aici tranzitia la meniu dupa 3-4 secunde pls
         }
     }
-    else{
-        this.requestAnimationFrame(game_loop);
-    }
+    this.requestAnimationFrame(game_loop);
 
 }
 
