@@ -26,7 +26,6 @@ class gameData {
         this.dashKeyCode = 16;
         this.deaths = 0;
         this.isDead  = false;
-        this.levelFinished = false;
         this.startTime = undefined;
         this.currentTime = undefined;
         this.referenceScale = 0;

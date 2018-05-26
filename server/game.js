@@ -21,7 +21,7 @@ class GameController {
         data.defaultGroundX = ((data.referenceScale - 50 - 64) * data.canvasHeight) / data.referenceScale;
         data.player.groundBase = data.defaultGroundX;
         data.objects = GameController.readLevel("1");
-        data.objects.push(new util.GameObject("flag" , 500, data.defaultGroundX - 64 - 32 - 78 , 32 , 256));
+        data.objects.push(new util.GameObject("flag", 500, data.defaultGroundX - 64 - 32 - 78, 32, 256));
         //fs.writeFileSync('levels/1.txt', JSON.stringify(data.objects));
         util.scaleWorldObjects(data);
         data.gravity.y = util.getAspectRatio(data.gravity.y, data.referenceScale, data.canvasHeight, false);
@@ -75,9 +75,11 @@ class GameController {
             code: 404,
             message: 'file not found'
         };
-
         try {
-            this.update(data, player);
+            var state = this.update(data, player);
+            if (state === "finish") {
+                return "finish";
+            }
         } catch (e) {
             console.log(e);
         }
@@ -360,8 +362,10 @@ class GameController {
             return;
         }
         var collidingWith = this.checkCollision(data, data.player, "player");
+
+        if (this.collisionAction(collidingWith, data) === "finish") return "finish";
+
         if (collidingWith.length) {
-            this.collisionAction(collidingWith, data);
             data.cameraSpeed = 0;
             if (data.player.rightCollision && !data.bounce) {
                 data.movementSpeed = 0;
@@ -403,6 +407,7 @@ class GameController {
         if (data.player.position.x + data.player.width > data.canvasWidth / 2) {
             data.player.position.x = data.canvasWidth / 2 - data.player.width;
         }
+        return "play";
     }
     static inertia(data) {
         if (data.player.leftCollision) {
@@ -467,7 +472,7 @@ class GameController {
                 }
                 break;
             case "flag":
-                data.levelFinished = true;
+                return "finish";
                 break;
         }
     }
@@ -498,7 +503,7 @@ module.exports = {
                 return GameController.getData(params['player']);
                 break;
             case 'update-data':
-                GameController.updateData(params['player']);
+                return GameController.updateData(params['player']);
         }
     }
 };
