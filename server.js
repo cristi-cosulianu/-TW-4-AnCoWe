@@ -113,9 +113,11 @@ io.on('connection', function (socket) {
         switch (pathname) {
             case '/game':
                 var ret = game.processRequest(queryParams);
-                if (ret === "finish") {
+                if (ret === 'finish') {
                     this.emit('finish', true);
                     return;
+                } else if (ret === 'start') {
+                    this.emit('start', true);
                 }
                 if (queryParams['action'] == 'get-data') {
                     this.emit('data', ret);

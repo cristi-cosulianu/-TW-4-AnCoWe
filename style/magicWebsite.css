@@ -16,12 +16,12 @@ body {
 
 .visible {
     top: 0;
-    transition: top 0s 0.5s;
+    transition: top 0s 0.75s;
 }
 
 .invisible {
     top: 100%;
-    transition: top 0s 0.5s;
+    transition: top 0s 0.75s;
 }
 
 .toTopTransition {

@@ -75,6 +75,11 @@ function buildStoryPage(characterName) {
 	anchor.setAttribute("class", "buttonGame storyIcon");
 	anchor.setAttribute("href", "#gameCanvas");
 	anchor.setAttribute("onclick", "sceneTransition('chooseCharacterCanvas','gameCanvas')");
+	
+	anchor.addEventListener('click', function() {
+		// alert('start');
+		startGame();
+	});
 
 	var image = document.createElement("img");
 	image.setAttribute("src", imgUrl);
@@ -298,9 +303,8 @@ function loginRequest() {
 							sceneTransition('loginCanvas','menuCanvas');
 						}
 					}, 500);
-					
-					makeSynchronousRequest("http://localhost:3000/game?action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
-					console.log(uuid);
+										
+					// console.log(uuid);
 				}
 			}
 		}
