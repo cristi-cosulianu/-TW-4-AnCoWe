@@ -12,12 +12,16 @@ var idle_animation_stage;
 var level_done, level_done_sound;
 var jump_1;
 var smoke_1, smoke_2, smoke_3, smoke_4;
+var smoke_landing_1, smoke_landing_2, smoke_landing_3, smoke_landing_4;
 var background_layer1, background_layer2, background_layer3, background_layer4, background_layer5, background_layer6, background_layer7;
 var flag;
 var downKeyCode = 40;
 var jumpKeyCode = 32;
 var dashKeyCode = 16;
 var data;
+var wasInAir = false,
+    landAnimation,
+    landAnimationStart;
 var isPlaying = true;
 var uuid = undefined;
 
@@ -31,7 +35,7 @@ socket.on('finish', function (msg) {
     isPlaying = false;
 });
 socket.on('start', function (msg) {
-    requestAnimationFrame(game_loop);    
+    requestAnimationFrame(game_loop);
 })
 //Function for acquiring token
 // socket.on('uuid', function (msg) {
@@ -50,7 +54,7 @@ window.onload = () => {
     //loadLevel(); Only for creating new levels
     // socket.emit('get-uuid', 'efbweyfu');
     document.getElementById("startGameButton").addEventListener("click", function (e) {
-        
+
     });
 };
 
@@ -191,6 +195,10 @@ function loadTextures() {
     smoke_2 = new Image();
     smoke_3 = new Image();
     smoke_4 = new Image();
+    landing_smoke_1 = new Image();
+    landing_smoke_2 = new Image();
+    landing_smoke_3 = new Image();
+    landing_smoke_4 = new Image();
     platform = new Image();
     flag = new Image();
     goomba = new Image();
@@ -221,6 +229,10 @@ function loadTextures() {
     smoke_2.src = "../textures/Smoke/smoke_2.png";
     smoke_3.src = "../textures/Smoke/smoke_3.png";
     smoke_4.src = "../textures/Smoke/smoke_4.png";
+    landing_smoke_1.src = "../textures/LandingSmoke/landing_1.png";
+    landing_smoke_2.src = "../textures/LandingSmoke/landing_2.png";
+    landing_smoke_3.src = "../textures/LandingSmoke/landing_3.png";
+    landing_smoke_4.src = "../textures/LandingSmoke/landing_4.png";
     background_layer1.src = "../textures/background/sky.png";
     background_layer2.src = "../textures/background/mountains.png";
     background_layer3.src = "../textures/background/cloud_lonely.png";
@@ -304,15 +316,16 @@ function playerAnimation(p) {
     idle_animation_stage = 0;
     if (data.player.inAir) {
         context.drawImage(jump_1, data.player.position.x, data.player.position.y, data.player.width, data.player.height);
+        wasInAir = true;
         return;
     }
+
     if (p % 33 < 6) {
         context.drawImage(walk_1, data.player.position.x, data.player.position.y, data.player.width, data.player.height);
         return;
     }
     if (p % 33 < 15) {
         context.drawImage(walk_2, data.player.position.x, data.player.position.y, data.player.width, data.player.height);
-
         return;
     }
     if (p % 33 < 24) {
@@ -407,6 +420,44 @@ function millisToMinutesAndSeconds(millis) {
 }
 
 
+function animate() {
+
+    if (!data.player.inAir && wasInAir) {
+        landAnimation = true;
+    }
+    if (landAnimation) {
+        console.log(landAnimationStart);
+        if (landAnimationStart === undefined) {
+            let timer = new Date();
+            landAnimationStart = timer.getTime();
+        }
+        console.log(data.currentTime - landAnimationStart);
+        if (data.currentTime - landAnimationStart < 100) {
+            context.drawImage(landing_smoke_1, data.player.position.x - 20, data.player.position.y + 25);
+            context.restore;
+            return;
+        }
+        if (data.currentTime - landAnimationStart < 200) {
+            context.drawImage(landing_smoke_2, data.player.position.x - 20, data.player.position.y + 25);
+            context.restore;
+            return;
+        }
+        if (data.currentTime - landAnimationStart < 300) {
+            context.drawImage(landing_smoke_3, data.player.position.x - 20, data.player.position.y + 25);
+            context.restore;
+            return
+        }
+        if (data.currentTime - landAnimationStart < 400) {
+            context.drawImage(landing_smoke_4, data.player.position.x - 20, data.player.position.y + 25);
+            landAnimationStart = undefined;
+            landAnimation = false;
+            wasInAir = false;
+            context.restore;
+            return;
+        }
+    }
+}
+
 function prepareNextFrame() {
     makeSynchronousRequest("http://localhost:3000/game?action=update-data");
 }
@@ -418,6 +469,7 @@ function updateAndRender() {
         return;
     } else {
         render();
+        animate();
     }
 }
 
@@ -458,7 +510,7 @@ function keyPressed(event) {
             data.animation_stage = 5;
             first_press = true;
         }
-        background_sound.play();
+        //background_sound.play();
     }
     if (event.keyCode === jumpKeyCode) {
         jump_sound.current_time = 0;
