@@ -317,9 +317,6 @@ function render() {
     /*    if (data.backgroundX > canvas.width) {
             data.backgroundX %= canvas.width;
         } */
-    if (data.levelFinished) {
-
-    }
     context.drawImage(background_layer1, data.backgroundX % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer1, canvas.width + data.backgroundX % canvas.width, 0, canvas.width, canvas.height);
     context.drawImage(background_layer2, data.backgroundX / 5 % canvas.width, 0, canvas.width, canvas.height);
@@ -384,7 +381,7 @@ function game_loop() {
             setTimeout(function() {
                 sceneTransition('gameCanvas', 'menuCanvas');
             }, 3000);
-            return; //Cristi adauga aici tranzitia la meniu dupa 3-4 secunde pls
+            return;
         }
     }
     this.requestAnimationFrame(game_loop);
