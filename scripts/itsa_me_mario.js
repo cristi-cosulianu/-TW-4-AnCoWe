@@ -12,6 +12,7 @@ var idle_animation_stage;
 var jump_1;
 var smoke_1, smoke_2, smoke_3, smoke_4;
 var background_layer1, background_layer2, background_layer3, background_layer4, background_layer5, background_layer6, background_layer7;
+var flag;
 var downKeyCode = 40;
 var jumpKeyCode = 32;
 var dashKeyCode = 16;
@@ -94,6 +95,9 @@ function getObjectFromString(type) {
         case "crane":
             return crane;
             break;
+        case "flag":
+            return flag;
+            break;
     }
 }
 //Function for level loading , we will use a JSON file for this later
@@ -171,6 +175,7 @@ function loadTextures() {
     smoke_3 = new Image();
     smoke_4 = new Image();
     platform = new Image();
+    flag = new Image();
     goomba = new Image();
     spikes = new Image();
     wall = new Image();
@@ -206,6 +211,7 @@ function loadTextures() {
     background_layer5.src = "../textures/background/clouds_MG_3.png";
     background_layer6.src = "../textures/background/clouds_MG_2.png";
     background_layer7.src = "../textures/background/clouds_MG_1.png";
+    flag.src = "../textures/flag.png";
     pipe.src = "../textures/pipe.png";
     wall.src = "../textures/wall.png";
     platform.src = "../textures/platform.png";
@@ -358,7 +364,17 @@ function game_loop() {
     }
     //Tell the server to prepare the next frame
     prepareNextFrame();
-    this.requestAnimationFrame(game_loop);
+    if (data != undefined) {
+        if (!data.levelFinished) {
+            this.requestAnimationFrame(game_loop);
+        } else {
+            alert("Level DONE");
+            //Need to make a popup
+        }
+    }
+    else{
+        this.requestAnimationFrame(game_loop);
+    }
 
 }
 
