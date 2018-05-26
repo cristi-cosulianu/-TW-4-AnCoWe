@@ -489,7 +489,7 @@ module.exports = {
         switch (params['action']) {
             case 'start':
                 GameController.start(params['player'], params['info']);
-                return "start";
+                break;
             case 'key-pressed':
                 GameController.keyPressed(params['player'], params['keycode']);
                 break;
@@ -501,6 +501,7 @@ module.exports = {
                 break;
             case 'get-data':
                 return GameController.getData(params['player']);
+                break;
             case 'update-data':
                 return GameController.updateData(params['player']);
         }
