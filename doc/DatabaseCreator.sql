@@ -20,7 +20,7 @@ CREATE TABLE scores (id INT AUTO_INCREMENT NOT NULL,
                     );
 
 CREATE TABLE options (id INT AUTO_INCREMENT NOT NULL,
-                     user_id INT NOT NULL,
+                     user_id INT NOT NULL UNIQUE,
                      left_key INT NOT NULL,
                      right_key INT NOT NULL,
                      down_key INT NOT NULL,
