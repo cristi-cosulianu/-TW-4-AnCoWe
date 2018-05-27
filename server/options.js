@@ -1,6 +1,6 @@
 
 	/*
-	*	EUGEN FILE 
+	*	EUGEN FILE
  	*/
 
 const fs = require('fs');
@@ -10,10 +10,10 @@ const util = require('../scripts/util.js');
 
 module.exports = {
 	processRequest: function(params) {
-		if(params['key'] === undefined || params['code'] === undefined) {
+		if(params['key'] === undefined || params['code'] === undefined || params['player'] === undefined) {
 			return { code: 405, message: 'invalid parameters' };
-        }
-        		
+    }
+    
 		var dataFile = fs.readFileSync('server/data/' + params['player'] + '.txt', 'utf8');
 		if(util.isValidJson(dataFile)){
 			var data = JSON.parse(dataFile);
