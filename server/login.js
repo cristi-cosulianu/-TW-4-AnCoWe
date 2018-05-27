@@ -8,26 +8,46 @@ const userController = require('./userController.js').userController;
 const sessionController = require('./sessionController').sessionController;
 
 module.exports = {
-	processRequest: function(params) {
+	processRequest: function(params, callback) {
 		if(params['username'] === undefined || params['password'] === undefined) {
-			return { code: 405, message: 'invalid parameters' };
+			callback(405, 'invalid parameters');
+			return;
     }
     
     var username = params['username'];
     var password = params['password'];
+    var validPassword, sessionId;
     
-    if(!userController.validPassword(username, password)) {
-    	return { code: 200, message: 'invalid username or password' };
-    }
-    
-    var uuid = sessionIdGenerator.getSessionId();
-    if(uuid === "") {
-    	
-    }
-    
-    // var userId = userController.getId(username);
-    // sessionController.add(userId, uuid);
-		
-		return { code: 200, message: uuid };
+    userController.validPassword(username, password)
+    	.then(valid => {
+    		validPassword = valid;
+    		return userController.getId(username);
+    	})
+    	.then(userId => {
+    		if(!validPassword) {
+    			callback(405, 'invalid username or password');
+    		} else {
+    			sessionId = sessionIdGenerator.getSessionId();
+    			
+  			  if(sessionId === "") {
+			    	callback(405, 'could not generate session id');
+			    } else {
+			    	return sessionController.add(userId, sessionId);
+			    }
+    		}
+    	})
+    	.then(success => {
+    		if(success === undefined) return;
+    		
+    		if(success == true) {
+		    	callback(200, sessionId);
+		    } else {
+		    	callback(405, 'database error');
+		    }
+    	})
+    	.catch(err => {
+    		console.log(err);
+    		callback(405, 'error occured');
+    	});
 	}
 };

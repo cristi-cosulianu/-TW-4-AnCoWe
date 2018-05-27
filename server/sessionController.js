@@ -19,6 +19,10 @@ class SessionController {
     }
     
     add(userId, sessionId) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+        
         var queryString = "INSERT INTO sessions VALUES ('" + userId + "', '" + sessionId + "');";
         
         this.conn.query(queryString, function(err, result) {

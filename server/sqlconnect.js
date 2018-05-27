@@ -9,7 +9,9 @@ var conn = mysql.createConnection({
 
 conn.connect();
 //console.log(conn === undefined);
-module.exports = {conn};
+module.exports = {
+	conn
+};
 //con.connect(function(err) {
 //  if (err) throw err;
 //  console.log("Connected!");

@@ -34,15 +34,18 @@ const server = http.createServer((req, res) => {
             res.end(ret.message);
 
             break;
+            
         case '/login':
             res.setHeader('Content-Type', 'text/text');
 
-            var ret = login.processRequest(queryParams);
-            res.statusCode = ret.code;
-            console.log("Login status code: " + res.statusCode);
-            res.end(ret.message);
+            login.processRequest(queryParams, (code, message) => {
+                res.statusCode = code;
+                console.log("Login status code: " + code);
+                res.end(message);
+            });
 
             break;
+            
         case '/signup':
             res.setHeader('Content-Type', 'text/text');
 
@@ -63,25 +66,25 @@ const server = http.createServer((req, res) => {
             	res.end(ret.message);
             	
             	break;*/
-    }
-
-    var filename = '.' + pathname;
-    // Returning requested files with AJAX and mime-type module
-    fs.readFile(filename, function (err, data) {
-        if (!err) {
-            res.writeHead(200, {
-                'Content-Type': getMimeType(filename),
-                'Content-Length': data.length
+        default:
+            var filename = '.' + pathname;
+            // Returning requested files with AJAX and mime-type module
+            fs.readFile(filename, function (err, data) {
+                if (!err) {
+                    res.writeHead(200, {
+                        'Content-Type': getMimeType(filename),
+                        'Content-Length': data.length
+                    });
+                    res.write(data);
+                    res.end();
+                } else if (err.code === 'ENOENT') {
+                    res.statusCode = 404;
+                    res.end('Page not found!');
+                } else {
+                    throw err;
+                }
             });
-            res.write(data);
-            res.end();
-        } else if (err.code === 'ENOENT') {
-            res.statusCode = 404;
-            res.end('Page not found!');
-        } else {
-            throw err;
-        }
-    });
+    }
 });
 
 //Code for `socket.io` integration

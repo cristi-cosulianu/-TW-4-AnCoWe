@@ -6,11 +6,22 @@ class UserController {
     }
     
     exists(username) {
+    	
     	return false;
     }
     
     validPassword(username, password) {
-    	return true;
+    	var queryString = "SELECT COUNT(*) AS nr FROM users WHERE username = '" + username + "' AND password = '" + password + "';";
+      
+      return new Promise((resolve, reject) => {
+        this.conn.query(queryString, function (err, result, fields) {
+          if(err) {
+            return reject(err);
+          }
+          
+          resolve(result[0].nr > 0);
+        });
+      });
     }
     
     add(username, password) {
@@ -18,7 +29,7 @@ class UserController {
     }
     
     getId(username) {
-    	
+    	return 'fwfwe';
     }
 }
 
