@@ -3,12 +3,29 @@
 	*	EUGEN FILE 
  	*/
 
-module.exports = {
-	processRequest: function(params) {
-		if(params['username'] === undefined || params['password'] === undefined) {
-			return { code: 405, message: 'invalid parameters' };
-        }
+const userController = require('./userController.js').userController;
 
-		return { code: 200, message: 'ok' };
+module.exports = {
+	processRequest: function(params, callback) {
+		if(params['username'] === undefined || params['password'] === undefined) {
+			callback(405, 'invalid parameters');
+			return;
+    }
+    
+    var username = params['username'];
+    var password = params['password'];
+    
+		userController.add(username, password)
+			.then(result => {
+				callback(200, 'ok');
+			})
+			.catch(err => {
+				if(err.code == 'ER_DUP_ENTRY') {
+					callback(405, 'username already exists');
+				} else {
+					console.log(err);
+					callback(405, 'error');
+				}
+			});
 	}
 };

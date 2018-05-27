@@ -49,10 +49,11 @@ const server = http.createServer((req, res) => {
         case '/signup':
             res.setHeader('Content-Type', 'text/text');
 
-            var ret = signup.processRequest(queryParams);
-            res.statusCode = ret.code;
-            console.log("SignUp status code: " + res.statusCode);
-            res.end(ret.message);
+            signup.processRequest(queryParams, (code, message) => {
+                res.statusCode = code;
+                console.log("SignUp status code: " + res.statusCode);
+                res.end(message);
+            });
 
             break;
 

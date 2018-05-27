@@ -25,7 +25,18 @@ class UserController {
     }
     
     add(username, password) {
-    	
+    	var queryString = "INSERT INTO users (username, password) VALUES ('" + username + "', '" + password + "');";
+      
+      return new Promise((resolve, reject) => {
+        this.conn.query(queryString, function (err, result) {
+          if(err) {
+            return reject(err);
+          }
+          
+          console.log(result);
+          resolve(result);
+        });
+      });
     }
     
     getId(username) {

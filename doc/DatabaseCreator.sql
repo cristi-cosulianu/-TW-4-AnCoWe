@@ -1,7 +1,13 @@
-Create database twProj;
-Use twProj;
+-- Create database twProj;
+-- Use twProj;
+
+DROP TABLE sessions;
+DROP TABLE options;
+DROP TABLE scores;
+DROP TABLE users;
+
 CREATE TABLE users (id INT AUTO_INCREMENT NOT NULL,
-                    username varchar(32) NOT NULL,
+                    username varchar(32) NOT NULL UNIQUE,
                     password varchar(32) NOT NULL,
                     PRIMARY KEY (id)
                     );
