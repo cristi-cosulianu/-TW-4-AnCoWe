@@ -5,12 +5,16 @@ CREATE TABLE users (id INT AUTO_INCREMENT NOT NULL,
                     password varchar(32) NOT NULL,
                     PRIMARY KEY (id)
                     );
-CREATE TABLE scores (user_id INT NOT NULL,
-                     score INT NOT NULL,
-                     FOREIGN KEY (user_id) REFERENCES users(id)
+CREATE TABLE scores (id INT AUTO_INCREMENT NOT NULL,
+                     user_id INT NOT NULL,
+                     time INT NOT NULL,
+                     deaths INT NOT NULL,
+                     FOREIGN KEY (user_id) REFERENCES users(id),
+                     PRIMARY KEY (id)
                     );
 
-CREATE TABLE options (user_id INT NOT NULL,
+CREATE TABLE options (id INT AUTO_INCREMENT NOT NULL,
+                     user_id INT NOT NULL,
                      left_key INT NOT NULL,
                      right_key INT NOT NULL,
                      down_key INT NOT NULL,
@@ -18,9 +22,12 @@ CREATE TABLE options (user_id INT NOT NULL,
                      dash_key INT NOT NULL,
                      music_volume INT NOT NULL,
                      sound_volume INT NOT NULL,
-                     FOREIGN KEY (user_id) REFERENCES users(id)
+                     FOREIGN KEY (user_id) REFERENCES users(id),
+                     PRIMARY KEY (id)
                      );
-CREATE TABLE sessions (user_id INT NOT NULL,
+CREATE TABLE sessions (id INT AUTO_INCREMENT NOT NULL,
+                       user_id INT NOT NULL,
                        session_id varchar(50) NOT NULL,
-                       FOREIGN KEY (user_id) REFERENCES users(id)
+                       FOREIGN KEY (user_id) REFERENCES users(id),
+                       PRIMARY KEY (id)
                     );
