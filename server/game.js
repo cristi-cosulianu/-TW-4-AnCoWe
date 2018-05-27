@@ -21,7 +21,7 @@ class GameController {
         data.defaultGroundX = ((data.referenceScale - 50 - 64) * data.canvasHeight) / data.referenceScale;
         data.player.groundBase = data.defaultGroundX;
         data.objects = GameController.readLevel("1");
-        data.objects.push(new util.GameObject("flag", 500, data.defaultGroundX - 64 - 32 - 78, 32, 256));
+        //data.objects.push(new util.GameObject("flag", 500, data.defaultGroundX - 64 - 32 - 78, 32, 256));
         //fs.writeFileSync('levels/1.txt', JSON.stringify(data.objects));
         util.scaleWorldObjects(data);
         data.gravity.y = util.getAspectRatio(data.gravity.y, data.referenceScale, data.canvasHeight, false);
@@ -161,7 +161,7 @@ class GameController {
             player.position.add(dir);
             data.player.currentPlatformIndex = 0;
         }
-        if (player.position.y > data.player.groundBase) {
+        if (player.position.y >= data.player.groundBase) {
             dir.x = 0;
             dir.y = 0;
             gravity.x = 0;
@@ -467,7 +467,7 @@ class GameController {
                     deathTime = timer.getTime();
                     data.player.groundBase = Number.MAX_SAFE_INTEGER;
                     data.space = true;
-                    data.inAir = true;
+                    data.player.inAir = true;
                     data.double_jump = 0;
                 }
                 break;
