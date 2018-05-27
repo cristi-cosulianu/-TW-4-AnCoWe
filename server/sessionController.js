@@ -19,18 +19,16 @@ class SessionController {
     }
     
     add(userId, sessionId) {
+        var queryString = "INSERT INTO sessions (user_id, session_id) VALUES ('" + userId + "', '" + sessionId + "');";
+        
         return new Promise((resolve, reject) => {
-            resolve(true);
-        });
-        
-        var queryString = "INSERT INTO sessions VALUES ('" + userId + "', '" + sessionId + "');";
-        
-        this.conn.query(queryString, function(err, result) {
-            if(err) {
-                console.log(err);
-            } else {
-                // console.log(result.affectedRows);
-            }
+            this.conn.query(queryString, function(err, result) {
+                if(err) {
+                    return reject(err);
+                }
+                
+                resolve(true);
+            });
         });
     }
 }

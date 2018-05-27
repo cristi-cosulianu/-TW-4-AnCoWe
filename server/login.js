@@ -40,6 +40,7 @@ module.exports = {
     		if(success === undefined) return;
     		
     		if(success == true) {
+                console.log('20000000');
 		    	callback(200, sessionId);
 		    } else {
 		    	callback(405, 'database error');

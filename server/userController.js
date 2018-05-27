@@ -33,14 +33,24 @@ class UserController {
             return reject(err);
           }
           
-          console.log(result);
+          // console.log(result);
           resolve(result);
         });
       });
     }
     
     getId(username) {
-    	return 'fwfwe';
+    	var queryString = "SELECT id FROM users WHERE username = '" + username + "';";
+      
+      return new Promise((resolve, reject) => {
+        this.conn.query(queryString, function (err, result, fields) {
+          if(err) {
+            return reject(err);
+          }
+          
+          resolve(result[0].id);
+        });
+      });
     }
 }
 
