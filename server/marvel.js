@@ -33,6 +33,19 @@ getIcon = function(heroname) {
 
 	return { code: 200, message: imgUrl };
 };
+getStory = function(heroname) {
+  
+  var url = "https://gateway.marvel.com/v1/public/characters?apikey=15b0df9dd78ed4c3d58e10b0c3d36a57&hash=758e48b905e396fca02324d24f1f7b06&ts=432&name=" + heroname;
+  
+  var res = request('GET', url);
+  
+  var story = JSON.parse(res.getBody()).data.results[0].description;
+  //var story = thumbnail.path + '/portrait_xlarge.' + thumbnail.extension;
+
+	return { code: 200, message: story };
+};
+
+
 getIconAnime = function (id) {
     var url = "https://api.jikan.moe/character/" + id + "/pictures";
     var res = request('GET',url);
@@ -52,4 +65,4 @@ getAnimeCharacters = function () {
 
     return { code: 200, message: characters };
 }
-console.log(getStoryAnime(5));
+//console.log(getStory("Hulk"));
