@@ -31,17 +31,7 @@ class ScoreController {
           resolve(result);
         });
       });
-        // sql.conn.query(queryString,function (err, result, fields){
-        //   if(err) {
-        //     console.log(err);
-        //     return -1;
-        //   }
-
-
-
-        //   return { code: 200, message: 'ok' };
-        // });
-        // sql.conn.end();
+        
     }
     
     
@@ -57,14 +47,7 @@ class ScoreController {
           resolve(result);
         });
       });
-    //     sql.conn.query("Select * from scores ORDER BY time desc;",function (err, result, fields) {
-    //         if(err){
-    //               callback(err, "")
-    //         }else{
-    //               callback("", JSON.stringify(result))
-    //         }
-      
-    // });
+    
     }
         static getnScores(callback,firstN) {
           var string = "Select top" + firstN +  "* from scores ORDER BY score time;";
@@ -78,14 +61,7 @@ class ScoreController {
           resolve(result);
         });
       });
-        // sql.conn.query("Select top" + firstN +  "* from scores ORDER BY score time;",function (err,result, fields){
-        //    if(err){
-        //        callback(err, "")
-        //    }else{
-        //        callback("",JSON.stringify(result))
-        //    } 
-            
-        // });
+        
     }
 
 }
