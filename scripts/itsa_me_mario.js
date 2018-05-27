@@ -421,34 +421,48 @@ function millisToMinutesAndSeconds(millis) {
 
 
 function animate() {
-
+    let xoffset = getAspectRatio(20, data.referenceScale, window.innerHeight);
+    let yoffset = getAspectRatio(25, data.referenceScale, window.innerHeight);
+    let width = getAspectRatio(100, data.referenceScale, window.innerHeight);
+    let height = getAspectRatio(38, data.referenceScale, window.innerHeight);
     if (!data.player.inAir && wasInAir) {
         landAnimation = true;
     }
     if (landAnimation) {
-        console.log(landAnimationStart);
         if (landAnimationStart === undefined) {
             let timer = new Date();
             landAnimationStart = timer.getTime();
         }
-        console.log(data.currentTime - landAnimationStart);
-        if (data.currentTime - landAnimationStart < 100) {
-            context.drawImage(landing_smoke_1, data.player.position.x - 20, data.player.position.y + 25);
+        context.save();
+        context.shadowOffsetX = -3;
+        context.shadowOffsetY = 3;
+        context.shadowColor = "black";
+        context.shadowBlur = 10;
+        if (data.left) {
+            context.translate(2 * data.player.position.x + data.player.width, 0);
+            context.scale(-1, 1);
+            context.shadowOffsetX = 3;
+            context.shadowOffsetY = 3;
+            context.shadowColor = "black";
+            context.shadowBlur = 10;
+        }
+        if (data.currentTime - landAnimationStart < 75) {
+            context.drawImage(landing_smoke_1, data.player.position.x - xoffset, data.player.position.y + yoffset, width, height);
             context.restore;
             return;
         }
-        if (data.currentTime - landAnimationStart < 200) {
-            context.drawImage(landing_smoke_2, data.player.position.x - 20, data.player.position.y + 25);
+        if (data.currentTime - landAnimationStart < 150) {
+            context.drawImage(landing_smoke_2, data.player.position.x - xoffset, data.player.position.y + yoffset, width, height);
+            context.restore;
+            return;
+        }
+        if (data.currentTime - landAnimationStart < 225) {
+            context.drawImage(landing_smoke_3, data.player.position.x - xoffset, data.player.position.y + yoffset, width, height);
             context.restore;
             return;
         }
         if (data.currentTime - landAnimationStart < 300) {
-            context.drawImage(landing_smoke_3, data.player.position.x - 20, data.player.position.y + 25);
-            context.restore;
-            return
-        }
-        if (data.currentTime - landAnimationStart < 400) {
-            context.drawImage(landing_smoke_4, data.player.position.x - 20, data.player.position.y + 25);
+            context.drawImage(landing_smoke_4, data.player.position.x - xoffset, data.player.position.y + yoffset, width, height);
             landAnimationStart = undefined;
             landAnimation = false;
             wasInAir = false;
@@ -469,7 +483,10 @@ function updateAndRender() {
         return;
     } else {
         render();
+        //Draw action independent animations
         animate();
+        //Make the canvas settings clean for the next render
+        context.restore();
     }
 }
 
