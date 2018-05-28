@@ -5,10 +5,12 @@ const util = require('../scripts/util.js');
 const score = require('./scoresController.js').scoreController;
 const sessions = require('./sessionController.js').sessionController;
 var deathTime;
+var doneSending;
 //Main Class that will handle socket events and data model manipulation
 class GameController {
     //Setting up the data model for the server
     static start(player, info) {
+        doneSending = false;
         var data = new gameData();
         if (data.startTime === undefined) {
             let timer = new Date();
@@ -365,7 +367,7 @@ class GameController {
         }
         var collidingWith = this.checkCollision(data, data.player, "player");
 
-        if (this.collisionAction(collidingWith, data , player) === "finish") return "finish";
+        if (this.collisionAction(collidingWith, data, player) === "finish") return "finish";
 
         if (collidingWith.length) {
             data.cameraSpeed = 0;
@@ -449,7 +451,7 @@ class GameController {
         }
     }
 
-    static collisionAction(collidingWith, data , player) {
+    static collisionAction(collidingWith, data, player) {
         var actionType = "";
         for (let i = 0; i < collidingWith.length; ++i) {
             if (collidingWith[i].type === "goomba" || collidingWith[i].type === "spikes") {
@@ -474,12 +476,14 @@ class GameController {
                 }
                 break;
             case "flag":
-                sessions.getUserId(player).then(userId =>{
-                    if(userId != undefined){
-                        score.add(userId , data.currentTime - data.startTime , data.deaths);
-                    }
-                })
-                data.objects = undefined;
+                if (!doneSending) {
+                    sessions.getUserId(player).then(userId => {
+                        if (userId != undefined) {
+                            score.add(userId, data.currentTime - data.startTime, data.deaths);
+                            doneSending = true;
+                        }
+                    });
+                }
                 return "finish";
                 break;
         }
@@ -510,7 +514,11 @@ module.exports = {
             case 'get-data':
                 return GameController.getData(params['player']);
             case 'update-data':
-                return GameController.updateData(params['player']);
+                if (!doneSending) {
+                    return GameController.updateData(params['player']);
+                } else {
+                    return undefined;
+                }
         }
     }
 };
