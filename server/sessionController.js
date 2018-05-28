@@ -18,7 +18,7 @@ class SessionController {
         });
     }
     
-    add(userId, sessionId) {
+    create(userId, sessionId) {
         var queryString = "INSERT INTO sessions (user_id, session_id) VALUES ('" + userId + "', '" + sessionId + "');";
         
         return new Promise((resolve, reject) => {
@@ -28,6 +28,24 @@ class SessionController {
                 }
                 
                 resolve(true);
+            });
+        });
+    }
+    
+    getUserId(sessionId) {
+        var queryString = "SELECT user_id FROM sessions WHERE session_id = '" + sessionId + "';";
+      
+        return new Promise((resolve, reject) => {
+            this.conn.query(queryString, function (err, result, fields) {
+                if(err) {
+                    return reject(err);
+                }
+                  
+                if(result.length > 0) {
+                    resolve(result[0].id);
+                } else {
+                    resolve(undefined);
+                }
             });
         });
     }

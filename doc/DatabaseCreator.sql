@@ -26,8 +26,8 @@ CREATE TABLE options (id INT AUTO_INCREMENT NOT NULL,
                      down_key INT NOT NULL,
                      jump_key INT NOT NULL,
                      dash_key INT NOT NULL,
-                     music_volume INT NOT NULL,
-                     sound_volume INT NOT NULL,
+                     music_volume DOUBLE NOT NULL,
+                     sound_volume DOUBLE NOT NULL,
                      FOREIGN KEY (user_id) REFERENCES users(id),
                      PRIMARY KEY (id)
                      );
