@@ -45,6 +45,8 @@ class OptionsController {
             return reject(err);
           }
           
+          // console.log(result);
+          
           resolve(result);
         });
       });

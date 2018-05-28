@@ -118,21 +118,21 @@ class GameController {
         if (action !== "pressed") {
             data.animation_stage = 0;
         }
-        if (keyCode == data.leftKeyCode) {
+        if (keyCode == 'leftKey') {
             if (action === "pressed") {
                 data.left = true;
             } else {
                 data.left = false;
             }
         }
-        if (keyCode == data.rightKeyCode) {
+        if (keyCode == 'rightKey') {
             if (action === "pressed") {
                 data.right = true;
             } else {
                 data.right = false;
             }
         }
-        if (keyCode == data.jumpKeyCode) {
+        if (keyCode == 'jumpKey') {
             if (action === "pressed") {
                 data.space = true;
             } else {

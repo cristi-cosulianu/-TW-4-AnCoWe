@@ -27,6 +27,62 @@ function removeSlider(elementId) {
 	document.getElementById(elementId).classList.remove('sliderAnimation');
 }
 
+var xx;
+
+function loadKeys(callback) {
+    var url = "http://localhost:3000/options?action=get-all&player=" + uuid;
+    var xmlRequest = new XMLHttpRequest();
+
+    xmlRequest.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if(this.status == 200) {
+                var data = JSON.parse(this.responseText)[0];
+                console.log(data);
+                console.log(data.left_key);
+                keyCodes.leftKeyCode = data.left_key;
+                keyCodes.rightKeyCode = data.right_key;
+                keyCodes.jumpKeyCode = data.jump_key;
+                
+                callback();
+            }
+        }
+    };
+    xmlRequest.open("GET", url, true);
+    xmlRequest.send();
+}
+
+function startGame() {
+    document.addEventListener("keydown", keyPressed, false);
+    document.addEventListener("keyup", keyReleased, false);
+    // GamePad Controls
+
+    window.addEventListener("gamepadconnected", function (e) {
+        gp = navigator.getGamepads()[0];
+        document.removeEventListener("keydown", keyPressed, false);
+        document.removeEventListener("keyup", keyReleased, false);
+    });
+    window.addEventListener("gamepaddisconnected", function (e) {
+        document.addEventListener("keydown", keyPressed, false);
+        document.addEventListener("keyup", keyReleased, false);
+        gp = null;
+    });
+
+    window.onresize = () => {
+        data.defaultGroundX = window.innerHeight - 80 - 40;
+        data.groundBase = data.defaultGroundX;
+        render();
+    };
+    window.onblur = () => {
+        makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=leftKey");
+        makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=rightKey");
+        makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=jumpKey");
+    }
+    
+    alert('start');
+    makeSynchronousRequest("http://localhost:3000/game?action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
+}
+
+
 function addCharacter(container, name) {
 	var url = "https://gateway.marvel.com/v1/public/characters?apikey=15b0df9dd78ed4c3d58e10b0c3d36a57&hash=758e48b905e396fca02324d24f1f7b06&ts=432&name=" + name;
 	var xmlRequest = new XMLHttpRequest();
@@ -78,7 +134,9 @@ function buildStoryPage(characterName) {
 	
 	anchor.addEventListener('click', function() {
 		// alert('start');
-		startGame();
+		loadKeys(() => {
+			startGame();
+		});
 	});
 
 	var image = document.createElement("img");
@@ -167,15 +225,15 @@ function changeKey(elementId) {
 			}
 	
 			switch (elementId) {
-				case "leftKey": leftKeyCode = keyCode; break;
-				case "rightKey": rightKeyCode = keyCode; break;
-				case "downKey": downKeyCode = keyCode; break;
-				case "jumpKey": jumpKeyCode = keyCode; break;
-				case "dashKey": dashKeyCode = keyCode; break;
+				case "leftKey": keyCodes.leftKeyCode = keyCode; break;
+				case "rightKey": keyCodes.rightKeyCode = keyCode; break;
+				case "downKey": keyCodes.downKeyCode = keyCode; break;
+				case "jumpKey": keyCodes.jumpKeyCode = keyCode; break;
+				case "dashKey": keyCodes.dashKeyCode = keyCode; break;
 				default: break;
 			}
 			try {
-			updateKeyCodes(elementId,keyCode); 
+			updateKeyCodes(elementId,keyCode);
 		}
 		catch(err) {
 			console.log(err.message);
@@ -194,7 +252,7 @@ function changeKey(elementId) {
 function updateKeyCodes(elementId,keyCode) {
 	var xmlRequest = new XMLHttpRequest();
 	var serverURL = "http://localhost:3000/options?";
-	serverURL = serverURL + "key=" + elementId + "&code=" + keyCode + "&player=" + uuid;
+	serverURL = serverURL + "action=update&key=" + elementId + "&code=" + keyCode + "&player=" + uuid;
 	//console.log(serverURL);
 	xmlRequest.open("POST", serverURL, true);
 	xmlRequest.send();

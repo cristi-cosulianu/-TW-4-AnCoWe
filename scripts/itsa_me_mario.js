@@ -24,6 +24,13 @@ var wasInAir = false,
     landAnimationStart;
 var isPlaying = true;
 var uuid = undefined;
+var keyCodes = {
+    leftKeyCode: 37,
+    rightKeyCode: 39,
+    jumpKeyCode: 32,
+    downKeyCode: undefined,
+    dashKeyCode: undefined
+};
 
 //Socket connection client side
 var socket = io();
@@ -36,7 +43,7 @@ socket.on('finish', function (msg) {
 });
 socket.on('start', function (msg) {
     requestAnimationFrame(game_loop);
-})
+});
 //Function for acquiring token
 // socket.on('uuid', function (msg) {
 //     uuid = msg;
@@ -57,37 +64,6 @@ window.onload = () => {
 
     });
 };
-
-function startGame() {
-    document.addEventListener("keydown", keyPressed, false);
-    document.addEventListener("keyup", keyReleased, false);
-    // GamePad Controls
-
-    window.addEventListener("gamepadconnected", function (e) {
-        gp = navigator.getGamepads()[0];
-        document.removeEventListener("keydown", keyPressed, false);
-        document.removeEventListener("keyup", keyReleased, false);
-
-    });
-    window.addEventListener("gamepaddisconnected", function (e) {
-        document.addEventListener("keydown", keyPressed, false);
-        document.addEventListener("keyup", keyReleased, false);
-        gp = null;
-    });
-
-    window.onresize = () => {
-        data.defaultGroundX = window.innerHeight - 80 - 40;
-        data.groundBase = data.defaultGroundX;
-        render();
-    };
-    window.onblur = () => {
-        makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + data.leftKeyCode);
-        makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + data.rightKeyCode);
-        makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + jumpKeyCode);
-    }
-
-    makeSynchronousRequest("http://localhost:3000/game?action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
-}
 
 //Utilitary function used for screen rendering
 function getObjectFromString(type) {
@@ -498,49 +474,65 @@ function checkGamepad() {
         console.log(axeLF);
         if (axeLF < -0.5) {
             if (data.right) {
-                makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + data.rightKeyCode);
+                makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=rightKey");
             }
-            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=" + data.leftKeyCode);
+            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=leftKey");
         } else if (axeLF > 0.5) {
             if (data.left) {
-                makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + data.leftKeyCode);
+                makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=leftKey");
             }
-            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=" + data.rightKeyCode);
+            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=rightKey");
         } else {
-            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + data.leftKeyCode);
-            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + data.rightKeyCode);
+            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=leftKey");
+            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=rightKey");
         }
         if (gp.buttons[0].pressed) {
-            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=" + jumpKeyCode);
+            makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=jumpKey");
         } else if (data.space) {
-            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + jumpKeyCode);
+            makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=jumpKey");
         }
     } catch (e) {
         console.log("GamePadRemoved");
     }
 }
+function getEventFromKeyCode(keyCode) {
+    switch(keyCode) {
+        case keyCodes.leftKeyCode: return 'leftKey';
+        case keyCodes.rightKeyCode: return 'rightKey';
+        case keyCodes.jumpKeyCode: return 'jumpKey';
+        case keyCodes.downKeyCode: return 'downKey';
+        case keyCodes.dashKeyCode: return 'dashKey';
+        default: return null;
+    }
+}
 //Utilitary event function that sends key pressed data
 function keyPressed(event) {
-    makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=" + event.keyCode);
-    if (event.keyCode === data.rightKeyCode) {
+    var eventName = getEventFromKeyCode(event.keyCode);
+    if(eventName == null) return;
+    
+    makeSynchronousRequest("http://localhost:3000/game?action=key-pressed&keycode=" + eventName);
+    if (event.keyCode === keyCodes.rightKeyCode) {
         if (first_press === false) {
             data.animation_stage = 5;
             first_press = true;
         }
         //background_sound.play();
     }
-    if (event.keyCode === jumpKeyCode) {
+    if (event.keyCode === keyCodes.jumpKeyCode) {
         jump_sound.current_time = 0;
         jump_sound.play();
     }
-    if (event.keyCode === downKeyCode && data.player.inAir && hasDropDown) {
+    if (event.keyCode === keyCodes.downKeyCode && data.player.inAir && hasDropDown) {
         dir.y = 12;
         dir.x = 0;
     }
 }
 //Utilitary event function that sends key released data
 function keyReleased(event) {
-    makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + event.keyCode);
+    var eventName = getEventFromKeyCode(event.keyCode);
+    if(eventName == null) return;
+    
+    makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=" + eventName);
 }
 
 //Utilitary function for server requests
