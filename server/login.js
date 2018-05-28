@@ -6,7 +6,7 @@
 const sessionIdGenerator = require('./session-id-generator.js');
 const userController = require('./userController.js').userController;
 const sessionController = require('./sessionController').sessionController;
-
+var md5 = require("blueimp-md5");
 module.exports = {
 	processRequest: function(params, callback) {
 		if(params['username'] === undefined || params['password'] === undefined) {
@@ -15,7 +15,7 @@ module.exports = {
     }
     
     var username = params['username'];
-    var password = params['password'];
+    var password = md5(params['password']);
     var validPassword, sessionId;
     
     userController.validPassword(username, password)

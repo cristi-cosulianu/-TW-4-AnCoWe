@@ -5,7 +5,7 @@
 
 const userController = require('./userController.js').userController;
 const optionsController = require('./optionsController.js').optionsController;
-
+var md5 = require("blueimp-md5");
 module.exports = {
 	processRequest: function(params, callback) {
 		if(params['username'] === undefined || params['password'] === undefined) {
@@ -14,7 +14,7 @@ module.exports = {
     }
     
     var username = params['username'];
-    var password = params['password'];
+    var password = md5(params['password']);
     
 		userController.create(username, password)
 			.then(result => {
@@ -33,3 +33,4 @@ module.exports = {
 			});
 	}
 };
+
