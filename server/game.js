@@ -176,7 +176,10 @@ class GameController {
             data.player.inAir = false;
         }
         
-        if(player.position.y === data.player.groundBase) data.player.inAir = false;
+        if(player.position.y === data.player.groundBase) {
+            data.player.inAir = false;
+            data.double_jump = 0;
+        }
         
         if (data.right === true && data.left === false && dir.y < 12) {
             if (dir.x === 0 && !data.player.inAir) {
