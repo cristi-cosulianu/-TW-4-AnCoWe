@@ -40,9 +40,11 @@ class SessionController {
                 if(err) {
                     return reject(err);
                 }
+                
+                // console.log(result);
                   
                 if(result.length > 0) {
-                    resolve(result[0].id);
+                    resolve(result[0].user_id);
                 } else {
                     resolve(undefined);
                 }

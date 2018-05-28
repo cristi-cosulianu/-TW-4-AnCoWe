@@ -36,6 +36,20 @@ class OptionsController {
       });
     }
     
+    getAll(userId) {
+      var queryString = "SELECT * FROM options WHERE user_id = '" + userId + "';";
+      
+      return new Promise((resolve, reject) => {
+        this.conn.query(queryString, function (err, result) {
+          if(err) {
+            return reject(err);
+          }
+          
+          resolve(result);
+        });
+      });
+    }
+    
     // I don't think we need that, but don't delete it yet :)
     // getId(username) {
     //   var queryString = "SELECT id FROM users WHERE username = '" + username + "';";
