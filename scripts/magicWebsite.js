@@ -298,6 +298,8 @@ function loadKeys(callback) {
                 keyCodes.jumpKeyCode = data.jump_key;
                 keyCodes.downKeyCode = data.down_key;
                 keyCodes.dashKeyCode = data.dash_key;
+                keyCodes.musicVolume = data.music_volume;
+                keyCodes.soundVolume = data.sound_volume;
                 
                 callback();
             }
@@ -461,12 +463,24 @@ window.addEventListener("load", () => {
 
 function changeVolume(elementId) {
 	var inputVolume = elementId.value;
-	if(elementId == "musicVolume"){
-		background_sound.volume = inputVolume;
-	} else {
-		jump_land.volume = inputVolume;
-		jump_sound.volume = inputVolume;
-	}
+  // console.log(elementId);
+	if(elementId.id == "musicVolume") {
+    updateKeyCodes('musicVolume', inputVolume);
+    keyCodes.musicVolume = inputVolume;
+  } else {
+    updateKeyCodes('soundVolume', inputVolume);
+    keyCodes.soundVolume = inputVolume;
+  }
+  
+  setVolumes();
+}
+
+function setVolumes() {
+  background_sound.volume = keyCodes.musicVolume;
+  death_sound.volume = keyCodes.musicVolume;
+  level_done_sound.volume = keyCodes.musicVolume;
+  jump_land.volume = keyCodes.soundVolume;
+  jump_sound.volume = keyCodes.soundVolume;
 }
 
 function keyName(key) {
@@ -483,7 +497,11 @@ function displayKeys() {
 	document.getElementById('rightKey').textContent = getTextFromKeyCode(keyCodes.rightKeyCode);
 	document.getElementById('jumpKey').textContent = getTextFromKeyCode(keyCodes.jumpKeyCode);
 	document.getElementById('downKey').textContent = getTextFromKeyCode(keyCodes.downKeyCode);
-	document.getElementById('dashKey').textContent = getTextFromKeyCode(keyCodes.dashKeyCode);
+  document.getElementById('dashKey').textContent = getTextFromKeyCode(keyCodes.dashKeyCode);
+  document.getElementById('musicVolume').value = keyCodes.musicVolume;
+	document.getElementById('soundVolume').value = keyCodes.soundVolume;
+  
+  setVolumes();
 }
 
 function changeKey(elementId) { 
