@@ -27,8 +27,6 @@ function removeSlider(elementId) {
 	document.getElementById(elementId).classList.remove('sliderAnimation');
 }
 
-var xx;
-
 function loadKeys(callback) {
     var url = "http://localhost:3000/options?action=get-all&player=" + uuid;
     var xmlRequest = new XMLHttpRequest();
@@ -37,8 +35,6 @@ function loadKeys(callback) {
         if (this.readyState == 4) {
             if(this.status == 200) {
                 var data = JSON.parse(this.responseText)[0];
-                console.log(data);
-                console.log(data.left_key);
                 keyCodes.leftKeyCode = data.left_key;
                 keyCodes.rightKeyCode = data.right_key;
                 keyCodes.jumpKeyCode = data.jump_key;
@@ -78,7 +74,6 @@ function startGame() {
         makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=jumpKey");
     }
     
-    alert('start');
     makeSynchronousRequest("http://localhost:3000/game?action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
 }
 
