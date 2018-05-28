@@ -165,7 +165,7 @@ class GameController {
             player.position.add(dir);
             data.player.currentPlatformIndex = 0;
         }
-        if (player.position.y >= data.player.groundBase) {
+        if (player.position.y > data.player.groundBase) {
             dir.x = 0;
             dir.y = 0;
             gravity.x = 0;
@@ -175,6 +175,12 @@ class GameController {
             data.movementSpeed = data.speed;
             data.player.inAir = false;
         }
+        
+        if(player.position.y === data.player.groundBase) {
+            data.player.inAir = false;
+            data.double_jump = 0;
+        }
+        
         if (data.right === true && data.left === false && dir.y < 12) {
             if (dir.x === 0 && !data.player.inAir) {
                 dir.x = data.movementSpeed;
