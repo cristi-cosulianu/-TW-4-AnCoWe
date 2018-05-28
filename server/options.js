@@ -61,6 +61,10 @@ function updateKeyCode(sessionId, key, keyCode, callback) {
         column = 'jump_key'; break;
       case 'dashKey':
         column = 'dash_key'; break;
+      case 'soundVolume':
+        column = 'sound_volume'; break;
+      case 'musicVolume':
+        column = 'music_volume'; break;
       default:
         column = null; break;
     }
