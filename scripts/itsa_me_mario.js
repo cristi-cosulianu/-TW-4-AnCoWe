@@ -60,9 +60,7 @@ window.onload = () => {
     loadTextures();
     //loadLevel(); Only for creating new levels
     // socket.emit('get-uuid', 'efbweyfu');
-    document.getElementById("startGameButton").addEventListener("click", function (e) {
-
-    });
+    
 };
 
 //Utilitary function used for screen rendering
