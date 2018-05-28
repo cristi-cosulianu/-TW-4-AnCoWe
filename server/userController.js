@@ -24,7 +24,7 @@ class UserController {
       });
     }
     
-    add(username, password) {
+    create(username, password) {
     	var queryString = "INSERT INTO users (username, password) VALUES ('" + username + "', '" + password + "');";
       
       return new Promise((resolve, reject) => {
@@ -48,7 +48,11 @@ class UserController {
             return reject(err);
           }
           
-          resolve(result[0].id);
+          if(result.length > 0) {
+            resolve(result[0].id);
+          } else {
+            resolve(undefined);
+          }
         });
       });
     }

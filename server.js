@@ -29,9 +29,11 @@ const server = http.createServer((req, res) => {
         case '/options':
             res.setHeader('Content-Type', 'text/text');
 
-            var ret = options.processRequest(queryParams);
-            res.statusCode = ret.code;
-            res.end(ret.message);
+            options.processRequest(queryParams, (code, message) => {
+                res.statusCode = code;
+                console.log("Options status code: " + code);
+                res.end(message);
+            });
 
             break;
             

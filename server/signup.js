@@ -4,6 +4,7 @@
  	*/
 
 const userController = require('./userController.js').userController;
+const optionsController = require('./optionsController.js').optionsController;
 
 module.exports = {
 	processRequest: function(params, callback) {
@@ -15,7 +16,10 @@ module.exports = {
     var username = params['username'];
     var password = params['password'];
     
-		userController.add(username, password)
+		userController.create(username, password)
+			.then(result => {
+				return optionsController.create(result.insertId);
+			})
 			.then(result => {
 				callback(200, 'ok');
 			})
