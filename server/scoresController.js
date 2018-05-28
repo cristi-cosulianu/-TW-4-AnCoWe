@@ -5,7 +5,7 @@ class ScoreController {
         this.conn = sql.conn;
     }
     
-    add(player,time,deaths) {
+    add(player, time, deaths) {
       var query = "INSERT INTO scores(user_id , time , deaths) VALUES ('" + player + "', '" + time  + "', '" + deaths + "');"; 
        
       return new Promise((resolve, reject) => {
@@ -22,31 +22,40 @@ class ScoreController {
     
     
     getScores() {
-      var query = "Select * from scores ORDER BY time desc;";
+      var queryString = "Select * from scores ORDER BY time desc;";
           
       return new Promise((resolve, reject) => {
-        this.conn.query(query, function (err, result) {
+        this.conn.query(queryString, function (err, result, fields) {
           if(err) {
             return reject(err);
           }
-          
-          // console.log(result);
-          resolve(result);
+          if(result.length > 0) {
+            console.log(result);
+            resolve(result);
+          } else {
+            resolve(undefined);
+          }
         });
       });
     }
         
-    getnScores(callback,firstN) {
-      var string = "Select top" + firstN +  "* from scores ORDER BY score time;";
+    getnScores(firstN) {
+      var queryString = "Select * from scores ORDER BY time desc LIMIT " + firstN + ";";
       
       return new Promise((resolve, reject) => {
-        this.conn.query(query, function (err, result) {
+        this.conn.query(queryString, function (err, result, fields) {
           if(err) {
             return reject(err);
           }
+            if(result.length > 0) {
+                console.log(result);
+            resolve(result);
+          } else {
+            resolve(undefined);
+          }
           
-          // console.log(result);
-          resolve(result);
+           
+          
         });
       });
     }
@@ -60,3 +69,4 @@ module.exports = {
 
 // use
 //ScoreController.update('loghin', 99999999);
+//console.log(scoreController.getScores());

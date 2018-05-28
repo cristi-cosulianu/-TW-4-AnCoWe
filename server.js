@@ -8,7 +8,7 @@ const game = require('./server/game.js');
 const options = require('./server/options.js');
 const login = require('./server/login.js');
 const signup = require('./server/signup.js');
-
+const scores = require('./server/scores.js');
 const sessionController = require('./server/sessionController.js');
 
 // const marvel = require('./server/marvel.js'); // don't delete this comment
@@ -59,7 +59,16 @@ const server = http.createServer((req, res) => {
 
             break;
 
+        case '/scores':
+            res.setHeader('Content-Type', 'application/json');
 
+            scores.processRequest(queryParams, (code, message) =>{
+                res.statusCode = code;
+                console.log("scores status code : " + res.statusCode + " message: " + message);
+                res.end(message);
+
+            });
+            break;    
             // maybe we will use it later
             /*case '/marvel':
             	res.setHeader('Content-Type', 'text/text');

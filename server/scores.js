@@ -1,42 +1,27 @@
-sql = require('./sqlconnect.js');
+const scoreController = require('./scoresController.js').scoreController;
 
-
-	/*
-	*	Redenumeste fisierul asta in scoresController.js (#Eugen) 
- 	*/
-
-
-//console.log(sql.conn.query);
-//sql.conn.query("Select * from scores;",function (err, result, fields) {
-//    
-//    console.log(JSON.stringify(result));
-//    
-//});
-//console.log("after query");
-class ScoreController {
-    constructor() {
-        this.conn = sql.conn;
+module.exports ={
+    processRequest: function(params, callback) {
+    if(params['firstN'] == undefined){
+      callback(405, 'invalid parameters');
+      return;
     }
-    
-    static update(player, newScore) {
-        sql.conn.query("UPDATE scores SET score = " + newScore + " WHERE username = '" + player + "';");
-        sql.conn.end();
-    }
-    
-    static getScores(callback) {
-        sql.conn.query("Select * from scores;",function (err, result, fields) {
-            if(err){
-                  callback(err, "")
-            }else{
-                  callback("", JSON.stringify(result))
-            }
-      
-    });
-    }
-}
-ScoreController.getScores(function(err, result){
-        console.log(JSON.stringify(result));
-           
-        });
-// use
-ScoreController.update('loghin', 99999999);
+
+    var firstN = params['firstN'];
+
+    scoreController.getnScores(firstN)
+      .then(scores => {
+          if(scores === undefined) return;
+          
+          var json = JSON.stringify(scores);
+          callback(200,json);
+      })
+      .catch(err =>{
+        conosle.log(err);
+        callback(405, 'error ocured');
+      });
+
+
+
+  }
+};
