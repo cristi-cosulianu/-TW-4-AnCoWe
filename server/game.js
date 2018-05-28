@@ -165,7 +165,7 @@ class GameController {
             player.position.add(dir);
             data.player.currentPlatformIndex = 0;
         }
-        if (player.position.y >= data.player.groundBase) {
+        if (player.position.y > data.player.groundBase) {
             dir.x = 0;
             dir.y = 0;
             gravity.x = 0;
