@@ -6,7 +6,7 @@ class ScoreController {
     }
     
     add(player,time,deaths) {
-      var query = "INSERT INTO scores VALUES ('" + player + "', '" + time  + "', '" + deaths + "');"; 
+      var query = "INSERT INTO scores(user_id , time , deaths) VALUES ('" + player + "', '" + time  + "', '" + deaths + "');"; 
        
       return new Promise((resolve, reject) => {
         this.conn.query(query, function (err, result) {
@@ -52,9 +52,9 @@ class ScoreController {
     }
 }
 
-scooreController = new ScoreController();
+scoreController = new ScoreController();
 module.exports = {
-  ScoreController
+  scoreController
 }
 
 

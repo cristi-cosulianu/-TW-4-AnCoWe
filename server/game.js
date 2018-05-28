@@ -2,6 +2,8 @@
 const fs = require('fs');
 const gameData = require('./gameData.js');
 const util = require('../scripts/util.js');
+const score = require('./scoresController.js').scoreController;
+const sessions = require('./sessionController.js').sessionController;
 var deathTime;
 //Main Class that will handle socket events and data model manipulation
 class GameController {
@@ -21,7 +23,7 @@ class GameController {
         data.defaultGroundX = ((data.referenceScale - 50 - 64) * data.canvasHeight) / data.referenceScale;
         data.player.groundBase = data.defaultGroundX;
         data.objects = GameController.readLevel("1");
-        //data.objects.push(new util.GameObject("flag", 500, data.defaultGroundX - 64 - 32 - 78, 32, 256));
+        data.objects.push(new util.GameObject("flag", 500, data.defaultGroundX - 64 - 32 - 78, 32, 256));
         //fs.writeFileSync('levels/1.txt', JSON.stringify(data.objects));
         util.scaleWorldObjects(data);
         data.gravity.y = util.getAspectRatio(data.gravity.y, data.referenceScale, data.canvasHeight, false);
@@ -363,7 +365,7 @@ class GameController {
         }
         var collidingWith = this.checkCollision(data, data.player, "player");
 
-        if (this.collisionAction(collidingWith, data) === "finish") return "finish";
+        if (this.collisionAction(collidingWith, data , player) === "finish") return "finish";
 
         if (collidingWith.length) {
             data.cameraSpeed = 0;
@@ -447,7 +449,7 @@ class GameController {
         }
     }
 
-    static collisionAction(collidingWith, data) {
+    static collisionAction(collidingWith, data , player) {
         var actionType = "";
         for (let i = 0; i < collidingWith.length; ++i) {
             if (collidingWith[i].type === "goomba" || collidingWith[i].type === "spikes") {
@@ -472,6 +474,12 @@ class GameController {
                 }
                 break;
             case "flag":
+                sessions.getUserId(player).then(userId =>{
+                    if(userId != undefined){
+                        score.add(userId , data.currentTime - data.startTime , data.deaths);
+                    }
+                })
+                data.objects = undefined;
                 return "finish";
                 break;
         }
