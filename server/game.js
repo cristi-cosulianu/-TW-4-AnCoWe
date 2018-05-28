@@ -175,6 +175,9 @@ class GameController {
             data.movementSpeed = data.speed;
             data.player.inAir = false;
         }
+        
+        if(player.position.y === data.player.groundBase) data.player.inAir = false;
+        
         if (data.right === true && data.left === false && dir.y < 12) {
             if (dir.x === 0 && !data.player.inAir) {
                 dir.x = data.movementSpeed;
