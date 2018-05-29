@@ -107,15 +107,17 @@ io.on('connection', function (socket) {
     console.log('a user connected');
 
     // don't delete it
-    // socket.on('disconnect', function () {
-    //     dataFile = 'server/data/' + uuid + '.txt';
-    //     fs.exists(dataFile, function (exists) {
-    //         if (exists) fs.unlinkSync(dataFile);
-    //     });
-
-    //     console.log('user ' + uuid + ' disconnected');
-    // });
-
+     socket.on('disconnect', function () {
+         dataFile = 'server/data/' + socket.uuid + '.txt';
+         fs.exists(dataFile, function (exists) {
+             if (exists) fs.unlinkSync(dataFile);
+         });
+     });
+    
+    socket.on('new user', (msg) => {
+        socket.uuid = msg;
+    });
+    
     //Preparing the socket for `game` event
     socket.on('game', function (msg) {
         var parsedURL = url.parse(msg, true);

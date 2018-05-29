@@ -651,8 +651,8 @@ function loginRequest() {
 							sceneTransition('loginCanvas','menuCanvas');
 						}
 					}, 500);
-										
-					// console.log(uuid);
+                    
+                    socket.emit('new user', uuid);
 				}
 			}
 		}
