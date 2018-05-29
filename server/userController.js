@@ -12,7 +12,7 @@ class UserController {
     
     validPassword(username, password) {
     	var queryString = "SELECT COUNT(*) AS nr FROM users WHERE username = '" + username + "' AND password = '" + password + "';";
-      console.log(queryString);
+      // console.log(queryString);
       
       return new Promise((resolve, reject) => {
         this.conn.query(queryString, function (err, result, fields) {

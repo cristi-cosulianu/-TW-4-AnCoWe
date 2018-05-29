@@ -24,7 +24,7 @@ class OptionsController {
     
     update(userId, column, keyCode) {
       var queryString = "UPDATE options SET " + column + " = " + keyCode + " WHERE user_id = '" + userId + "';";
-      console.log(queryString);
+      // console.log(queryString);
       
       return new Promise((resolve, reject) => {
         this.conn.query(queryString, function (err, result) {
@@ -39,7 +39,7 @@ class OptionsController {
     
     getAll(userId) {
       var queryString = "SELECT * FROM options WHERE user_id = '" + userId + "';";
-      console.log(queryString);
+      // console.log(queryString);
       
       return new Promise((resolve, reject) => {
         this.conn.query(queryString, function (err, result) {

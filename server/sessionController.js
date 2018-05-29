@@ -51,6 +51,20 @@ class SessionController {
             });
         });
     }
+    
+    delete(sessionId) {
+        var queryString = "DELETE FROM sessions WHERE session_id = '" + sessionId + "';";
+        
+        return new Promise((resolve, reject) => {
+            this.conn.query(queryString, function (err, result, fields) {
+                if(err) {
+                    return reject(err);
+                }
+                
+                resolve(result);
+            });
+        });
+    }
 }
 
 sessionController = new SessionController();

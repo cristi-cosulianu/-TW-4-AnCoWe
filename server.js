@@ -9,7 +9,7 @@ const options = require('./server/options.js');
 const login = require('./server/login.js');
 const signup = require('./server/signup.js');
 const scores = require('./server/scores.js');
-const sessionController = require('./server/sessionController.js');
+const sessionController = require('./server/sessionController.js').sessionController;
 
 // const marvel = require('./server/marvel.js'); // don't delete this comment
 const sessionIdGenerator = require('./server/session-id-generator.js');
@@ -112,6 +112,12 @@ io.on('connection', function (socket) {
          fs.exists(dataFile, function (exists) {
              if (exists) fs.unlinkSync(dataFile);
          });
+         
+         sessionController.delete(socket.uuid)
+            .then(result => {})
+            .catch(err => {
+                console.log(err);
+            });
      });
     
     socket.on('new user', (msg) => {
