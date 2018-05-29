@@ -105,20 +105,17 @@ const io = socket(server);
 
 io.on('connection', function (socket) {
     console.log('a user connected');
-    //Generating unique `uuid` token that will be passed between server and client
-    var uuid = sessionIdGenerator.getSessionId();
-    socket.on('disconnect', function () {
-        dataFile = 'server/data/' + uuid + '.txt';
-        fs.exists(dataFile, function (exists) {
-            if (exists) fs.unlinkSync(dataFile);
-        });
 
-        console.log('user ' + uuid + ' disconnected');
-    });
+    // don't delete it
+    // socket.on('disconnect', function () {
+    //     dataFile = 'server/data/' + uuid + '.txt';
+    //     fs.exists(dataFile, function (exists) {
+    //         if (exists) fs.unlinkSync(dataFile);
+    //     });
 
-    socket.on('get-uuid', function (msg) {
-        socket.emit('uuid', uuid);
-    });
+    //     console.log('user ' + uuid + ' disconnected');
+    // });
+
     //Preparing the socket for `game` event
     socket.on('game', function (msg) {
         var parsedURL = url.parse(msg, true);

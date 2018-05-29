@@ -44,11 +44,6 @@ socket.on('finish', function (msg) {
 socket.on('start', function (msg) {
     requestAnimationFrame(game_loop);
 });
-//Function for acquiring token
-// socket.on('uuid', function (msg) {
-//     uuid = msg;
-//     makeSynchronousRequest("http://localhost:3000/game?action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
-// });
 //Main client side loader for keys events and inital setup
 window.onload = () => {
     canvas = document.querySelector("#gameCanvas canvas");
@@ -59,8 +54,6 @@ window.onload = () => {
     loadAudio();
     loadTextures();
     //loadLevel(); Only for creating new levels
-    // socket.emit('get-uuid', 'efbweyfu');
-    
 };
 
 //Utilitary function used for screen rendering
