@@ -11,11 +11,12 @@ class UserController {
     }
     
     validPassword(username, password) {
-    	var queryString = "SELECT COUNT(*) AS nr FROM users WHERE username = '" + username + "' AND password = '" + password + "';";
+    	var queryString = "SELECT COUNT(*) AS nr FROM users WHERE username = ? AND password = ?;";
+      var args = [username, password];
       // console.log(queryString);
       
       return new Promise((resolve, reject) => {
-        this.conn.query(queryString, function (err, result, fields) {
+        this.conn.query(queryString, args, function (err, result, fields) {
           if(err) {
             return reject(err);
           }
@@ -26,10 +27,11 @@ class UserController {
     }
     
     create(username, password) {
-    	var queryString = "INSERT INTO users (username, password) VALUES ('" + username + "', '" + password + "');";
+    	var queryString = "INSERT INTO users (username, password) VALUES (?, ?);";
+      var args = [username, password];
       
       return new Promise((resolve, reject) => {
-        this.conn.query(queryString, function (err, result) {
+        this.conn.query(queryString, args, function (err, result) {
           if(err) {
             return reject(err);
           }
@@ -41,10 +43,11 @@ class UserController {
     }
     
     getId(username) {
-    	var queryString = "SELECT id FROM users WHERE username = '" + username + "';";
+    	var queryString = "SELECT id FROM users WHERE username = ?;";
+      var args = [username];
       
       return new Promise((resolve, reject) => {
-        this.conn.query(queryString, function (err, result, fields) {
+        this.conn.query(queryString, args, function (err, result, fields) {
           if(err) {
             return reject(err);
           }

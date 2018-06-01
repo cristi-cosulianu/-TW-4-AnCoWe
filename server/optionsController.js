@@ -7,11 +7,12 @@ class OptionsController {
     
     create(userId) {
       var columns = "(user_id, left_key, right_key, down_key, jump_key, dash_key, music_volume, sound_volume)";
-      var values = "(" + userId + ", 37, 39, 40, 32, 16, 0.4, 0.1)";
+      var values = "(?, 37, 39, 40, 32, 16, 0.4, 0.1)";
       var queryString = "INSERT INTO options " + columns + " VALUES " + values + ";";
+      var args = [userId];
       
       return new Promise((resolve, reject) => {
-        this.conn.query(queryString, function (err, result) {
+        this.conn.query(queryString, args, function (err, result) {
           if(err) {
             return reject(err);
           }
@@ -23,11 +24,11 @@ class OptionsController {
     }
     
     update(userId, column, keyCode) {
-      var queryString = "UPDATE options SET " + column + " = " + keyCode + " WHERE user_id = '" + userId + "';";
-      // console.log(queryString);
+      var queryString = "UPDATE options SET " + column + " = ? WHERE user_id = ?;";
+      var args = [keyCode, userId];
       
       return new Promise((resolve, reject) => {
-        this.conn.query(queryString, function (err, result) {
+        this.conn.query(queryString, args, function (err, result) {
           if(err) {
             return reject(err);
           }
@@ -38,11 +39,12 @@ class OptionsController {
     }
     
     getAll(userId) {
-      var queryString = "SELECT * FROM options WHERE user_id = '" + userId + "';";
+      var queryString = "SELECT * FROM options WHERE user_id = ?;";
+      var args = [userId];
       // console.log(queryString);
       
       return new Promise((resolve, reject) => {
-        this.conn.query(queryString, function (err, result) {
+        this.conn.query(queryString, userId, function (err, result) {
           if(err) {
             return reject(err);
           }

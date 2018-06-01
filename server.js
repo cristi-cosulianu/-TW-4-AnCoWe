@@ -1,5 +1,5 @@
 // Dependencies required for the server to run 
-const http = require('http');
+const http = require('https');
 const url = require('url');
 const fs = require('fs');
 const path = require('path');
@@ -17,8 +17,12 @@ const sessionIdGenerator = require('./server/session-id-generator.js');
 const hostname = '127.0.0.1';
 //Server port 
 const port = 3000;
+const options2 = {
+    key: fs.readFileSync('fixtures/keys/key.pem'),
+    cert: fs.readFileSync('fixtures/keys/cert.pem')
+};
 //Creating the server and the function for request processing
-const server = http.createServer((req, res) => {
+const server = http.createServer(options2, (req, res) => {
     res.statusCode = 200;
     // Url parsing for procesing
     var parsedURL = url.parse(req.url, true);

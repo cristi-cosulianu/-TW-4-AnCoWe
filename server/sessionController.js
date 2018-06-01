@@ -6,9 +6,10 @@ class SessionController {
     }
     
     exists(sessionId) {
-        var queryString = "SELECT COUNT(*) AS nr FROM sessions WHERE session_id = '" + sessionId + "';";
+        var queryString = "SELECT COUNT(*) AS nr FROM sessions WHERE session_id = ?;";
+        var args = [sessionId];
         
-        this.conn.query(queryString, function (err, result, fields) {
+        this.conn.query(queryString, args, function (err, result, fields) {
             if(err) {
                 console.log(err);
                 return -1;
@@ -19,10 +20,11 @@ class SessionController {
     }
     
     create(userId, sessionId) {
-        var queryString = "INSERT INTO sessions (user_id, session_id) VALUES ('" + userId + "', '" + sessionId + "');";
+        var queryString = "INSERT INTO sessions (user_id, session_id) VALUES (?, ?);";
+        var args = [userId, sessionId];
         
         return new Promise((resolve, reject) => {
-            this.conn.query(queryString, function(err, result) {
+            this.conn.query(queryString, args, function(err, result) {
                 if(err) {
                     return reject(err);
                 }
@@ -33,10 +35,11 @@ class SessionController {
     }
     
     getUserId(sessionId) {
-        var queryString = "SELECT user_id FROM sessions WHERE session_id = '" + sessionId + "';";
+        var queryString = "SELECT user_id FROM sessions WHERE session_id = ?;";
+        var args = [sessionId];
       
         return new Promise((resolve, reject) => {
-            this.conn.query(queryString, function (err, result, fields) {
+            this.conn.query(queryString, args, function (err, result, fields) {
                 if(err) {
                     return reject(err);
                 }
@@ -53,10 +56,11 @@ class SessionController {
     }
     
     delete(sessionId) {
-        var queryString = "DELETE FROM sessions WHERE session_id = '" + sessionId + "';";
+        var queryString = "DELETE FROM sessions WHERE session_id = ?;";
+        var args = [sessionId];
         
         return new Promise((resolve, reject) => {
-            this.conn.query(queryString, function (err, result, fields) {
+            this.conn.query(queryString, args, function (err, result, fields) {
                 if(err) {
                     return reject(err);
                 }

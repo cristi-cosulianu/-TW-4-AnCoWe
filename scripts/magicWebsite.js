@@ -286,7 +286,7 @@ function removeSlider(elementId) {
 }
 
 function loadKeys(callback) {
-    var url = "http://localhost:3000/options?action=get-all&player=" + uuid;
+    var url = "https://localhost:3000/options?action=get-all&player=" + uuid;
     var xmlRequest = new XMLHttpRequest();
 
     xmlRequest.onreadystatechange = function () {
@@ -331,12 +331,12 @@ function startGame() {
         render();
     };
     window.onblur = () => {
-        makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=leftKey");
-        makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=rightKey");
-        makeSynchronousRequest("http://localhost:3000/game?action=key-released&keycode=jumpKey");
+        makeSynchronousRequest("https://localhost:3000/game?action=key-released&keycode=leftKey");
+        makeSynchronousRequest("https://localhost:3000/game?action=key-released&keycode=rightKey");
+        makeSynchronousRequest("https://localhost:3000/game?action=key-released&keycode=jumpKey");
     }
     
-    makeSynchronousRequest("http://localhost:3000/game?action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
+    makeSynchronousRequest("https://localhost:3000/game?action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
 }
 
 
@@ -541,7 +541,7 @@ function changeKey(elementId) {
 
 function updateKeyCodes(elementId,keyCode) {
 	var xmlRequest = new XMLHttpRequest();
-	var serverURL = "http://localhost:3000/options?";
+	var serverURL = "https://localhost:3000/options?";
 	serverURL = serverURL + "action=update&key=" + elementId + "&code=" + keyCode + "&player=" + uuid;
 	//console.log(serverURL);
 	xmlRequest.open("POST", serverURL, true);
@@ -605,7 +605,7 @@ function signUpRequest() {
 	if(username != null && password != null && repassword != null) {
 		if(password.value == repassword.value) {
 			var xmlRequest = new XMLHttpRequest();
-			var serverURL = "http://localhost:3000/signup?";
+			var serverURL = "https://localhost:3000/signup?";
 			serverURL = serverURL + "username=" + username.value + "&password=" + password.value;
 			xmlRequest.open("POST", serverURL, true);
 			xmlRequest.send();
@@ -636,7 +636,7 @@ function loginRequest() {
 
 	if(username != null && password != null) {
 		var xmlRequest = new XMLHttpRequest();
-		var serverURL = "http://localhost:3000/login?";
+		var serverURL = "https://localhost:3000/login?";
 		serverURL = serverURL + "username=" + username.value + "&password=" + password.value;
 		
 		xmlRequest.onreadystatechange = function() {

@@ -6,10 +6,11 @@ class ScoreController {
     }
     
     add(player, time, deaths) {
-      var query = "INSERT INTO scores(user_id , time , deaths) VALUES ('" + player + "', '" + time  + "', '" + deaths + "');"; 
+      var query = "INSERT INTO scores(user_id , time , deaths) VALUES (?, ?, ?);";
+      var args = [player, time, deaths]; 
        
       return new Promise((resolve, reject) => {
-        this.conn.query(query, function (err, result) {
+        this.conn.query(query, args, function (err, result) {
           if(err) {
             return reject(err);
           }
@@ -40,10 +41,11 @@ class ScoreController {
     }
         
     getnScores(firstN) {
-      var queryString = "Select * from scores ORDER BY time desc LIMIT " + firstN + ";";
+      var queryString = "Select * from scores ORDER BY time desc LIMIT ?;";
+      var args = [firstN];
       
       return new Promise((resolve, reject) => {
-        this.conn.query(queryString, function (err, result, fields) {
+        this.conn.query(queryString, args, function (err, result, fields) {
           if(err) {
             return reject(err);
           }
@@ -53,9 +55,6 @@ class ScoreController {
           } else {
             resolve(undefined);
           }
-          
-           
-          
         });
       });
     }
