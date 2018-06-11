@@ -21,6 +21,20 @@ const options2 = {
     key: fs.readFileSync('fixtures/keys/key.pem'),
     cert: fs.readFileSync('fixtures/keys/cert.pem')
 };
+
+sessionController.deleteAll();
+fs.readdir('./server/data', (err, files) => {
+    if(err) {
+        console.log(err);
+    } else {
+        files.forEach(file => {
+            if(file.endsWith('.txt')) {
+                fs.unlinkSync('./server/data/' + file);
+            }
+        });
+    }
+});
+
 //Creating the server and the function for request processing
 const server = http.createServer(options2, (req, res) => {
     res.statusCode = 200;

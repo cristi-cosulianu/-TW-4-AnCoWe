@@ -69,6 +69,21 @@ class SessionController {
             });
         });
     }
+    
+    deleteAll() {
+        var queryString = "DELETE FROM sessions;";
+        var args = [];
+        
+        return new Promise((resolve, reject) => {
+            this.conn.query(queryString, args, function (err, result, fields) {
+                if(err) {
+                    return reject(err);
+                }
+                
+                resolve(result);
+            });
+        });
+    }
 }
 
 sessionController = new SessionController();
