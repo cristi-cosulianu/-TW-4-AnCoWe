@@ -3,7 +3,8 @@ const http = require('https');
 const url = require('url');
 const fs = require('fs');
 const path = require('path');
-var mime = require('mime-types');
+const mime = require('mime-types');
+const qs = require('querystring');
 const game = require('./server/game.js');
 const options = require('./server/options.js');
 const login = require('./server/login.js');
@@ -37,18 +38,35 @@ fs.readdir('./server/data', (err, files) => {
 
 //Creating the server and the function for request processing
 const server = http.createServer(options2, (req, res) => {
-    res.statusCode = 200;
+    switch(req.method) {
+        case 'GET':
+            processGETRequest(req, res);
+            break;
+        
+        case 'POST':
+            processPOSTRequest(req, res);
+            break;
+        
+        default:
+            res.statusCode = 405;
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.end();
+    }
+});
+
+function processGETRequest(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
+    
     // Url parsing for procesing
     var parsedURL = url.parse(req.url, true);
     var pathname = parsedURL.pathname;
-    var queryParams = parsedURL.query;
-
+    var params = parsedURL.query;
+    
     switch (pathname) {
         case '/options':
             res.setHeader('Content-Type', 'text/text');
 
-            options.processRequest(queryParams, (code, message) => {
+            options.processRequest(params, (code, message) => {
                 res.statusCode = code;
                 console.log("Options status code: " + code);
                 res.end(message);
@@ -56,32 +74,10 @@ const server = http.createServer(options2, (req, res) => {
 
             break;
             
-        case '/login':
-            res.setHeader('Content-Type', 'text/text');
-
-            login.processRequest(queryParams, (code, message) => {
-                res.statusCode = code;
-                console.log("Login status code: " + code);
-                res.end(message);
-            });
-
-            break;
-            
-        case '/signup':
-            res.setHeader('Content-Type', 'text/text');
-
-            signup.processRequest(queryParams, (code, message) => {
-                res.statusCode = code;
-                console.log("SignUp status code: " + res.statusCode);
-                res.end(message);
-            });
-
-            break;
-
         case '/scores':
             res.setHeader('Content-Type', 'application/json');
 
-            scores.processRequest(queryParams, (code, message) =>{
+            scores.processRequest(params, (code, message) =>{
                 res.statusCode = code;
                 console.log("scores status code : " + res.statusCode + " message: " + message);
                 res.end(message);
@@ -90,13 +86,13 @@ const server = http.createServer(options2, (req, res) => {
             break;    
             // maybe we will use it later
             /*case '/marvel':
-            	res.setHeader('Content-Type', 'text/text');
-            	
-            	var ret = marvel.processRequest(queryParams);
-            	res.statusCode = ret.code;
-            	res.end(ret.message);
-            	
-            	break;*/
+                res.setHeader('Content-Type', 'text/text');
+                
+                var ret = marvel.processRequest(params);
+                res.statusCode = ret.code;
+                res.end(ret.message);
+                
+                break;*/
         default:
             var filename = '.' + pathname;
             // Returning requested files with AJAX and mime-type module
@@ -116,7 +112,50 @@ const server = http.createServer(options2, (req, res) => {
                 }
             });
     }
-});
+}
+
+function processPOSTRequest(req, res) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    // Url parsing for procesing
+    var parsedURL = url.parse(req.url, true);
+    var pathname = parsedURL.pathname;
+    
+    var body = '';
+    req.on('data', chunk => {
+        body += chunk;
+    });
+    
+    req.on('end', () => {
+        var params = qs.parse(body);
+        
+        switch (pathname) {    
+            case '/login':
+                res.setHeader('Content-Type', 'text/text');
+
+                login.processRequest(params, (code, message) => {
+                    res.statusCode = code;
+                    console.log("Login status code: " + code);
+                    res.end(message);
+                });
+
+                break;
+                
+            case '/signup':
+                res.setHeader('Content-Type', 'text/text');
+
+                signup.processRequest(params, (code, message) => {
+                    res.statusCode = code;
+                    console.log("SignUp status code: " + res.statusCode);
+                    res.end(message);
+                });
+
+                break;
+            default:
+                res.statusCode = 405;
+                res.end();
+        }
+    });
+}
 
 //Code for `socket.io` integration
 const socket = require('socket.io');
@@ -147,18 +186,18 @@ io.on('connection', function (socket) {
     socket.on('game', function (msg) {
         var parsedURL = url.parse(msg, true);
         var pathname = parsedURL.pathname;
-        var queryParams = parsedURL.query;
+        var params = parsedURL.query;
 
         switch (pathname) {
             case '/game':
-                var ret = game.processRequest(queryParams);
+                var ret = game.processRequest(params);
                 if (ret === 'finish') {
                     this.emit('finish', true);
                     return;
                 } else if (ret === 'start') {
                     this.emit('start', true);
                 }
-                if (queryParams['action'] == 'get-data') {
+                if (params['action'] == 'get-data') {
                     this.emit('data', ret);
                 }
                 break;

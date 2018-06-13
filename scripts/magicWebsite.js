@@ -603,22 +603,57 @@ function signUpRequest() {
 	var repassword = document.getElementById("repasswordInput");
 
 	if(username != null && password != null && repassword != null) {
-		if(password.value == repassword.value) {
+		if(password.value === repassword.value) {
 			var xmlRequest = new XMLHttpRequest();
-			var serverURL = "https://localhost:3000/signup?";
-			serverURL = serverURL + "username=" + username.value + "&password=" + password.value;
-			xmlRequest.open("POST", serverURL, true);
-			xmlRequest.send();
-
-			setTimeout(function() {
-				if(xmlRequest.status == 200) {
-					buildLoginMenu();
-				}
-			}, 500);
+			var serverURL = "https://localhost:3000/signup";
+      
+      xmlRequest.onreadystatechange = function() {
+        if(this.readyState == 4) {
+          if(this.status == 200) {
+  					buildLoginMenu();
+          } else {
+            // EUGEN: inregistrare fara succes, afiseaza mesaj
+          }
+        }
+      }
+      
+      xmlRequest.open("POST", serverURL, true);
+      xmlRequest.send("username=" + username.value + "&password=" + password.value);
 		} else {
 			alert("Passwords are not identical! Try again!");
 		}
 	}
+}
+
+function loginRequest() {
+  var username = document.getElementById("usernameInput");
+  var password = document.getElementById("passwordInput");
+
+  if(username != null && password != null) {
+    var xmlRequest = new XMLHttpRequest();
+    var serverURL = "https://localhost:3000/login";
+    
+    xmlRequest.onreadystatechange = function() {
+      if(this.readyState == 4) {
+        if(this.status == 200) {
+          uuid = this.responseText;
+          
+          if(uuid === "") {
+            alert('uuid not generated');
+          } else {
+            sceneTransition('loginCanvas','menuCanvas');
+            
+            socket.emit('new user', uuid);
+          }
+        } else {
+          // EUGEN: login fara succes, afiseaza mesaj
+        }
+      }
+    }
+    
+    xmlRequest.open("POST", serverURL, true);
+    xmlRequest.send("username=" + username.value + "&password=" + password.value);
+  }
 }
 
 //Utilitary function for server requests
@@ -628,36 +663,4 @@ function makeSynchronousRequest(url) {
         return;
     }
     socket.emit('game', url + "&player=" + uuid);
-}
-
-function loginRequest() {
-	var username = document.getElementById("usernameInput");
-	var password = document.getElementById("passwordInput");
-
-	if(username != null && password != null) {
-		var xmlRequest = new XMLHttpRequest();
-		var serverURL = "https://localhost:3000/login?";
-		serverURL = serverURL + "username=" + username.value + "&password=" + password.value;
-		
-		xmlRequest.onreadystatechange = function() {
-			if(this.readyState == 4 && this.status == 200) {
-				uuid = this.responseText;
-				
-				if(uuid === "") {
-					alert('uuid not generated');
-				} else {
-					setTimeout(function() {
-						if(xmlRequest.status == 200) {
-							sceneTransition('loginCanvas','menuCanvas');
-						}
-					}, 500);
-                    
-                    socket.emit('new user', uuid);
-				}
-			}
-		}
-		
-		xmlRequest.open("GET", serverURL, true);
-		xmlRequest.send();
-	}
 }
