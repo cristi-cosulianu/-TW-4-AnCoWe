@@ -31,9 +31,9 @@ function getKeyCodes(sessionId, callback) {
   }
   
   sessionController.getUserId(sessionId)
-    .then(userId => {
-      if(userId === undefined) throw new Error("invalid sessionId");
-      return optionsController.getAll(userId);
+    .then(result => {
+      if(result.length === 0) throw new Error("invalid sessionId");
+      return optionsController.getAll(result[0].user_id);
     }).then(result => {
       callback(200, JSON.stringify(result));
     })
@@ -75,9 +75,9 @@ function updateKeyCode(sessionId, key, keyCode, callback) {
   }
   
   sessionController.getUserId(sessionId)
-    .then(userId => {
-      if(userId === undefined) throw new Error("invalid sessionId");
-      return optionsController.update(userId, column, keyCode);
+    .then(result => {
+      if(result.length === 0) throw new Error("invalid sessionId");
+      return optionsController.update(result[0].user_id, column, keyCode);
     }).then(result => {
       callback(200, 'ok');
     })

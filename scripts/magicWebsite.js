@@ -544,7 +544,7 @@ function updateKeyCodes(elementId,keyCode) {
 	var serverURL = "https://localhost:3000/options?";
 	serverURL = serverURL + "action=update&key=" + elementId + "&code=" + keyCode + "&player=" + uuid;
 	//console.log(serverURL);
-	xmlRequest.open("POST", serverURL, true);
+	xmlRequest.open("GET", serverURL, true);
 	xmlRequest.send();
 	return xmlRequest.response;
 }

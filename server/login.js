@@ -6,7 +6,8 @@
 const sessionIdGenerator = require('./session-id-generator.js');
 const userController = require('./userController.js').userController;
 const sessionController = require('./sessionController').sessionController;
-var md5 = require("blueimp-md5");
+const md5 = require("blueimp-md5");
+
 module.exports = {
 	processRequest: function(params, callback) {
 		if(params['username'] === undefined || params['password'] === undefined) {
@@ -19,11 +20,13 @@ module.exports = {
     var validPassword, sessionId;
     
     userController.validPassword(username, password)
-    	.then(valid => {
-    		validPassword = valid;
+    	.then(result => {
+    		validPassword = (result[0].nr > 0);
     		return userController.getId(username);
     	})
-    	.then(userId => {
+    	.then(result => {
+            var userId = (result.length > 0 ? result[0].id : undefined);
+            
     		if(!validPassword) {
     			callback(405, 'invalid username or password');
     		} else {
@@ -36,15 +39,8 @@ module.exports = {
 			    }
     		}
     	})
-    	.then(success => {
-    		if(success === undefined) return;
-    		
-    		if(success == true) {
-                // console.log('20000000');
-		    	callback(200, sessionId);
-		    } else {
-		    	callback(405, 'database error');
-		    }
+    	.then(result => {
+	    	callback(200, sessionId);
     	})
     	.catch(err => {
     		console.log(err);

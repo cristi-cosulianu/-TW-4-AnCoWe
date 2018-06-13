@@ -1,64 +1,29 @@
-sql = require('./sqlconnect.js');
+const db = require('./databaseQuery.js').databaseQuery;
 
 class UserController {
-    constructor() {
-        this.conn = sql.conn;
-    }
-    
     exists(username) {
-    	
     	return false;
     }
     
     validPassword(username, password) {
     	var queryString = "SELECT COUNT(*) AS nr FROM users WHERE username = ? AND password = ?;";
       var args = [username, password];
-      // console.log(queryString);
       
-      return new Promise((resolve, reject) => {
-        this.conn.query(queryString, args, function (err, result, fields) {
-          if(err) {
-            return reject(err);
-          }
-          
-          resolve(result[0].nr > 0);
-        });
-      });
+      return db.select(queryString, args);
     }
     
     create(username, password) {
     	var queryString = "INSERT INTO users (username, password) VALUES (?, ?);";
       var args = [username, password];
       
-      return new Promise((resolve, reject) => {
-        this.conn.query(queryString, args, function (err, result) {
-          if(err) {
-            return reject(err);
-          }
-          
-          // console.log(result);
-          resolve(result);
-        });
-      });
+      return db.insert(queryString, args);
     }
     
     getId(username) {
     	var queryString = "SELECT id FROM users WHERE username = ?;";
       var args = [username];
       
-      return new Promise((resolve, reject) => {
-        this.conn.query(queryString, args, function (err, result, fields) {
-          if(err) {
-            return reject(err);
-          }
-          
-          if(result.length > 0) {
-            resolve(result[0].id);
-          } else {
-            resolve(undefined);
-          }
-        });
-      });
+      return db.select(queryString, args);
     }
 }
 

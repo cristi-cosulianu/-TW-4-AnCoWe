@@ -1,88 +1,39 @@
-sql = require('./sqlconnect.js');
+const db = require('./databaseQuery.js').databaseQuery;
 
-class SessionController {
-    constructor() {
-        this.conn = sql.conn;
-    }
-    
+class SessionController {    
     exists(sessionId) {
         var queryString = "SELECT COUNT(*) AS nr FROM sessions WHERE session_id = ?;";
         var args = [sessionId];
         
-        this.conn.query(queryString, args, function (err, result, fields) {
-            if(err) {
-                console.log(err);
-                return -1;
-            }
-            
-            return (result[0].nr > 0);
-        });
+        return false;
     }
     
     create(userId, sessionId) {
         var queryString = "INSERT INTO sessions (user_id, session_id) VALUES (?, ?);";
         var args = [userId, sessionId];
         
-        return new Promise((resolve, reject) => {
-            this.conn.query(queryString, args, function(err, result) {
-                if(err) {
-                    return reject(err);
-                }
-                
-                resolve(true);
-            });
-        });
+        return db.insert(queryString, args);
     }
     
     getUserId(sessionId) {
         var queryString = "SELECT user_id FROM sessions WHERE session_id = ?;";
         var args = [sessionId];
       
-        return new Promise((resolve, reject) => {
-            this.conn.query(queryString, args, function (err, result, fields) {
-                if(err) {
-                    return reject(err);
-                }
-                
-                // console.log(result);
-                  
-                if(result.length > 0) {
-                    resolve(result[0].user_id);
-                } else {
-                    resolve(undefined);
-                }
-            });
-        });
+        return db.select(queryString, args);
     }
     
     delete(sessionId) {
         var queryString = "DELETE FROM sessions WHERE session_id = ?;";
         var args = [sessionId];
         
-        return new Promise((resolve, reject) => {
-            this.conn.query(queryString, args, function (err, result, fields) {
-                if(err) {
-                    return reject(err);
-                }
-                
-                resolve(result);
-            });
-        });
+        return db.delete(queryString, args);
     }
     
     deleteAll() {
         var queryString = "DELETE FROM sessions;";
         var args = [];
         
-        return new Promise((resolve, reject) => {
-            this.conn.query(queryString, args, function (err, result, fields) {
-                if(err) {
-                    return reject(err);
-                }
-                
-                resolve(result);
-            });
-        });
+        return db.delete(queryString, args);
     }
 }
 
