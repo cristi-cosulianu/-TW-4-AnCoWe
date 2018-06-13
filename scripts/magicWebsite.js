@@ -613,7 +613,7 @@ function signUpRequest() {
           if(this.status == 200) {
   					buildLoginMenu();
           } else {
-            // EUGEN: inregistrare fara succes, afiseaza mesaj
+            alert("Try to register again!");
           }
         }
       }
@@ -647,7 +647,7 @@ function loginRequest() {
             socket.emit('new user', uuid);
           }
         } else {
-          // EUGEN: login fara succes, afiseaza mesaj
+          alert("Check your username and password!");
         }
       }
     }
@@ -655,6 +655,19 @@ function loginRequest() {
     xmlRequest.open("POST", serverURL, true);
     xmlRequest.send("username=" + username.value + "&password=" + password.value);
   }
+}
+
+function buildScoreList(){
+  var xmlRequest = new XMLHttpRequest();
+  var numberOfScores = 14;
+  var serverURL = "https://localhost:3000/scores/" + numberOfScores;
+
+  var scoreList = document.getElementById("scoreList");
+
+  xmlRequest.onreadystatechange = function() {
+    console.log(xmlRequest.response);
+  }
+
 }
 
 //Utilitary function for server requests

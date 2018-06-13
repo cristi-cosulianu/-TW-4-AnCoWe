@@ -65,7 +65,7 @@
                         onclick="sceneTransition('menuCanvas','optionsCanvas')" 
                         href="#options">Options</a></li>
                     <li><a class="menuButtonLink themeBox" 
-                        onclick="sceneTransition('menuCanvas','hallOfFameCanvas')" 
+                        onclick="sceneTransition('menuCanvas','hallOfFameCanvas');buildScoreList()" 
                         href="#hallOfFame">Hall Of Fame</a></li>
                     <li><a class="menuButtonLink themeBox" 
                         onclick="sceneTransition('menuCanvas','creditsCanvas');addSlider('slider')" 
@@ -156,14 +156,18 @@
 
         <div id="hallOfFameCanvas" class="fullscreen toBotTransition">
 
-            <div class="listOfPlayers themeBox themeText">
-                <ul>
+            <div id="listOfPlayers" class="themeBox themeText">
+                <ul id="scoreList">
+                    <li class="firstPlace">Alex Loghin : 5031</li>
+                    <li class="secondPlace">Alex Loghin : 2313</li>
+                    <li class="thirdPlace">Alex Loghin : 1231</li>
+                    <li>Alex Loghin : 542</li>
+                    <li>Alex Loghin : 140</li>
                     <li>Alex Loghin : 5031</li>
                     <li>Alex Loghin : 2313</li>
                     <li>Alex Loghin : 1231</li>
                     <li>Alex Loghin : 542</li>
                     <li>Alex Loghin : 140</li>
-                    <li>Alex Loghin : 5031</li>
                     <li>Alex Loghin : 2313</li>
                     <li>Alex Loghin : 1231</li>
                     <li>Alex Loghin : 542</li>

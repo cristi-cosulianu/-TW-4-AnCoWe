@@ -351,23 +351,40 @@ nav form > a {
     background-color: aquamarine;
 }
 
-.listOfPlayers{
+#listOfPlayers{
     position: relative;
 
     width: 40vw;
     height: 80vh;
     margin: 5vh 30vw 15vh 30vw;
 
-    font-size: 3vh;
+    font-size: 2vw;
     font-family: Courier New, Courier, monospace;
 }
 
-.listOfPlayers ul li{
+#listOfPlayers ul li{
     display: flex;
     width: 100%;
     align-items: center;
     justify-content: center;
 }
+
+.firstPlace {
+    color: yellow;
+    font-size: 3.1vw;
+}
+
+.secondPlace {
+    color: silver;
+    font-size: 2.8vw;
+}
+
+.thirdPlace {
+    color: #af3e01;
+    font-size: 2.5vw;
+}
+
+
 
 /* ---------------------------------------------------------- CREDITS CANVAS -- */
 
@@ -575,6 +592,11 @@ canvas{
         font-size: 5vh;
     }
 
+    #listOfPlayers{
+        width: 60vw;
+        margin: 5vh 20vw 15vh 20vw;
+    }
+    
 }
 
 @media only screen and (min-width: 480px) and (max-width: 767px) {
@@ -594,6 +616,13 @@ canvas{
         font-size: 5vh;
     }
 
+
+    #listOfPlayers{
+        width: 80vw;
+        margin: 5vh 10vw 15vh 10vw;
+    }
+
+
 }
 
 @media only screen and (max-width: 479px) {
@@ -610,7 +639,13 @@ canvas{
     }
 
     #chooseCharacterCanvas ul li{
-        font-size: 4vh;
+        font-size: 2vh;
     }
+
+    #listOfPlayers{
+        width: 90vw;
+        margin: 5vh 5vw 15vh 5vw;
+    }
+    
 
 }
