@@ -38,6 +38,7 @@ fs.readdir('./server/data', (err, files) => {
 //Creating the server and the function for request processing
 const server = http.createServer(options2, (req, res) => {
     res.statusCode = 200;
+    res.setHeader('Access-Control-Allow-Origin', '*');
     // Url parsing for procesing
     var parsedURL = url.parse(req.url, true);
     var pathname = parsedURL.pathname;
