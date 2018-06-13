@@ -522,12 +522,13 @@ function changeKey(elementId) {
 				case "dashKey": keyCodes.dashKeyCode = keyCode; break;
 				default: break;
 			}
+      
 			try {
-			updateKeyCodes(elementId, keyCode);
-		}
-		catch(err) {
-			console.log(err.message);
-		}
+  			updateKeyCodes(elementId, keyCode);
+  		}
+  		catch(err) {
+  			console.log(err.message);
+  		}
 	
 			pressed = true;
 		}

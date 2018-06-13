@@ -108,7 +108,7 @@ function processGETRequest(req, res) {
                     res.statusCode = 404;
                     res.end('Page not found!');
                 } else {
-                    throw err;
+                    res.end('Illegal operation!');
                 }
             });
     }
