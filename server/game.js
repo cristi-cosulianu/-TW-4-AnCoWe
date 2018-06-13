@@ -25,11 +25,12 @@ class GameController {
         data.defaultGroundX = ((data.referenceScale - 50 - 64) * data.canvasHeight) / data.referenceScale;
         data.player.groundBase = data.defaultGroundX;
         data.objects = GameController.readLevel("1");
-        data.objects.push(new util.GameObject("flag", 500, data.defaultGroundX - 64 - 32 - 78, 32, 256));
-        //fs.writeFileSync('levels/1.txt', JSON.stringify(data.objects));
+        data.triggers = GameController.readTriggers("1");
         util.scaleWorldObjects(data);
         data.gravity.y = util.getAspectRatio(data.gravity.y, data.referenceScale, data.canvasHeight, false);
         data.speed = util.getAspectRatio(data.speed, data.referenceScale, data.canvasHeight, false);
+        data.triggers.forEach((item) => {item.enabled = true;});
+        this.writeTriggers("1", data.triggers);
         this.writeData(data, player);
     };
     //KeyPressed controller 
@@ -113,6 +114,30 @@ class GameController {
             console.log(e);
         }
     }
+
+    static writeLevel(level, data) {
+        try {
+            fs.writeFileSync('levels/' + level + '.txt', JSON.stringify(data));
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    static readTriggers(level) {
+        try {
+            return JSON.parse(fs.readFileSync('levels/triggers' + level + '.txt', 'utf8'));
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    static writeTriggers(level, data) {
+        try {
+            fs.writeFileSync('levels/triggers' + level + '.txt', JSON.stringify(data));
+        } catch (e) {
+            console.log(e);
+        }
+    }
     //Utilitary function for key updates
     static updateKeys(keyCode, action, data) {
         if (action !== "pressed") {
@@ -175,12 +200,12 @@ class GameController {
             data.movementSpeed = data.speed;
             data.player.inAir = false;
         }
-        
-        if(player.position.y === data.player.groundBase) {
+
+        if (player.position.y === data.player.groundBase) {
             data.player.inAir = false;
             data.double_jump = 0;
         }
-        
+
         if (data.right === true && data.left === false && dir.y < 12) {
             if (dir.x === 0 && !data.player.inAir) {
                 dir.x = data.movementSpeed;
@@ -282,6 +307,22 @@ class GameController {
         }
 
     }
+    //Spawning objects and enemies on a trigger during runtime
+    static runTimeObjects(data) {
+        let hasChanged = false;
+        for (let i = 0; i < data.triggers.length; ++i) {
+            if (data.triggers[i].enabled) {
+                if (eval(data.triggers[i].condition)) {
+                    data.objects.push(new util.MovableGameObject(data.triggers[i].type, data.triggers[i].position.x, data.triggers[i].position.y, util.getAspectRatio(data.triggers[i].width, data.referenceScale, data.canvasHeight, true), util.getAspectRatio(data.triggers[i].height, data.referenceScale, data.canvasHeight, true)));
+                    data.triggers[i].enabled = false;
+                    hasChanged = true;
+                }
+            }
+        }
+        if (hasChanged) {
+            this.writeTriggers("1", data.triggers);
+        }
+    }
     //Collision checking for all `GameObject` contained in the level
     static checkCollision(data, object, takeAction) {
         let response = [];
@@ -373,6 +414,8 @@ class GameController {
         }
         var collidingWith = this.checkCollision(data, data.player, "player");
 
+        this.runTimeObjects(data);
+
         if (this.collisionAction(collidingWith, data, player) === "finish") return "finish";
 
         if (collidingWith.length) {
@@ -445,6 +488,9 @@ class GameController {
             data.player.bottomCollision = false;
             data.player.dir.x = 1;
             data.player.dir.y = 0;
+            data.triggers.forEach((item) => {
+                item.enabled = true;
+            });
             data.player.inAir = false;
             data.space = false;
             data.player.currentPlatformIndex = 0;

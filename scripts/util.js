@@ -37,6 +37,7 @@ class Vector2 {
 
 }
 
+
 class GameObject {
     constructor(type, x, y, width, height) {
         this.type = type;
@@ -60,6 +61,20 @@ class MovableGameObject extends GameObject {
         this.bottomCollision = false;
     }
 }
+
+
+class Trigger extends GameObject {
+    constructor(condition, enabled, type, x, y, width, height) {
+        super(type, x, y, width, height);
+        this.type = type;
+        this.position = new Vector2(x, y);
+        this.width = width;
+        this.height = height;
+        this.condition = condition;
+        this.enabled = enabled;
+    }
+}
+
 
 function getBottom(object) {
     return object.position.y + object.height;
@@ -126,5 +141,6 @@ module.exports = {
     getTop,
     getRight,
     getAspectRatio,
-    scaleWorldObjects
+    scaleWorldObjects,
+    Trigger
 };

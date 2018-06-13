@@ -1,0 +1,1 @@
+[{"type":"goomba","position":{"x":8128,"y":0},"width":64,"height":64,"condition":"data.backgroundX < -7000","enabled":false}]
