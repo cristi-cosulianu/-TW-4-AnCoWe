@@ -29,8 +29,6 @@ class GameController {
         util.scaleWorldObjects(data);
         data.gravity.y = util.getAspectRatio(data.gravity.y, data.referenceScale, data.canvasHeight, false);
         data.speed = util.getAspectRatio(data.speed, data.referenceScale, data.canvasHeight, false);
-        data.triggers.forEach((item) => {item.enabled = true;});
-        this.writeTriggers("1", data.triggers);
         this.writeData(data, player);
     };
     //KeyPressed controller 
@@ -309,18 +307,13 @@ class GameController {
     }
     //Spawning objects and enemies on a trigger during runtime
     static runTimeObjects(data) {
-        let hasChanged = false;
         for (let i = 0; i < data.triggers.length; ++i) {
             if (data.triggers[i].enabled) {
                 if (eval(data.triggers[i].condition)) {
-                    data.objects.push(new util.MovableGameObject(data.triggers[i].type, data.triggers[i].position.x, data.triggers[i].position.y, util.getAspectRatio(data.triggers[i].width, data.referenceScale, data.canvasHeight, true), util.getAspectRatio(data.triggers[i].height, data.referenceScale, data.canvasHeight, true)));
+                    data.objects.push(new util.MovableGameObject(data.triggers[i].type, util.getAspectRatio(data.triggers[i].position.x, data.referenceScale, data.canvasHeight, true), util.getAspectRatio(data.triggers[i].position.y, data.referenceScale, data.canvasHeight, true), util.getAspectRatio(data.triggers[i].width, data.referenceScale, data.canvasHeight, true), util.getAspectRatio(data.triggers[i].height, data.referenceScale, data.canvasHeight, true)));
                     data.triggers[i].enabled = false;
-                    hasChanged = true;
                 }
             }
-        }
-        if (hasChanged) {
-            this.writeTriggers("1", data.triggers);
         }
     }
     //Collision checking for all `GameObject` contained in the level

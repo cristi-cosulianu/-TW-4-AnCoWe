@@ -1,1 +1,1 @@
-[{"type":"goomba","position":{"x":8128,"y":0},"width":64,"height":64,"condition":"data.backgroundX < -7000","enabled":false}]
+[{"type":"goomba","position":{"x":8128,"y":0},"width":64,"height":64,"condition":"data.backgroundX < util.getAspectRatio(-7000, data.referenceScale, data.canvasHeight, true)","enabled":true}]
