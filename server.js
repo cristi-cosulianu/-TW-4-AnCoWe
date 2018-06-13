@@ -184,23 +184,17 @@ io.on('connection', function (socket) {
     
     //Preparing the socket for `game` event
     socket.on('game', function (msg) {
-        var parsedURL = url.parse(msg, true);
-        var pathname = parsedURL.pathname;
-        var params = parsedURL.query;
+        var params = qs.parse(msg);
 
-        switch (pathname) {
-            case '/game':
-                var ret = game.processRequest(params);
-                if (ret === 'finish') {
-                    this.emit('finish', true);
-                    return;
-                } else if (ret === 'start') {
-                    this.emit('start', true);
-                }
-                if (params['action'] == 'get-data') {
-                    this.emit('data', ret);
-                }
-                break;
+        var ret = game.processRequest(params);
+        if (ret === 'finish') {
+            this.emit('finish', true);
+            return;
+        } else if (ret === 'start') {
+            this.emit('start', true);
+        }
+        if (params['action'] == 'get-data') {
+            this.emit('data', ret);
         }
     });
 });

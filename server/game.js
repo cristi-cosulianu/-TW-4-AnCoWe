@@ -522,9 +522,9 @@ class GameController {
                 break;
             case "flag":
                 if (!doneSending) {
-                    sessions.getUserId(player).then(userId => {
-                        if (userId != undefined) {
-                            score.add(userId, data.currentTime - data.startTime, data.deaths);
+                    sessions.getUserId(player).then(result => {
+                        if (result.length > 0) {
+                            score.add(result[0].user_id, data.currentTime - data.startTime, data.deaths);
                             doneSending = true;
                         }
                     });

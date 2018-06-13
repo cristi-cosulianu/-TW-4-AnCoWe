@@ -331,12 +331,12 @@ function startGame() {
         render();
     };
     window.onblur = () => {
-        makeSynchronousRequest("https://localhost:3000/game?action=key-released&keycode=leftKey");
-        makeSynchronousRequest("https://localhost:3000/game?action=key-released&keycode=rightKey");
-        makeSynchronousRequest("https://localhost:3000/game?action=key-released&keycode=jumpKey");
+        sendGameEvent("action=key-released&keycode=leftKey");
+        sendGameEvent("action=key-released&keycode=rightKey");
+        sendGameEvent("action=key-released&keycode=jumpKey");
     }
     
-    makeSynchronousRequest("https://localhost:3000/game?action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
+    sendGameEvent("action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
 }
 
 
@@ -658,7 +658,7 @@ function loginRequest() {
 }
 
 //Utilitary function for server requests
-function makeSynchronousRequest(url) {
+function sendGameEvent(url) {
     if (uuid === undefined) {
         console.log("uuid undefined");
         return;
