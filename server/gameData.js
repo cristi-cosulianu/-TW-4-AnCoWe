@@ -21,6 +21,7 @@ class gameData {
         this.powerUp = NaN;
         this.rightKeyCode = 39;
         this.leftKeyCode = 37;
+        this.triggers = [];
         this.downKeyCode = 40;
         this.jumpKeyCode = 32;
         this.dashKeyCode = 16;
