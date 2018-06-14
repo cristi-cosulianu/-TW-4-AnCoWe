@@ -365,12 +365,12 @@ function getMarvelCharacter(name, container, callback) {
 
 function getPowerUp(name) {
   switch(name) {
-    case 'Spider-Man': return 'sare ca musca pe pereti';
-    case 'Hulk': return 'omoara gandaci';
-    case 'Ant-Man (Eric O\'Grady)': return 'se face mic';
-    case 'OnePunchMan': return 'nu moare';
-    case 'RockLee': return 'degeaba';
-    case 'Sasuke': return 'boss';
+    case 'Spider-Man': return 'You can climb the walls';
+    case 'Hulk': return "Defeat enemies by jumping on their head";
+    case 'Ant-Man (Eric O\'Grady)': return 'You have a smaller hitbox';
+    case 'OnePunchMan': return 'Death has no effect';
+    case 'RockLee': return 'You can jump much higher';
+    case 'Sasuke': return 'Spikes in game can not damage you';
   }
 }
 
