@@ -340,17 +340,17 @@ function startGame() {
 }
 
 function getMarvelCharacter(name, container, callback) {
-  var url = "https://gateway.marvel.com/v1/public/characters?apikey=15b0df9dd78ed4c3d58e10b0c3d36a57&hash=758e48b905e396fca02324d24f1f7b06&ts=432&name=" + name;
+  var url = "https://gateway.marvel.com/v1/public/characters?apikey=63f88889c3e3999be9361665cc13c349&hash=4d3361be92af411513c84f8bab1ae364&ts=432&name=" + name;
   var xmlRequest = new XMLHttpRequest();
 
   xmlRequest.onreadystatechange = function () {
-    if (this.readyState == 4 /*&& this.status == 200*/) {
+    if (this.readyState == 4 && this.status == 200) {
       try {
         var data = JSON.parse(this.responseText).data;
       
         var thumbnail = data.results[0].thumbnail;
         var imgUrl = thumbnail.path + '/portrait_xlarge.' + thumbnail.extension;
-        var imgUrl = "../icons/1.jpg";
+        // var imgUrl = "../icons/1.jpg";
         var description = data.results[0].description;
         
         callback(container, name, description, imgUrl);
@@ -364,9 +364,9 @@ function getMarvelCharacter(name, container, callback) {
 }
 
 function addMarvelCharacter(container, name) {
-  getAnimeCharacter(name, container, (container, name, description, imgUrl) => {
+  getMarvelCharacter(name, container, (container, name, description, imgUrl) => {
     var anchor = document.createElement("a");
-    anchor.setAttribute("id",name);
+    anchor.setAttribute("id", name);
     anchor.setAttribute("class", "buttonGame characterIcon");
     var goOnClick = "buildMarvelStoryPage('" + name + "')";
     anchor.setAttribute("onclick",goOnClick);
@@ -515,7 +515,8 @@ window.addEventListener("load", () => {
 			document.getElementById("rightDiv").classList.remove('rightCurtain');
 	});
 
-	var marvel = ["Spider-Man", "Ant-Man", "Hulk"];
+  // var marvel = ["Spider-Man"];
+	var marvel = ["Spider-Man", "Ant-Man (Eric O'Grady)", "Hulk"];
 	var anime = ["OnePunchMan", "Sasuke", "RockLee"];
   var marvelDiv = document.getElementById("marvel");
 	var animeDiv = document.getElementById("anime");
