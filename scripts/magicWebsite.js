@@ -368,7 +368,8 @@ function addMarvelCharacter(container, name) {
     var anchor = document.createElement("a");
     anchor.setAttribute("id", name);
     anchor.setAttribute("class", "buttonGame characterIcon");
-    var goOnClick = "buildMarvelStoryPage('" + name + "')";
+    var name2 = name.replace('\'', '\\\'');
+    var goOnClick = "buildMarvelStoryPage('" + name2 + "')";
     anchor.setAttribute("onclick",goOnClick);
 
     var image = document.createElement("img");
@@ -478,7 +479,8 @@ function buildStoryPage(characterName, description, imgUrl) {
 
 	// Create back button.
 	var backButton = document.getElementById("characterBackButton");
-	backButton.setAttribute("onclick","removeStoryPage('" + characterName + "')");
+  var characterName2 = characterName.replace('\'', '\\\'');
+	backButton.setAttribute("onclick","removeStoryPage('" + characterName2 + "')");
 }
 
 window.addEventListener("load", () => {
