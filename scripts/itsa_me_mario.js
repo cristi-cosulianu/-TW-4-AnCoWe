@@ -385,7 +385,7 @@ function millisToMinutesAndSeconds(millis) {
 
 
 function animate() {
-    if(data.character === "ant-man") return;
+    if(data.character === "Ant-Man (Eric O'Grady)") return;
     let xoffset = getAspectRatio(20, data.referenceScale, window.innerHeight);
     let yoffset = getAspectRatio(25, data.referenceScale, window.innerHeight);
     let width = getAspectRatio(100, data.referenceScale, window.innerHeight);

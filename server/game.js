@@ -24,19 +24,40 @@ class GameController {
         // Value at which the level was created initially scaling base out of that
         data.referenceScale = 750;
         data.defaultGroundX = ((data.referenceScale - 50 - 64) * data.canvasHeight) / data.referenceScale;
-        if (data.character === "ant-man") {
+        if (data.character === "Ant-Man (Eric O'Grady)") {
             data.player = new util.MovableGameObject(undefined, data.canvasWidth / 2 - 100, data.defaultGroundX, Math.floor(64 * data.canvasHeight / data.referenceScale) * 3 / 4, Math.floor(64 * data.canvasHeight / data.referenceScale) * 3 / 4);
             data.playerDefaultGroundX = data.defaultGroundX + util.getAspectRatio(util.getAspectRatio(64, data.referenceScale, data.canvasHeight, false) - data.player.height, data.referenceScale, data.canvasHeight, true);
         } else {
             data.player = new util.MovableGameObject(undefined, data.canvasWidth / 2 - 100, data.defaultGroundX, Math.floor(64 * data.canvasHeight / data.referenceScale), Math.floor(64 * data.canvasHeight / data.referenceScale));
             data.playerDefaultGroundX = data.defaultGroundX
         }
-        if(data.character === "rock-lee"){
+        if (data.character === "RockLee") {
             data.jumpHeight = 8.75;
         }
         data.player.groundBase = data.playerDefaultGroundX;
         data.objects = GameController.readLevel("1");
         data.triggers = GameController.readTriggers("1");
+//
+//        data.objects.push(new util.GameObject("spikes", 7768, 100, 64, 64));
+//        data.objects.push(new util.GameObject("spikes", 8000, 500, 64, 64));
+//        data.objects.push(new util.MovableGameObject("goomba", 9000, -100, 64, 64));
+//        data.objects.push(new util.GameObject("spikes", 9100, 500, 64, 64));
+//
+//        data.objects.push(new util.GameObject("spikes", 9300, 500, 64, 64));
+//
+//        data.objects.push(new util.GameObject("spikes", 9500, 500, 64, 64));
+//
+//        data.objects.push(new util.GameObject("pipe", 10200, 639, 64, 128));
+//
+//        data.objects.push(new util.GameObject("spikes", 10700, 630, 64, 64));
+//
+//        data.objects.push(new util.GameObject("spikes", 11000, 630, 64, 64));
+//
+//        data.objects.push(new util.GameObject("spikes", 11300, 630, 64, 64));
+//
+//
+//
+//
         util.scaleWorldObjects(data);
         data.gravity.y = util.getAspectRatio(data.gravity.y, data.referenceScale, data.canvasHeight, false);
         data.speed = util.getAspectRatio(data.speed, data.referenceScale, data.canvasHeight, false);
@@ -367,7 +388,7 @@ class GameController {
 
                 }
                 // HULK SMAAAAAAAASHH !!!!!
-                if (data.objects[i].type === "goomba" && data.character === "hulk" && takeAction === "player") {
+                if (data.objects[i].type === "goomba" && data.character === "Hulk" && takeAction === "player") {
                     data.objects[i].groundBase = Number.MAX_SAFE_INTEGER;
                     data.objects[i].onPlatform = false;
                     data.objects[i].inAir = true;
@@ -395,7 +416,7 @@ class GameController {
                     object.leftCollision = true;
                 }
                 if (takeAction === "player") {
-                    if (data.player.inAir && data.space && !data.player.bottomCollision && data.objects[i].type === "wall" && data.character === "spider-man") {
+                    if (data.player.inAir && data.space && !data.player.bottomCollision && data.objects[i].type === "wall" && data.character === "Spider-Man") {
                         data.double_jump = 0;
                         data.bounce = true;
                         data.player.dir.y = 0;
@@ -412,7 +433,7 @@ class GameController {
                     object.rightCollision = true;
                 }
                 if (takeAction === "player") {
-                    if (data.player.inAir && data.space && !data.player.bottomCollision && data.objects[i].type === "wall" && data.character === "spider-man") {
+                    if (data.player.inAir && data.space && !data.player.bottomCollision && data.objects[i].type === "wall" && data.character === "Spider-Man") {
                         data.double_jump = 0;
                         data.bounce = true;
                         data.player.dir.y = 0;
@@ -533,7 +554,7 @@ class GameController {
     static collisionAction(collidingWith, data, player) {
         var actionType = "";
         for (let i = 0; i < collidingWith.length; ++i) {
-            if (collidingWith[i].type === "goomba" || (collidingWith[i].type === "spikes" && data.character !== "sasuke")) {
+            if (collidingWith[i].type === "goomba" || (collidingWith[i].type === "spikes" && data.character !== "Sasuke")) {
                 actionType = "death";
 
             }
