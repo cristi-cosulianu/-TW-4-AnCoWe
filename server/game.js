@@ -9,7 +9,8 @@ var doneSending;
 //Main Class that will handle socket events and data model manipulation
 class GameController {
     //Setting up the data model for the server
-    static start(player, info) {
+    static start(player, info, characterName) {
+        console.log(characterName);
         doneSending = false;
         var data = new gameData();
         if (data.startTime === undefined) {
@@ -17,6 +18,7 @@ class GameController {
             data.startTime = timer.getTime();
             data.currentTime = data.startTime;
         }
+        data.character = characterName;
         data.canvasWidth = JSON.parse(info[0]);
         data.canvasHeight = JSON.parse(info[1]);
         // Value at which the level was created initially scaling base out of that
@@ -574,7 +576,7 @@ module.exports = {
         }
         switch (params['action']) {
             case 'start':
-                GameController.start(params['player'], params['info']);
+                GameController.start(params['player'], params['info'], params['character']);
                 return 'start';
             case 'key-pressed':
                 GameController.keyPressed(params['player'], params['keycode']);

@@ -336,7 +336,7 @@ function startGame() {
         sendGameEvent("action=key-released&keycode=jumpKey");
     }
     
-    sendGameEvent("action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height));
+    sendGameEvent("action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height) + "&character=" + characterSelected);
 }
 
 
@@ -371,6 +371,8 @@ function addCharacter(container, name) {
 }
 
 function buildStoryPage(characterName) {
+  
+  characterSelected = characterName;
 
 	var container = document.getElementById("chooseCharacterCanvas");
 
@@ -447,18 +449,28 @@ window.addEventListener("load", () => {
 			document.getElementById("rightDiv").classList.remove('rightCurtain');
 	});
 
-	var heroes = ["Spider-Man", "Wolverine", "Daredevil", "Captain America", "Iron Man", "Thor", "Black Widow", "Hulk"];
-	var villains = ["Loki", "Red Skull", "Ultron", "Magneto", "Thanos", "Black Cat", "Galactus", "Apocalypse"];
+	var marvelHeroes = ["Spider-Man", "Wolverine", "Daredevil", "Captain America", "Iron Man", "Thor", "Black Widow", "Hulk"];
+	var marvelVillains = ["Loki", "Red Skull", "Ultron", "Magneto", "Thanos", "Black Cat", "Galactus", "Apocalypse"];
+  var animeHeroes = [];
+  var animeVillains = [];
 	var heroesDiv = document.getElementById("heroes");
 	var villainsDiv = document.getElementById("villains");
 
-	for (var i = 0; i < heroes.length; ++i) {
-		addCharacter(heroesDiv, heroes[i]);
+	for (var i = 0; i < marvelHeroes.length; ++i) {
+		addCharacter(heroesDiv, marvelHeroes[i]);
 	}
 
-	for (var i = 0; i < villains.length; ++i) {
-		addCharacter(villainsDiv, villains[i]);
+	for (var i = 0; i < marvelVillains.length; ++i) {
+		addCharacter(villainsDiv, marvelVillains[i]);
 	}
+  
+  for (var i = 0; i < animeHeroes.length; ++i) {
+    addCharacter(heroesDiv, animeHeroes[i]);
+  }
+
+  for (var i = 0; i < animeVillains.length; ++i) {
+    addCharacter(villainsDiv, animeVillains[i]);
+  }
 });
 
 function changeVolume(elementId) {

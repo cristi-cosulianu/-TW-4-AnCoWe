@@ -20,6 +20,7 @@ var wasInAir = false,
     landAnimationStart;
 var isPlaying = true;
 var uuid = undefined;
+var characterSelected = undefined;
 var keyCodes = {
     leftKeyCode: 37,
     rightKeyCode: 39,
