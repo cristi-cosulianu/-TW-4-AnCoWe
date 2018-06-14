@@ -21,9 +21,15 @@ class GameController {
         data.canvasHeight = JSON.parse(info[1]);
         // Value at which the level was created initially scaling base out of that
         data.referenceScale = 750;
-        data.player = new util.MovableGameObject(undefined, data.canvasWidth / 2 - 100, data.defaultGroundX, Math.floor(64 * data.canvasHeight / data.referenceScale), Math.floor(64 * data.canvasHeight / data.referenceScale));
         data.defaultGroundX = ((data.referenceScale - 50 - 64) * data.canvasHeight) / data.referenceScale;
-        data.player.groundBase = data.defaultGroundX;
+        if (data.character === "ant-man") {
+            data.player = new util.MovableGameObject(undefined, data.canvasWidth / 2 - 100, data.defaultGroundX, Math.floor(64 * data.canvasHeight / data.referenceScale) / 2, Math.floor(64 * data.canvasHeight / data.referenceScale) / 2);
+            data.playerDefaultGroundX = data.defaultGroundX + util.getAspectRatio(data.player.height , data.referenceScale , data.canvasHeight , true); 
+        } else {
+            data.player = new util.MovableGameObject(undefined, data.canvasWidth / 2 - 100, data.defaultGroundX, Math.floor(64 * data.canvasHeight / data.referenceScale), Math.floor(64 * data.canvasHeight / data.referenceScale));
+            data.playerDefaultGroundX = data.defaultGroundX
+        }
+        data.player.groundBase = data.playerDefaultGroundX;
         data.objects = GameController.readLevel("1");
         data.triggers = GameController.readTriggers("1");
         util.scaleWorldObjects(data);
@@ -172,7 +178,7 @@ class GameController {
         if (data.objects.length > 0) {
             if (player.position.y < data.player.groundBase || !data.player.onPlatform) {
                 if (!data.player.isDead) {
-                    data.player.groundBase = data.defaultGroundX;
+                    data.player.groundBase = data.playerDefaultGroundX;
                 }
             }
             if (util.getRight(player) < util.getLeft(data.objects[data.player.currentPlatformIndex]) + data.backgroundX || util.getLeft(player) > util.getRight(data.objects[data.player.currentPlatformIndex]) + data.backgroundX) {
@@ -324,16 +330,16 @@ class GameController {
             /*        if (util.getLeft(data.objects[i]) + data.backgroundX > data.canvasWidth) {
                        continue;
                     }*/
-            if(data.objects[i].position.y > 5000 ) {
-                data.objects.splice(i , 1);
+            if (data.objects[i].position.y > 5000) {
+                data.objects.splice(i, 1);
                 continue;
             }
-            
+
             if (takeAction === "enemy" && data.objects[i].hasOwnProperty("dir")) continue;
 
-            if (data.objects[data.player.currentPlatformIndex].type === "goomba"){
-                    data.space = false;
-                    data.player.currentPlatformIndex = 0;
+            if (data.objects[data.player.currentPlatformIndex].type === "goomba") {
+                data.space = false;
+                data.player.currentPlatformIndex = 0;
             }
 
             if (util.getTop(object) + object.height * 6 / 10 < util.getTop(data.objects[i]) && util.getBottom(object) > util.getTop(data.objects[i]) && ((util.getRight(object) - 10 > util.getLeft(data.objects[i]) + data.backgroundX && util.getRight(object) < util.getRight(data.objects[i]) + data.backgroundX) || (util.getLeft(object) + 10 < util.getRight(data.objects[i]) + data.backgroundX && util.getLeft(object) > util.getLeft(data.objects[i]) + data.backgroundX))) {
@@ -494,8 +500,8 @@ class GameController {
         if (isValidJson(tempData)) {
             data.objects = JSON.parse(tempData);
             data.player.position.x = data.canvasWidth / 2 - 100;
-            data.player.position.y = data.defaultGroundX;
-            data.player.groundBase = data.defaultGroundX;
+            data.player.position.y = data.playerDefaultGroundX;
+            data.player.groundBase = data.playerDefaultGroundX;
             data.player.rightCollision = false;
             data.player.leftCollision = false;
             data.player.topCollision = false;

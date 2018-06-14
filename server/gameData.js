@@ -14,6 +14,7 @@ class gameData {
         this.cameraSpeed = 0;
         this.gravity = new util.Vector2(0, 0.31);
         this.defaultGroundX = 606;
+        this.playerDefaultGroundX = 606;
         this.movementSpeed = 0;
         this.double_jump = 0;
         this.canvasWidth = 1280;
