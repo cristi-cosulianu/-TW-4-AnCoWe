@@ -18,4 +18,14 @@
 	"height": 64,
 	"condition": "data.player.currentPlatformIndex  == 40",
 	"enabled": true
+}, {
+	"type": "goomba",
+	"position": {
+		"x": 3988,
+		"y": 0
+	},
+	"width": 64,
+	"height": 64,
+	"condition": "data.player.currentPlatformIndex  == 35",
+	"enabled": true
 }]
