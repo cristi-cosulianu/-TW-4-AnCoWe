@@ -37,27 +37,6 @@ class GameController {
         data.player.groundBase = data.playerDefaultGroundX;
         data.objects = GameController.readLevel("1");
         data.triggers = GameController.readTriggers("1");
-//
-//        data.objects.push(new util.GameObject("spikes", 7768, 100, 64, 64));
-//        data.objects.push(new util.GameObject("spikes", 8000, 500, 64, 64));
-//        data.objects.push(new util.MovableGameObject("goomba", 9000, -100, 64, 64));
-//        data.objects.push(new util.GameObject("spikes", 9100, 500, 64, 64));
-//
-//        data.objects.push(new util.GameObject("spikes", 9300, 500, 64, 64));
-//
-//        data.objects.push(new util.GameObject("spikes", 9500, 500, 64, 64));
-//
-//        data.objects.push(new util.GameObject("pipe", 10200, 639, 64, 128));
-//
-//        data.objects.push(new util.GameObject("spikes", 10700, 630, 64, 64));
-//
-//        data.objects.push(new util.GameObject("spikes", 11000, 630, 64, 64));
-//
-//        data.objects.push(new util.GameObject("spikes", 11300, 630, 64, 64));
-//
-//
-//
-//
         util.scaleWorldObjects(data);
         data.gravity.y = util.getAspectRatio(data.gravity.y, data.referenceScale, data.canvasHeight, false);
         data.speed = util.getAspectRatio(data.speed, data.referenceScale, data.canvasHeight, false);
@@ -457,6 +436,7 @@ class GameController {
                 this.updateEnemyPosition(data);
             } else {
                 this.resetLevel(data, "1");
+
             }
             return;
         }
@@ -531,6 +511,7 @@ class GameController {
             data.player.position.y = data.playerDefaultGroundX;
             data.player.groundBase = data.playerDefaultGroundX;
             data.player.rightCollision = false;
+            if (data.character === "OnePunchMan") data.startTime = data.currentTime;
             data.player.leftCollision = false;
             data.player.topCollision = false;
             data.player.bottomCollision = false;
@@ -556,7 +537,6 @@ class GameController {
         for (let i = 0; i < collidingWith.length; ++i) {
             if (collidingWith[i].type === "goomba" || (collidingWith[i].type === "spikes" && data.character !== "Sasuke")) {
                 actionType = "death";
-
             }
             if (collidingWith[i].type === "flag") {
                 actionType = "flag";
