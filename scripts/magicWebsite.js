@@ -339,35 +339,74 @@ function startGame() {
     sendGameEvent("action=start" + "&info=" + JSON.stringify(canvas.width) + "&info=" + JSON.stringify(canvas.height) + "&character=" + characterSelected);
 }
 
+function getMarvelCharacter(name, container, callback) {
+  var url = "https://gateway.marvel.com/v1/public/characters?apikey=15b0df9dd78ed4c3d58e10b0c3d36a57&hash=758e48b905e396fca02324d24f1f7b06&ts=432&name=" + name;
+  var xmlRequest = new XMLHttpRequest();
 
-function addCharacter(container, name) {
-	var url = "https://gateway.marvel.com/v1/public/characters?apikey=15b0df9dd78ed4c3d58e10b0c3d36a57&hash=758e48b905e396fca02324d24f1f7b06&ts=432&name=" + name;
-	var xmlRequest = new XMLHttpRequest();
+  xmlRequest.onreadystatechange = function () {
+    if (this.readyState == 4 /*&& this.status == 200*/) {
+      try {
+        var data = JSON.parse(this.responseText).data;
+      
+        var thumbnail = data.results[0].thumbnail;
+        var imgUrl = thumbnail.path + '/portrait_xlarge.' + thumbnail.extension;
+        var imgUrl = "../icons/1.jpg";
+        var description = data.results[0].description;
+        
+        callback(container, name, description, imgUrl);
+      } catch(e) {
+        console.log(e);
+      }
+    }
+  };
+  xmlRequest.open("GET", url, true);
+  xmlRequest.send();
+}
 
-	xmlRequest.onreadystatechange = function () {
+function addMarvelCharacter(container, name) {
+  getMarvelCharacter(name, container, addCharacter);
+}
 
-		// if (this.readyState == 4 && this.status == 200) {
-			// var thumbnail = JSON.parse(this.responseText).data.results[0].thumbnail;
-			// var imgUrl = thumbnail.path + '/portrait_xlarge.' + thumbnail.extension;
-			var imgUrl = "../icons/1.jpg";
+function getAnimeCharacter(name, container, callback) {
+  var url = "http://localhost:8080/name/" + name;
+  var xmlRequest = new XMLHttpRequest();
 
-			var anchor = document.createElement("a");
-			anchor.setAttribute("id",name);
-			anchor.setAttribute("class", "buttonGame characterIcon");
-			var goOnClick = "buildStoryPage('" + name + "')";
-			anchor.setAttribute("onclick",goOnClick);
+  xmlRequest.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      try {
+        var data = JSON.parse(this.responseText);
+      
+        var imgUrl = data.picture;
+        var description = data.description;
+        
+        callback(container, name, description, imgUrl);
+      } catch(e) {
+        console.log(e);
+      }
+    }
+  };
+  xmlRequest.open("GET", url, true);
+  xmlRequest.send();
+}
 
-			var image = document.createElement("img");
-			image.setAttribute("src", imgUrl);
-			image.setAttribute("class", "icon");
-			image.setAttribute("alt", name);
+function addAnimeCharacter(container, name) {
+  getAnimeCharacter(name, container, addCharacter);
+}
 
-			anchor.appendChild(image);
-			container.appendChild(anchor);
-		// }
-	};
-	xmlRequest.open("GET", url, true);
-	xmlRequest.send();
+function addCharacter(container, name, description, imgUrl) {
+	var anchor = document.createElement("a");
+	anchor.setAttribute("id",name);
+	anchor.setAttribute("class", "buttonGame characterIcon");
+	var goOnClick = "buildStoryPage('" + name + "')";
+	anchor.setAttribute("onclick",goOnClick);
+
+	var image = document.createElement("img");
+	image.setAttribute("src", imgUrl);
+	image.setAttribute("class", "icon");
+	image.setAttribute("alt", name);
+  
+	anchor.appendChild(image);
+	container.appendChild(anchor);
 }
 
 function buildStoryPage(characterName) {
@@ -446,11 +485,11 @@ window.addEventListener("load", () => {
 	var animeDiv = document.getElementById("anime");
   
   for (var i = 0; i < marvel.length; ++i) {
-    addCharacter(marvelDiv, marvel[i]);
+    addMarvelCharacter(marvelDiv, marvel[i]);
   }
 
   for (var i = 0; i < anime.length; ++i) {
-    addCharacter(animeDiv, anime[i]);
+    addAnimeCharacter(animeDiv, anime[i]);
   }
 });
 
