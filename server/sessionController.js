@@ -1,13 +1,6 @@
 const db = require('./databaseQuery.js').databaseQuery;
 
 class SessionController {    
-    exists(sessionId) {
-        var queryString = "SELECT COUNT(*) AS nr FROM sessions WHERE session_id = ?;";
-        var args = [sessionId];
-        
-        return false;
-    }
-    
     create(userId, sessionId) {
         var queryString = "INSERT INTO sessions (user_id, session_id) VALUES (?, ?);";
         var args = [userId, sessionId];
