@@ -363,11 +363,23 @@ function getMarvelCharacter(name, container, callback) {
   xmlRequest.send();
 }
 
+function getPowerUp(name) {
+  switch(name) {
+    case 'Spider-Man': return 'sare ca musca pe pereti';
+    case 'Hulk': return 'omoara gandaci';
+    case 'Ant-Man (Eric O\'Grady)': return 'se face mic';
+    case 'OnePunchMan': return 'nu moare';
+    case 'RockLee': return 'degeaba';
+    case 'Sasuke': return 'boss';
+  }
+}
+
 function addMarvelCharacter(container, name) {
   getMarvelCharacter(name, container, (container, name, description, imgUrl) => {
     var anchor = document.createElement("a");
     anchor.setAttribute("id", name);
     anchor.setAttribute("class", "buttonGame characterIcon");
+    anchor.setAttribute("title", getPowerUp(name));
     var name2 = name.replace('\'', '\\\'');
     var goOnClick = "buildMarvelStoryPage('" + name2 + "')";
     anchor.setAttribute("onclick",goOnClick);
@@ -409,6 +421,7 @@ function addAnimeCharacter(container, name) {
     var anchor = document.createElement("a");
     anchor.setAttribute("id",name);
     anchor.setAttribute("class", "buttonGame characterIcon");
+    anchor.setAttribute("title", getPowerUp(name));
     var goOnClick = "buildAnimeStoryPage('" + name + "')";
     anchor.setAttribute("onclick",goOnClick);
 

@@ -508,11 +508,11 @@ nav form > a {
     box-shadow: 5px 5px 10px #000000;   
 }
 
-.characterIcon:hover{
+.characterIcon:hover {
     border: 2px outset lightgray;
 }
 
-.storyIcon{
+.storyIcon {
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -521,13 +521,12 @@ nav form > a {
     box-shadow: 5px 5px 10px #000000; 
 }
 
-.storyIcon:hover{
+.storyIcon:hover {
     border: 2px outset lightgray;
 }
 
-.hideScrollBar{
+.hideScrollBar {
     height: 100%;
-    margin-right: -58px;
     overflow-y: scroll;
     overflow-x: hidden;
     display: flex;
