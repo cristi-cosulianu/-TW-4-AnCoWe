@@ -582,25 +582,36 @@ function changeKey(elementId) {
 		if(pressed == false){
 			const key = event.key;
 			const keyCode = event.keyCode;
-	
-			document.getElementById(elementId).textContent = keyName(key);
-	
-			switch (elementId) {
-				case "leftKey": keyCodes.leftKeyCode = keyCode; break;
-				case "rightKey": keyCodes.rightKeyCode = keyCode; break;
-				case "downKey": keyCodes.downKeyCode = keyCode; break;
-				case "jumpKey": keyCodes.jumpKeyCode = keyCode; break;
-				case "dashKey": keyCodes.dashKeyCode = keyCode; break;
-				default: break;
-			}
       
-			try {
-  			updateKeyCodes(elementId, keyCode);
-  		}
-  		catch(err) {
-  			console.log(err.message);
-  		}
-	
+      var ok = true;
+      
+      if(keyCode == keyCodes.leftKeyCode) ok = false;
+      if(keyCode == keyCodes.rightKeyCode) ok = false;
+      if(keyCode == keyCodes.downKeyCode) ok = false;
+      if(keyCode == keyCodes.jumpKeyCode) ok = false;
+      if(keyCode == keyCodes.dashKeyCode) ok = false;
+      
+      if(ok) {	
+  			document.getElementById(elementId).textContent = keyName(key);
+  	
+  			switch (elementId) {
+  				case "leftKey": keyCodes.leftKeyCode = keyCode; break;
+  				case "rightKey": keyCodes.rightKeyCode = keyCode; break;
+  				case "downKey": keyCodes.downKeyCode = keyCode; break;
+  				case "jumpKey": keyCodes.jumpKeyCode = keyCode; break;
+  				case "dashKey": keyCodes.dashKeyCode = keyCode; break;
+  				default: break;
+  			}
+        
+  			try {
+    			updateKeyCodes(elementId, keyCode);
+    		}
+    		catch(err) {
+    			console.log(err.message);
+    		}
+  	
+      }
+      
 			pressed = true;
 		}
 		document.removeEventListener('keydown', keybordFunction, false);

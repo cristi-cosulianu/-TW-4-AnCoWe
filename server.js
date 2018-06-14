@@ -6,10 +6,6 @@ const path = require('path');
 const mime = require('mime-types');
 const qs = require('querystring');
 const game = require('./server/game.js');
-const options = require('./server/options.js');
-const login = require('./server/login.js');
-const signup = require('./server/signup.js');
-const scores = require('./server/scores.js');
 const sessionController = require('./server/sessionController.js').sessionController;
 const routes = require('./server/routes.js').routes;
 
