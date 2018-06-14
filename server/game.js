@@ -171,7 +171,7 @@ class GameController {
         let gravity = new util.Vector2(data.gravity.x, data.gravity.y);
         if (data.objects.length > 0) {
             if (player.position.y < data.player.groundBase || !data.player.onPlatform) {
-                if (!data.isDead) {
+                if (!data.player.isDead) {
                     data.player.groundBase = data.defaultGroundX;
                 }
             }
@@ -270,7 +270,8 @@ class GameController {
                 let previousValue = data.objects[i].position.x;
                 data.objects[i].position.x += data.backgroundX;
                 if (data.objects[i].position.y < data.objects[i].groundBase || !data.objects[i].onPlatform) {
-                    data.objects[i].groundBase = data.defaultGroundX;
+                    if (!data.objects[i].isDead)
+                        data.objects[i].groundBase = data.defaultGroundX;
                 }
                 if (util.getRight(data.objects[i]) < util.getLeft(data.objects[data.objects[i].currentPlatformIndex]) + data.backgroundX || util.getLeft(data.objects[i]) > util.getRight(data.objects[data.objects[i].currentPlatformIndex]) + data.backgroundX) {
                     data.objects[i].onPlatform = false;
@@ -323,7 +324,17 @@ class GameController {
             /*        if (util.getLeft(data.objects[i]) + data.backgroundX > data.canvasWidth) {
                        continue;
                     }*/
+            if(data.objects[i].position.y > 5000 ) {
+                data.objects.splice(i , 1);
+                continue;
+            }
+            
             if (takeAction === "enemy" && data.objects[i].hasOwnProperty("dir")) continue;
+
+            if (data.objects[data.player.currentPlatformIndex].type === "goomba"){
+                    data.space = false;
+                    data.player.currentPlatformIndex = 0;
+            }
 
             if (util.getTop(object) + object.height * 6 / 10 < util.getTop(data.objects[i]) && util.getBottom(object) > util.getTop(data.objects[i]) && ((util.getRight(object) - 10 > util.getLeft(data.objects[i]) + data.backgroundX && util.getRight(object) < util.getRight(data.objects[i]) + data.backgroundX) || (util.getLeft(object) + 10 < util.getRight(data.objects[i]) + data.backgroundX && util.getLeft(object) > util.getLeft(data.objects[i]) + data.backgroundX))) {
                 if (takeAction === "enemy") {
@@ -342,7 +353,17 @@ class GameController {
                     data.player.topCollision = true;
 
                 }
-                response.push(data.objects[i]);
+                // HULK SMAAAAAAAASHH !!!!!
+                if (data.objects[i].type === "goomba" && data.character === "hulk" && takeAction === "player") {
+                    data.objects[i].groundBase = Number.MAX_SAFE_INTEGER;
+                    data.objects[i].onPlatform = false;
+                    data.objects[i].inAir = true;
+                    data.objects[i].isDead = true;
+                    data.space = true;
+                    continue;
+                } else {
+                    response.push(data.objects[i]);
+                }
             }
             if (util.getBottom(object) > util.getBottom(data.objects[i]) && util.getTop(object) < util.getBottom(data.objects[i]) && util.getRight(object) > util.getLeft(data.objects[i]) + data.backgroundX + object.width * 1 / 4 && util.getLeft(object) < util.getRight(data.objects[i]) + data.backgroundX - object.width * 1 / 4) {
                 if (takeAction === "enemy") {
@@ -361,7 +382,7 @@ class GameController {
                     object.leftCollision = true;
                 }
                 if (takeAction === "player") {
-                    if (data.player.inAir && data.space && !data.player.bottomCollision && data.objects[i].type === "wall") {
+                    if (data.player.inAir && data.space && !data.player.bottomCollision && data.objects[i].type === "wall" && data.character === "spider-man") {
                         data.double_jump = 0;
                         data.bounce = true;
                         data.player.dir.y = 0;
@@ -378,7 +399,7 @@ class GameController {
                     object.rightCollision = true;
                 }
                 if (takeAction === "player") {
-                    if (data.player.inAir && data.space && !data.player.bottomCollision && data.objects[i].type === "wall") {
+                    if (data.player.inAir && data.space && !data.player.bottomCollision && data.objects[i].type === "wall" && data.character === "spider-man") {
                         data.double_jump = 0;
                         data.bounce = true;
                         data.player.dir.y = 0;
@@ -396,7 +417,7 @@ class GameController {
     static update(data, player) {
         let timer = new Date();
         data.currentTime = timer.getTime();
-        if (data.isDead) {
+        if (data.player.isDead) {
             if (data.currentTime - deathTime < 3000) {
                 this.updatePlayerPosition(data);
                 this.updateEnemyPosition(data);
@@ -491,7 +512,7 @@ class GameController {
             data.backgroundX = 0;
             data.double_jump = 0;
             util.scaleWorldObjects(data);
-            data.isDead = false;
+            data.player.isDead = false;
             ++data.deaths;
         }
     }
@@ -511,7 +532,7 @@ class GameController {
         switch (actionType) {
             case "death":
                 {
-                    data.isDead = true;
+                    data.player.isDead = true;
                     let timer = new Date();
                     deathTime = timer.getTime();
                     data.player.groundBase = Number.MAX_SAFE_INTEGER;

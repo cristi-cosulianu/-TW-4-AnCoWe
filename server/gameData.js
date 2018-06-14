@@ -18,7 +18,7 @@ class gameData {
         this.double_jump = 0;
         this.canvasWidth = 1280;
         this.canvasHeight = 720;
-        this.powerUp = NaN;
+        this.character = "hulk";
         this.rightKeyCode = 39;
         this.leftKeyCode = 37;
         this.triggers = [];
@@ -26,7 +26,6 @@ class gameData {
         this.jumpKeyCode = 32;
         this.dashKeyCode = 16;
         this.deaths = 0;
-        this.isDead  = false;
         this.startTime = undefined;
         this.currentTime = undefined;
         this.referenceScale = 0;

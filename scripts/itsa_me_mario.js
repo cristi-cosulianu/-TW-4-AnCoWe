@@ -235,7 +235,7 @@ function playerAnimation(p) {
         context.shadowColor = "black";
         context.shadowBlur = 10;
     }
-    if (data.isDead) {
+    if (data.player.isDead) {
         context.drawImage(death_1, data.player.position.x, data.player.position.y, data.player.width, data.player.height);
         death_sound.play();
         background_sound.pause();

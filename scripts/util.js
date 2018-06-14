@@ -54,6 +54,7 @@ class MovableGameObject extends GameObject {
         this.dir = new Vector2(-1, 0);
         this.inAir = NaN;
         this.groundBase = 0;
+        this.isDead = false;
         this.onPlatform = false;
         this.leftCollision = false;
         this.rightCollision = false;
@@ -66,10 +67,6 @@ class MovableGameObject extends GameObject {
 class Trigger extends GameObject {
     constructor(condition, enabled, type, x, y, width, height) {
         super(type, x, y, width, height);
-        this.type = type;
-        this.position = new Vector2(x, y);
-        this.width = width;
-        this.height = height;
         this.condition = condition;
         this.enabled = enabled;
     }
