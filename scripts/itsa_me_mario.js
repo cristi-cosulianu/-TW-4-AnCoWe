@@ -3,7 +3,6 @@ var canvas;
 var ground, pipe, wall, platform, spikes, crane, goomba;
 var jump_sound, background_sound, jump_land, death_sound;
 var first_press;
-var hasDropDown = true;
 var gp = null;
 var walk_1, walk_2, walk_3, walk_4;
 var idle_1, idle_2, idle_3, idle_4;
@@ -15,9 +14,6 @@ var smoke_1, smoke_2, smoke_3, smoke_4;
 var smoke_landing_1, smoke_landing_2, smoke_landing_3, smoke_landing_4;
 var background_layer1, background_layer2, background_layer3, background_layer4, background_layer5, background_layer6, background_layer7;
 var flag;
-var downKeyCode = 40;
-var jumpKeyCode = 32;
-var dashKeyCode = 16;
 var data;
 var wasInAir = false,
     landAnimation,
@@ -512,10 +508,6 @@ function keyPressed(event) {
     if (event.keyCode === keyCodes.jumpKeyCode) {
         jump_sound.current_time = 0;
         jump_sound.play();
-    }
-    if (event.keyCode === keyCodes.downKeyCode && data.player.inAir && hasDropDown) {
-        dir.y = 12;
-        dir.x = 0;
     }
 }
 //Utilitary event function that sends key released data
