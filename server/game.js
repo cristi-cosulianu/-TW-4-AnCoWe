@@ -23,8 +23,8 @@ class GameController {
         data.referenceScale = 750;
         data.defaultGroundX = ((data.referenceScale - 50 - 64) * data.canvasHeight) / data.referenceScale;
         if (data.character === "ant-man") {
-            data.player = new util.MovableGameObject(undefined, data.canvasWidth / 2 - 100, data.defaultGroundX, Math.floor(64 * data.canvasHeight / data.referenceScale) / 2, Math.floor(64 * data.canvasHeight / data.referenceScale) / 2);
-            data.playerDefaultGroundX = data.defaultGroundX + util.getAspectRatio(data.player.height , data.referenceScale , data.canvasHeight , true); 
+            data.player = new util.MovableGameObject(undefined, data.canvasWidth / 2 - 100, data.defaultGroundX, Math.floor(64 * data.canvasHeight / data.referenceScale)  * 3 / 4, Math.floor(64 * data.canvasHeight / data.referenceScale) * 3 / 4);
+            data.playerDefaultGroundX = data.defaultGroundX + util.getAspectRatio(util.getAspectRatio(64 , data.referenceScale , data.canvasHeight , false) - data.player.height , data.referenceScale , data.canvasHeight , true); 
         } else {
             data.player = new util.MovableGameObject(undefined, data.canvasWidth / 2 - 100, data.defaultGroundX, Math.floor(64 * data.canvasHeight / data.referenceScale), Math.floor(64 * data.canvasHeight / data.referenceScale));
             data.playerDefaultGroundX = data.defaultGroundX

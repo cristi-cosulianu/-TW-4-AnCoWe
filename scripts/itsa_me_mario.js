@@ -214,10 +214,10 @@ function loadTextures() {
 }
 //Main animation function for the player
 function playerAnimation(p) {
-    let xoffset = getAspectRatio(30, data.referenceScale, window.innerHeight);
-    let yoffset = getAspectRatio(24, data.referenceScale, window.innerHeight);
-    let width = getAspectRatio(48, data.referenceScale, window.innerHeight);
-    let height = getAspectRatio(24, data.referenceScale, window.innerHeight);
+    let xoffset = getAspectRatio(30, data.referenceScale, window.innerHeight , true);
+    let yoffset = getAspectRatio(24, data.referenceScale, window.innerHeight , true);
+    let width = getAspectRatio(48, data.referenceScale, window.innerHeight , true);
+    let height = getAspectRatio(24, data.referenceScale, window.innerHeight , true);
     context.save();
     context.shadowOffsetX = -3;
     context.shadowOffsetY = 3;
@@ -384,6 +384,7 @@ function millisToMinutesAndSeconds(millis) {
 
 
 function animate() {
+    if(data.character === "ant-man") return;
     let xoffset = getAspectRatio(20, data.referenceScale, window.innerHeight);
     let yoffset = getAspectRatio(25, data.referenceScale, window.innerHeight);
     let width = getAspectRatio(100, data.referenceScale, window.innerHeight);

@@ -19,7 +19,7 @@ class gameData {
         this.double_jump = 0;
         this.canvasWidth = 1280;
         this.canvasHeight = 720;
-        this.character = "hulk";
+        this.character = "ant-man";
         this.rightKeyCode = 39;
         this.leftKeyCode = 37;
         this.triggers = [];
