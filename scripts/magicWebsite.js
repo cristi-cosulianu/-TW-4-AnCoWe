@@ -480,7 +480,7 @@ window.addEventListener("load", () => {
 	});
 
 	var marvel = ["Spider-Man", "Ant-Man", "Hulk"];
-	var anime = ["OneManPunch", "Sasuke", "RockLee"];
+	var anime = ["OnePunchMan", "Sasuke", "RockLee"];
   var marvelDiv = document.getElementById("marvel");
 	var animeDiv = document.getElementById("anime");
   
