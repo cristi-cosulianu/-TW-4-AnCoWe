@@ -363,6 +363,7 @@ function game_loop() {
     if (abandon) {
         sceneTransition('gameCanvas', 'menuCanvas');
         abandon = false;
+        removeStoryPage(data.character);
         return;
     }
 
@@ -375,6 +376,7 @@ function game_loop() {
         render();
         context.restore();
         context.drawImage(level_done, canvas.width / 2 - 200, canvas.height / 2);
+        removeStoryPage(data.character);
         setTimeout(function () {
             sceneTransition('gameCanvas', 'menuCanvas');
         }, 4000);
