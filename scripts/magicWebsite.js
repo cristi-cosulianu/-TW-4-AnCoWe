@@ -405,17 +405,8 @@ function buildStoryPage(characterName) {
 	container.appendChild(anchor);
 
 	// Create back button.
-	var backButton = document.createElement("a");
-	backButton.setAttribute("id","storyBackButton");
-	backButton.setAttribute("class","creditsBackButton");
-	backButton.setAttribute("href","#chooseCharacterCanvas");
+	var backButton = document.getElementById("characterBackButton");
 	backButton.setAttribute("onclick","removeStoryPage('" + characterName + "')");
-
-	var backImg = document.createElement("img");
-	backImg.setAttribute("src","../textures/backButton.png");
-
-	backButton.appendChild(backImg);
-	container.appendChild(backButton);
 }
 
 window.addEventListener("load", () => {
@@ -426,10 +417,10 @@ window.addEventListener("load", () => {
 
 function removeStoryPage(characterName) {
 	var characterStoryIcon = document.getElementById(characterName + "StoryIcon");
-	var storyBackButton = document.getElementById("storyBackButton");
+	var characterBackButton = document.getElementById("characterBackButton");
 	var chooseCharacterCanvas = document.getElementById("chooseCharacterCanvas");
 
-	chooseCharacterCanvas.removeChild(storyBackButton);
+	characterBackButton.setAttribute("onclick", "sceneTransition('chooseCharacterCanvas','gameCanvas')");
 	chooseCharacterCanvas.removeChild(characterStoryIcon);
 
 	var titles = document.getElementById("charactersTitle");
@@ -449,27 +440,17 @@ window.addEventListener("load", () => {
 			document.getElementById("rightDiv").classList.remove('rightCurtain');
 	});
 
-	var marvelHeroes = ["Spider-Man", "Wolverine", "Daredevil", "Captain America", "Iron Man", "Thor", "Black Widow", "Hulk"];
-	var marvelVillains = ["Loki", "Red Skull", "Ultron", "Magneto", "Thanos", "Black Cat", "Galactus", "Apocalypse"];
-  var animeHeroes = [];
-  var animeVillains = [];
-	var heroesDiv = document.getElementById("heroes");
-	var villainsDiv = document.getElementById("villains");
-
-	for (var i = 0; i < marvelHeroes.length; ++i) {
-		addCharacter(heroesDiv, marvelHeroes[i]);
-	}
-
-	for (var i = 0; i < marvelVillains.length; ++i) {
-		addCharacter(villainsDiv, marvelVillains[i]);
-	}
+	var marvel = ["Spider-Man", "Ant-Man", "Hulk"];
+	var anime = ["OneManPunch", "Sasuke", "RockLee"];
+  var marvelDiv = document.getElementById("marvel");
+	var animeDiv = document.getElementById("anime");
   
-  for (var i = 0; i < animeHeroes.length; ++i) {
-    addCharacter(heroesDiv, animeHeroes[i]);
+  for (var i = 0; i < marvel.length; ++i) {
+    addCharacter(marvelDiv, marvel[i]);
   }
 
-  for (var i = 0; i < animeVillains.length; ++i) {
-    addCharacter(villainsDiv, animeVillains[i]);
+  for (var i = 0; i < anime.length; ++i) {
+    addCharacter(animeDiv, anime[i]);
   }
 });
 
