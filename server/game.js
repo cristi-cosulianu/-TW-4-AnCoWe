@@ -273,10 +273,8 @@ class GameController {
         let enemySpeed = util.getAspectRatio(2, data.referenceScale, data.canvasHeight, false);
         for (let i = 0; i < data.objects.length; ++i) {
 
-            if (data.objects[i].position.y > 5000) {
-                data.objects.splice(i, 1);
-                continue;
-            }
+            if (data.objects[i].position.y > 5000) continue;
+
             if (data.objects[i].type === "goomba") {
                 let previousValue = data.objects[i].position.x;
                 data.objects[i].position.x += data.backgroundX;
@@ -338,6 +336,8 @@ class GameController {
 
 
             if (takeAction === "enemy" && data.objects[i].hasOwnProperty("dir")) continue;
+
+            if (data.objects[i].position.y > 5000) continue;
 
             if (data.objects[data.player.currentPlatformIndex].type === "goomba") {
                 data.space = false;
