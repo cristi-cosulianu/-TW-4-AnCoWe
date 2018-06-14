@@ -23,8 +23,8 @@ class GameController {
         data.referenceScale = 750;
         data.defaultGroundX = ((data.referenceScale - 50 - 64) * data.canvasHeight) / data.referenceScale;
         if (data.character === "ant-man") {
-            data.player = new util.MovableGameObject(undefined, data.canvasWidth / 2 - 100, data.defaultGroundX, Math.floor(64 * data.canvasHeight / data.referenceScale)  * 3 / 4, Math.floor(64 * data.canvasHeight / data.referenceScale) * 3 / 4);
-            data.playerDefaultGroundX = data.defaultGroundX + util.getAspectRatio(util.getAspectRatio(64 , data.referenceScale , data.canvasHeight , false) - data.player.height , data.referenceScale , data.canvasHeight , true); 
+            data.player = new util.MovableGameObject(undefined, data.canvasWidth / 2 - 100, data.defaultGroundX, Math.floor(64 * data.canvasHeight / data.referenceScale) * 3 / 4, Math.floor(64 * data.canvasHeight / data.referenceScale) * 3 / 4);
+            data.playerDefaultGroundX = data.defaultGroundX + util.getAspectRatio(util.getAspectRatio(64, data.referenceScale, data.canvasHeight, false) - data.player.height, data.referenceScale, data.canvasHeight, true);
         } else {
             data.player = new util.MovableGameObject(undefined, data.canvasWidth / 2 - 100, data.defaultGroundX, Math.floor(64 * data.canvasHeight / data.referenceScale), Math.floor(64 * data.canvasHeight / data.referenceScale));
             data.playerDefaultGroundX = data.defaultGroundX
@@ -272,6 +272,11 @@ class GameController {
     static updateEnemyPosition(data) {
         let enemySpeed = util.getAspectRatio(2, data.referenceScale, data.canvasHeight, false);
         for (let i = 0; i < data.objects.length; ++i) {
+
+            if (data.objects[i].position.y > 5000) {
+                data.objects.splice(i, 1);
+                continue;
+            }
             if (data.objects[i].type === "goomba") {
                 let previousValue = data.objects[i].position.x;
                 data.objects[i].position.x += data.backgroundX;
@@ -330,10 +335,7 @@ class GameController {
             /*        if (util.getLeft(data.objects[i]) + data.backgroundX > data.canvasWidth) {
                        continue;
                     }*/
-            if (data.objects[i].position.y > 5000) {
-                data.objects.splice(i, 1);
-                continue;
-            }
+
 
             if (takeAction === "enemy" && data.objects[i].hasOwnProperty("dir")) continue;
 
