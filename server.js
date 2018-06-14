@@ -118,6 +118,10 @@ io.on('connection', function (socket) {
         var params = qs.parse(msg);
 
         var ret = game.processRequest(params);
+        if(ret === 'abandon'){
+            this.emit('abandon' , true);
+            return;
+        }
         if (ret === 'finish') {
             this.emit('finish', true);
             return;

@@ -10,7 +10,6 @@ var doneSending;
 class GameController {
     //Setting up the data model for the server
     static start(player, info, characterName) {
-        console.log(characterName);
         doneSending = false;
         var data = new gameData();
         if (data.startTime === undefined) {
@@ -50,8 +49,9 @@ class GameController {
             message: 'file not found'
         };
 
-        this.updateKeys(keycode, "pressed", data);
+        var status = this.updateKeys(keycode, "pressed", data);
         this.writeData(data, player);
+        return status;
     }
     //KeyReleased controller
     static keyReleased(player, keycode) {
@@ -172,6 +172,11 @@ class GameController {
             } else {
                 data.space = false;
             }
+        }
+        
+        if(keyCode == 'downKey'){
+            doneSending = true;
+            return "abandon";
         }
     }
     //Server side game computation for player movement
@@ -543,6 +548,7 @@ class GameController {
                 break;
             }
         }
+
         switch (actionType) {
             case "death":
                 {
@@ -582,8 +588,9 @@ module.exports = {
             case 'start':
                 GameController.start(params['player'], params['info'], params['character']);
                 return 'start';
-            case 'key-pressed':
-                GameController.keyPressed(params['player'], params['keycode']);
+            case 'key-pressed':    
+                var status = GameController.keyPressed(params['player'], params['keycode']);
+                return status;
                 break;
             case 'key-released':
                 GameController.keyReleased(params['player'], params['keycode']);

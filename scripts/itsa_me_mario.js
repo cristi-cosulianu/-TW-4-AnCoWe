@@ -19,6 +19,7 @@ var wasInAir = false,
     landAnimation,
     landAnimationStart;
 var isPlaying = true;
+var abandon = false;
 var uuid = undefined;
 var characterSelected = undefined;
 var keyCodes = {
@@ -37,6 +38,10 @@ socket.on('data', function (msg) {
 });
 socket.on('finish', function (msg) {
     isPlaying = false;
+});
+
+socket.on('abandon', function (msg) {
+    abandon = true;
 });
 socket.on('start', function (msg) {
     requestAnimationFrame(game_loop);
@@ -215,10 +220,10 @@ function loadTextures() {
 }
 //Main animation function for the player
 function playerAnimation(p) {
-    let xoffset = getAspectRatio(30, data.referenceScale, window.innerHeight , true);
-    let yoffset = getAspectRatio(24, data.referenceScale, window.innerHeight , true);
-    let width = getAspectRatio(48, data.referenceScale, window.innerHeight , true);
-    let height = getAspectRatio(24, data.referenceScale, window.innerHeight , true);
+    let xoffset = getAspectRatio(30, data.referenceScale, window.innerHeight, true);
+    let yoffset = getAspectRatio(24, data.referenceScale, window.innerHeight, true);
+    let width = getAspectRatio(48, data.referenceScale, window.innerHeight, true);
+    let height = getAspectRatio(24, data.referenceScale, window.innerHeight, true);
     context.save();
     context.shadowOffsetX = -3;
     context.shadowOffsetY = 3;
@@ -354,6 +359,13 @@ function game_loop() {
     //Updating data after receiving it from the server
     updateAndRender();
     //Displaying the data with the `render` function
+
+    if (abandon) {
+        sceneTransition('gameCanvas', 'menuCanvas');
+        abandon = false;
+        return;
+    }
+
     if (!isPlaying) {
         isPlaying = true;
         background_sound.pause();
@@ -385,7 +397,7 @@ function millisToMinutesAndSeconds(millis) {
 
 
 function animate() {
-    if(data.character === "Ant-Man (Eric O'Grady)") return;
+    if (data.character === "Ant-Man (Eric O'Grady)") return;
     let xoffset = getAspectRatio(20, data.referenceScale, window.innerHeight);
     let yoffset = getAspectRatio(25, data.referenceScale, window.innerHeight);
     let width = getAspectRatio(100, data.referenceScale, window.innerHeight);
@@ -484,21 +496,28 @@ function checkGamepad() {
         console.log("GamePadRemoved");
     }
 }
+
 function getEventFromKeyCode(keyCode) {
-    switch(keyCode) {
-        case keyCodes.leftKeyCode: return 'leftKey';
-        case keyCodes.rightKeyCode: return 'rightKey';
-        case keyCodes.jumpKeyCode: return 'jumpKey';
-        case keyCodes.downKeyCode: return 'downKey';
-        case keyCodes.dashKeyCode: return 'dashKey';
-        default: return null;
+    switch (keyCode) {
+        case keyCodes.leftKeyCode:
+            return 'leftKey';
+        case keyCodes.rightKeyCode:
+            return 'rightKey';
+        case keyCodes.jumpKeyCode:
+            return 'jumpKey';
+        case keyCodes.downKeyCode:
+            return 'downKey';
+        case keyCodes.dashKeyCode:
+            return 'dashKey';
+        default:
+            return null;
     }
 }
 //Utilitary event function that sends key pressed data
 function keyPressed(event) {
     var eventName = getEventFromKeyCode(event.keyCode);
-    if(eventName == null) return;
-    
+    if (eventName == null) return;
+
     sendGameEvent("action=key-pressed&keycode=" + eventName);
     if (event.keyCode === keyCodes.rightKeyCode) {
         if (first_press === false) {
@@ -515,8 +534,8 @@ function keyPressed(event) {
 //Utilitary event function that sends key released data
 function keyReleased(event) {
     var eventName = getEventFromKeyCode(event.keyCode);
-    if(eventName == null) return;
-    
+    if (eventName == null) return;
+
     sendGameEvent("action=key-released&keycode=" + eventName);
 }
 
