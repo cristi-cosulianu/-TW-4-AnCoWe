@@ -19,9 +19,10 @@ class gameData {
         this.double_jump = 0;
         this.canvasWidth = 1280;
         this.canvasHeight = 720;
-        this.character = "ant-man";
+        this.character = "";
         this.rightKeyCode = 39;
         this.leftKeyCode = 37;
+        this.jumpHeight = 7;
         this.triggers = [];
         this.downKeyCode = 40;
         this.jumpKeyCode = 32;
