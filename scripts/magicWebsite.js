@@ -656,16 +656,39 @@ function loginRequest() {
   }
 }
 
-function buildScoreList(){
+function buildScoreList() {
   var xmlRequest = new XMLHttpRequest();
   var numberOfScores = 14;
   var serverURL = "https://localhost:3000/scores?firstN=" + numberOfScores;
 
   var scoreList = document.getElementById("scoreList");
+  while (scoreList.firstChild) {
+    scoreList.removeChild(scoreList.firstChild);
+  }
 
   xmlRequest.onreadystatechange = function() {
-    console.log(xmlRequest.response);
+    if(this.readyState == 4) {
+      if(this.status == 200) {
+        var data = JSON.parse(this.responseText);
+        for(var i = 0; i < data.length; i++) {
+          var row = data[i];
+          var item = document.createElement('li');
+          
+          if(i == 0) item.setAttribute('class', 'firstPlace');
+          else if(i == 1) item.setAttribute('class', 'secondPlace');
+          else if(i == 2) item.setAttribute('class', 'thirdPlace');
+          
+          item.innerHTML = row.username + ' : ' + row.time + ' / ' + row.deaths;
+          scoreList.appendChild(item);
+        }
+      } else {
+        console.log('no scores');
+      }
+    }
   }
+  
+  xmlRequest.open("GET", serverURL, true);
+  xmlRequest.send();
 }
 
 //Utilitary function for server requests

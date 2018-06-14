@@ -25,6 +25,13 @@ class UserController {
       
       return db.select(queryString, args);
     }
+    
+    getAll() {
+      var queryString = "SELECT id, username FROM users;";
+      var args = [];
+      
+      return db.select(queryString, args);
+    }
 }
 
 userController = new UserController();

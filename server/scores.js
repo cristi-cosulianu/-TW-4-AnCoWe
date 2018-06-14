@@ -1,5 +1,5 @@
 const scoreController = require('./scoresController.js').scoreController;
-
+const userController = require('./userController.js').userController;
 
 function firstN(params, callback) {
   if(params['firstN'] == undefined) {
@@ -14,9 +14,22 @@ function firstN(params, callback) {
     return;
   }
 
+  var scoreList;
+
   scoreController.getnScores(firstN)
   .then(result => {
-    var json = JSON.stringify(result);
+    scoreList = result;
+    return userController.getAll();
+  }).then(result => {
+    scoreList.forEach(scoreListRow => {
+      result.forEach(resultRow => {
+        if(scoreListRow.user_id == resultRow.id) {
+          scoreListRow.username = resultRow.username;
+        }
+      });
+    });
+    
+    var json = JSON.stringify(scoreList);
     callback(200, json);
   })
   .catch(err => {

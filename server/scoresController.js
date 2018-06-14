@@ -9,14 +9,14 @@ class ScoreController {
     }
     
     getScores() {
-      var queryString = "Select * from scores ORDER BY time desc;";
+      var queryString = "Select * from scores ORDER BY time, deaths;";
       var args = [];
           
       return db.select(queryString, args);
     }
         
     getnScores(firstN) {
-      var queryString = "Select * from scores ORDER BY time desc LIMIT ?;";
+      var queryString = "Select * from scores ORDER BY time, deaths LIMIT ?;";
       var args = [firstN];
       
       return db.select(queryString, args);
