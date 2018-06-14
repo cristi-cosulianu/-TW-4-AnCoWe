@@ -31,6 +31,9 @@ class GameController {
             data.player = new util.MovableGameObject(undefined, data.canvasWidth / 2 - 100, data.defaultGroundX, Math.floor(64 * data.canvasHeight / data.referenceScale), Math.floor(64 * data.canvasHeight / data.referenceScale));
             data.playerDefaultGroundX = data.defaultGroundX
         }
+        if(data.character === "rock-lee"){
+            data.jumpHeight = 8.75;
+        }
         data.player.groundBase = data.playerDefaultGroundX;
         data.objects = GameController.readLevel("1");
         data.triggers = GameController.readTriggers("1");
@@ -253,14 +256,14 @@ class GameController {
                 ++data.double_jump;
                 dir.y = -1;
                 dir.x = 0;
-                dir.mul(util.getAspectRatio(7, data.referenceScale, data.canvasHeight, false));
+                dir.mul(util.getAspectRatio(data.jumpHeight, data.referenceScale, data.canvasHeight, false));
                 player.position.add(dir);
             }
             if (data.space && (data.left === true || data.right === true)) {
                 ++data.double_jump;
                 dir.y = -1;
                 dir.x = 0;
-                dir.mul(util.getAspectRatio(7, data.referenceScale, data.canvasHeight, false));
+                dir.mul(util.getAspectRatio(data.jumpHeight, data.referenceScale, data.canvasHeight, false));
                 player.position.add(dir);
             }
         }
@@ -530,7 +533,7 @@ class GameController {
     static collisionAction(collidingWith, data, player) {
         var actionType = "";
         for (let i = 0; i < collidingWith.length; ++i) {
-            if (collidingWith[i].type === "goomba" || collidingWith[i].type === "spikes") {
+            if (collidingWith[i].type === "goomba" || (collidingWith[i].type === "spikes" && data.character !== "sasuke")) {
                 actionType = "death";
 
             }
