@@ -54,6 +54,7 @@ const server = http.createServer(options2, (req, res) => {
             params = qs.parse(body);
         }
         
+        res.setHeader('Content-Type', 'text/plain');
         res.setHeader('Access-Control-Allow-Origin', '*');
         
         var routeFound = false;
