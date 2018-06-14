@@ -542,11 +542,10 @@ function changeKey(elementId) {
 
 function updateKeyCodes(elementId,keyCode) {
 	var xmlRequest = new XMLHttpRequest();
-	var serverURL = "https://localhost:3000/options?";
-	serverURL = serverURL + "action=update&key=" + elementId + "&code=" + keyCode + "&player=" + uuid;
+	var serverURL = "https://localhost:3000/options";
 	//console.log(serverURL);
-	xmlRequest.open("GET", serverURL, true);
-	xmlRequest.send();
+	xmlRequest.open("POST", serverURL, true);
+	xmlRequest.send("key=" + elementId + "&code=" + keyCode + "&player=" + uuid);
 	return xmlRequest.response;
 }
   
@@ -660,14 +659,13 @@ function loginRequest() {
 function buildScoreList(){
   var xmlRequest = new XMLHttpRequest();
   var numberOfScores = 14;
-  var serverURL = "https://localhost:3000/scores/" + numberOfScores;
+  var serverURL = "https://localhost:3000/scores?firstN=" + numberOfScores;
 
   var scoreList = document.getElementById("scoreList");
 
   xmlRequest.onreadystatechange = function() {
     console.log(xmlRequest.response);
   }
-
 }
 
 //Utilitary function for server requests

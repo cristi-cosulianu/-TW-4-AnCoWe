@@ -1,30 +1,10 @@
 
-  /*
-  * EUGEN FILE
-  */
-
 const optionsController = require('./optionsController.js').optionsController;
 const sessionController = require('./sessionController').sessionController;
 
-module.exports = {
-  processRequest: function(params, callback) {
-    if(params['action'] === undefined) {
-      callback(405, 'invalid parameters');
-      return;
-    }
-    
-    switch(params['action']) {
-      case 'update':
-        updateKeyCode(params['player'], params['key'], params['code'], callback);
-        break;
-      case 'get-all':
-        getKeyCodes(params['player'], callback);
-        break;
-    }
-  }
-};
-
-function getKeyCodes(sessionId, callback) {
+function getKeyCodes(params, callback) {
+  var sessionId = params['player'];
+  
   if(sessionId === undefined) {
     callback(405, 'invalid parameters');
     return;
@@ -43,7 +23,11 @@ function getKeyCodes(sessionId, callback) {
     });
 }
 
-function updateKeyCode(sessionId, key, keyCode, callback) {
+function updateKeyCode(params, callback) {
+  var sessionId = params['player'];
+  var key = params['key'];
+  var keyCode = params['code'];
+  
   if(sessionId === undefined || key === undefined || keyCode === undefined) {
     callback(405, 'invalid parameters');
     return;
@@ -83,6 +67,11 @@ function updateKeyCode(sessionId, key, keyCode, callback) {
     })
     .catch(err => {
       console.log(err);
-      callback(405, err.message);
+      callback(407, err.message);
     });
+}
+
+module.exports = {
+  getKeyCodes,
+  updateKeyCode
 }

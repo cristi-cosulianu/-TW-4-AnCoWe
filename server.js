@@ -11,6 +11,7 @@ const login = require('./server/login.js');
 const signup = require('./server/signup.js');
 const scores = require('./server/scores.js');
 const sessionController = require('./server/sessionController.js').sessionController;
+const routes = require('./server/routes.js').routes;
 
 // const marvel = require('./server/marvel.js'); // don't delete this comment
 const sessionIdGenerator = require('./server/session-id-generator.js');
@@ -36,64 +37,38 @@ fs.readdir('./server/data', (err, files) => {
     }
 });
 
+
 //Creating the server and the function for request processing
 const server = http.createServer(options2, (req, res) => {
-    switch(req.method) {
-        case 'GET':
-            processGETRequest(req, res);
-            break;
-        
-        case 'POST':
-            processPOSTRequest(req, res);
-            break;
-        
-        default:
-            res.statusCode = 405;
-            res.setHeader('Access-Control-Allow-Origin', '*');
-            res.end();
-    }
-});
-
-function processGETRequest(req, res) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    
-    // Url parsing for procesing
     var parsedURL = url.parse(req.url, true);
     var pathname = parsedURL.pathname;
     var params = parsedURL.query;
     
-    switch (pathname) {
-        case '/options':
-            res.setHeader('Content-Type', 'text/text');
-
-            options.processRequest(params, (code, message) => {
-                res.statusCode = code;
-                console.log("Options status code: " + code);
-                res.end(message);
-            });
-
-            break;
-            
-        case '/scores':
-            res.setHeader('Content-Type', 'application/json');
-
-            scores.processRequest(params, (code, message) =>{
-                res.statusCode = code;
-                console.log("scores status code : " + res.statusCode + " message: " + message);
-                res.end(message);
-
-            });
-            break;    
-            // maybe we will use it later
-            /*case '/marvel':
-                res.setHeader('Content-Type', 'text/text');
+    var body = '';
+    req.on('data', chunk => {
+        body += chunk;
+    });
+    
+    req.on('end', () => {
+        if(body !== '') {
+            params = qs.parse(body);
+        }
+        
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        
+        var routeFound = false;
+        routes.forEach(route => {
+            if(route.path === pathname && route.method === req.method) {
+                route.handler(params, (code, message) => {
+                    res.statusCode = code;
+                    res.end(message);
+                });
                 
-                var ret = marvel.processRequest(params);
-                res.statusCode = ret.code;
-                res.end(ret.message);
-                
-                break;*/
-        default:
+                routeFound = true;
+            }
+        });
+        
+        if(!routeFound) {
             var filename = '.' + pathname;
             // Returning requested files with AJAX and mime-type module
             fs.readFile(filename, function (err, data) {
@@ -108,54 +83,13 @@ function processGETRequest(req, res) {
                     res.statusCode = 404;
                     res.end('Page not found!');
                 } else {
+                    res.statusCode = 405;
                     res.end('Illegal operation!');
                 }
             });
-    }
-}
-
-function processPOSTRequest(req, res) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    // Url parsing for procesing
-    var parsedURL = url.parse(req.url, true);
-    var pathname = parsedURL.pathname;
-    
-    var body = '';
-    req.on('data', chunk => {
-        body += chunk;
-    });
-    
-    req.on('end', () => {
-        var params = qs.parse(body);
-        
-        switch (pathname) {    
-            case '/login':
-                res.setHeader('Content-Type', 'text/text');
-
-                login.processRequest(params, (code, message) => {
-                    res.statusCode = code;
-                    console.log("Login status code: " + code);
-                    res.end(message);
-                });
-
-                break;
-                
-            case '/signup':
-                res.setHeader('Content-Type', 'text/text');
-
-                signup.processRequest(params, (code, message) => {
-                    res.statusCode = code;
-                    console.log("SignUp status code: " + res.statusCode);
-                    res.end(message);
-                });
-
-                break;
-            default:
-                res.statusCode = 405;
-                res.end();
         }
     });
-}
+});
 
 //Code for `socket.io` integration
 const socket = require('socket.io');
