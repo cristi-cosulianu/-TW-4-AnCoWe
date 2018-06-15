@@ -67,6 +67,12 @@ const server = http.createServer(options2, (req, res) => {
         
         if(!routeFound) {
             var filename = '.' + pathname;
+            if(filename.startsWith('./server') || filename.startsWith('./levels')) {
+                res.statusCode = 403;
+                res.end();
+                return;
+            }
+            
             // Returning requested files with AJAX and mime-type module
             fs.readFile(filename, function (err, data) {
                 if (!err) {
