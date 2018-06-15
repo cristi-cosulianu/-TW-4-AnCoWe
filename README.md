@@ -8,9 +8,9 @@ To use this repo you have to folow this steps:
 4.) Go back to your terminal in "-TW-4-AnCoWe" folder and run the following command "node server.js".
 5.) Open Mozilla or Chrome browser and go to "https://localhost:3000/html/magicWebsite/".
 
-*) To run faster enable hardware acceleration on browser.
-
 Dependencies:
 - Node.js
 - Npm
 - MySQL 
+
+*) To run faster enable hardware acceleration on browser.
