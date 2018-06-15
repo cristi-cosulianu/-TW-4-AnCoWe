@@ -9,7 +9,7 @@ Dependencies: <br />
 
 To play this game you have to folow this steps: <br />
 1.) Clone the repository on your local machine. <br />
-2.) Open "-TW-4-AnCoWe", open a terminal and run the following command "npm install". <br />
+2.) Open "-TW-4-AnCoWe", open here a terminal and run the following command "npm install". <br />
 3.) Connect to MySQL and run the script from "./docs/DatabaseCreator.sql". <br />
 4.) Go back to your terminal in "-TW-4-AnCoWe" folder and run the following command "node server.js". <br />
 5.) Open Mozilla or Chrome browser and go to "https://localhost:3000/html/magicWebsite/". <br /><br />
