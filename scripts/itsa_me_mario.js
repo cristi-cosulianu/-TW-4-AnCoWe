@@ -362,6 +362,7 @@ function game_loop() {
 
     if (abandon) {
         sceneTransition('gameCanvas', 'menuCanvas');
+        background_sound.pause();
         abandon = false;
         removeStoryPage(data.character);
         return;
@@ -526,7 +527,7 @@ function keyPressed(event) {
             data.animation_stage = 5;
             first_press = true;
         }
-        //background_sound.play();
+        background_sound.play();
     }
     if (event.keyCode === keyCodes.jumpKeyCode) {
         jump_sound.current_time = 0;
