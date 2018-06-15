@@ -7,7 +7,7 @@ Dependencies: <br />
 - MySQL <br />
 
 
-To use this repo you have to folow this steps: <br />
+To play this game you have to folow this steps: <br />
 1.) Clone the repository on your local machine. <br />
 2.) Open "-TW-4-AnCoWe", open a terminal and run the following command "npm install". <br />
 3.) Connect to MySQL and run the script from "./docs/DatabaseCreator.sql". <br />
