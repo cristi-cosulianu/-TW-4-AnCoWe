@@ -18,4 +18,6 @@ To play this game you have to folow this steps: <br />
 
 # Game demo
 Video available on youtube: "https://www.youtube.com/watch?v=7YmTWx3z33k&feature=youtu.be".
+# Documentation
+More documentation on "https://cristi-cosulianu.github.io/"
 
